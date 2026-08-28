@@ -1,216 +1,9 @@
 import { BuildingBlock, SimulationStepData } from '../types';
 
 export const BUILDING_BLOCKS: BuildingBlock[] = [
-  // ==========================================
-  // NIVEL 1: TECHO Y ALEROS (4 PIEZAS AMPLIAS)
-  // ==========================================
-  {
-    id: 'identidad',
-    number: 2,
-    name: 'Identidad y acceso',
-    shortName: 'Identidad y acceso',
-    category: 'seguridad',
-    categoryLabel: 'Seguridad y Acceso',
-    color: '#2563EB',
-    borderColor: '#1D4ED8',
-    bgLight: '#EFF6FF',
-    iconName: 'Fingerprint',
-    description: 'Permite a la ciudadanía acceder a los servicios digitales de Bogotá, usando credenciales verificables emitidas por el Portal Bogotá y entidades distritales, así mismo mediante el uso de autenticación federada. Se utilizan estándares como Keycloak, OIDC y OAuth2.',
-    example: 'Iniciar sesión una sola vez en el Portal y para consultar desde citas médicas en la Secretaría de Salud hasta obligaciones tributarias con la Secretaría de Hacienda.',
-    shape: {
-      pathD: 'M 340,20 L 430,20 L 490,210 L 290,210 Z',
-      centerX: 388,
-      centerY: 120,
-      shapeClass: 'clip-trapezoid-top',
-      clipPathCss: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)',
-    },
-    simulationStep: {
-      order: 1,
-      stepTitle: 'Paso 1: Autenticación de la Ciudadanía',
-      actionDescription: 'La ciudadanía inicia sesión con autenticación federada y credenciales seguras.'
-    }
-  },
-  {
-    id: 'consentimiento',
-    number: 10,
-    name: 'Consentimiento',
-    shortName: 'Consentimiento',
-    category: 'seguridad',
-    categoryLabel: 'Soberanía de Datos',
-    color: '#7C3AED',
-    borderColor: '#6D28D9',
-    bgLight: '#F5F3FF',
-    iconName: 'ShieldCheck',
-    description: 'La ciudadanía autoriza, administra y controla de manera transparente cómo las entidades del Distrito pueden utilizar y compartir sus datos personales para fines misionales.',
-    example: 'Al inscribirse en un programa de la Secretaría de Integración Social, la persona de la ciudadanía autoriza consultar sus datos también por la Secretaría de Educación o Secretaría de Salud para ser focalizada en otros beneficios o servicios distritales.',
-    shape: {
-      pathD: 'M 340,20 L 290,210 L 160,210 L 230,20 Z',
-      centerX: 255,
-      centerY: 120,
-      shapeClass: 'clip-trapezoid-left-roof',
-      clipPathCss: 'polygon(45% 0%, 100% 0%, 80% 100%, 0% 100%)',
-    }
-  },
-  {
-    id: 'firma',
-    number: 9,
-    name: 'Firma electrónica',
-    shortName: 'Firma electrónica',
-    category: 'transaccional',
-    categoryLabel: 'Validez Jurídica',
-    color: '#DB2777',
-    borderColor: '#BE185D',
-    bgLight: '#FDF2F8',
-    iconName: 'FileSignature',
-    description: 'Permite la firma electrónica de documentos y verificación de integridad.',
-    example: 'Cuando una persona de la ciudadanía solicita un subsidio de vivienda o un acuerdo de pago con la Alcaldía, puede firmar la solicitud directamente desde su celular usando una clave segura o su correo, sin tener que imprimir el formulario, ni desplazarse a una oficina.',
-    shape: {
-      pathD: 'M 230,210 L 410,210 L 410,430 L 90,430 Z',
-      centerX: 280,
-      centerY: 320,
-      shapeClass: 'clip-slope-left',
-      clipPathCss: 'polygon(35% 0%, 100% 0%, 100% 100%, 0% 100%)',
-    },
-    simulationStep: {
-      order: 6,
-      stepTitle: 'Paso 6: Suscripción Jurídica Digital',
-      actionDescription: 'La ciudadanía suscribe el trámite digitalmente con plena validez legal.'
-    }
-  },
-  {
-    id: 'interoperabilidad',
-    number: 1,
-    name: 'Interoperabilidad',
-    shortName: 'Interoperabilidad',
-    category: 'orquestacion',
-    categoryLabel: 'Conectividad Distrital',
-    color: '#0891B2',
-    borderColor: '#0E7490',
-    bgLight: '#ECFEFF',
-    iconName: 'Network',
-    description: 'El habilitante que permite a entidades del Distrito compartir información entre sí de forma segura.',
-    example: 'Si la Secretaría de Educación necesita verificar un dato sobre la residencia de un estudiante y su nivel socioeconómico para el proceso de matrícula, este bloque permite conectarse con la Secretaría de Planeación para validarlo.',
-    shape: {
-      pathD: 'M 430,20 L 730,530 L 560,530 L 410,210 L 490,210 Z',
-      centerX: 540,
-      centerY: 300,
-      shapeClass: 'clip-slope-right',
-      clipPathCss: 'polygon(0% 0%, 25% 0%, 100% 100%, 35% 100%)',
-    },
-    simulationStep: {
-      order: 4,
-      stepTitle: 'Paso 4: Intercambio Seguro de Información',
-      actionDescription: 'Las entidades distritales consultan y validan datos internamente de forma segura.'
-    }
-  },
-
-  // =======================================================
-  // NIVEL 2: CUERPO MEDIO / PAREDES Y CENTRO (6 PIEZAS)
-  // =======================================================
-  {
-    id: 'registro',
-    number: 14,
-    name: 'Registro',
-    shortName: 'Registro',
-    category: 'transaccional',
-    categoryLabel: 'Gestión Documental',
-    color: '#059669',
-    borderColor: '#047857',
-    bgLight: '#ECFDF5',
-    iconName: 'FileText',
-    description: 'Encargado de registrar una solicitud y asignar un número de caso, validar información y emitir notificaciones.',
-    example: 'Al radicar una solicitud, el sistema recibe los documentos, valida datos y entrega de inmediato un número de radicado para seguimiento en tiempo real de la ciudadanía.',
-    shape: {
-      pathD: 'M 90,430 L 300,430 L 300,585 L 90,585 Z',
-      centerX: 195,
-      centerY: 508,
-      shapeClass: 'clip-rect-room',
-      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-    },
-    simulationStep: {
-      order: 2,
-      stepTitle: 'Paso 2: Radicación y Asignación de Caso',
-      actionDescription: 'Se genera número oficial de radicado para seguimiento continuo de la ciudadanía.'
-    }
-  },
-  {
-    id: 'workflow',
-    number: 13,
-    name: 'Flujo de trabajo (Workflow)',
-    shortName: 'Flujo de trabajo (Workflow)',
-    category: 'orquestacion',
-    categoryLabel: 'Orquestación de Procesos',
-    color: '#4F46E5',
-    borderColor: '#4338CA',
-    bgLight: '#EEF2FF',
-    iconName: 'GitBranch',
-    description: 'Motor que modela, automatiza y orquesta los procesos y aprobaciones internas entre entidades frente a un trámite o servicio.',
-    example: 'Enviar automáticamente una solicitud de licencia de construcción para que la revise primero un área técnica, luego la jurídica y finalmente se emita la respuesta a la ciudadanía.',
-    shape: {
-      pathD: 'M 300,430 L 520,430 L 520,585 L 300,585 Z',
-      centerX: 410,
-      centerY: 508,
-      shapeClass: 'clip-rect-room',
-      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-    },
-    simulationStep: {
-      order: 3,
-      stepTitle: 'Paso 3: Enrutamiento Automático',
-      actionDescription: 'El motor de workflow orquesta las revisiones y aprobaciones distritales.'
-    }
-  },
-  {
-    id: 'pagos',
-    number: 3,
-    name: 'Pagos',
-    shortName: 'Pagos',
-    category: 'transaccional',
-    categoryLabel: 'Recaudo Seguro',
-    color: '#0D9488',
-    borderColor: '#0F766E',
-    bgLight: '#F0FDFA',
-    iconName: 'CreditCard',
-    description: 'Permite que cualquier Entidad Distrital lo use para habilitar pagos virtuales en sus plataformas de manera segura, validando las obligaciones pendientes de la ciudadanía, el pago y verificación de la transacción.',
-    example: 'Pagar los impuestos distritales o el permiso para usar el estadio Nemesio Camacho El Campín.',
-    shape: {
-      pathD: 'M 520,430 L 730,530 L 730,585 L 520,585 Z',
-      centerX: 625,
-      centerY: 515,
-      shapeClass: 'clip-rect-room',
-      clipPathCss: 'polygon(0% 0%, 100% 45%, 100% 100%, 0% 100%)',
-    },
-    simulationStep: {
-      order: 5,
-      stepTitle: 'Paso 5: Pago Virtual Seguro',
-      actionDescription: 'La ciudadanía liquida y cancela obligaciones con verificación instantánea.'
-    }
-  },
-  {
-    id: 'eventstore',
-    number: 5,
-    name: 'EventStore',
-    shortName: 'EventStore',
-    category: 'datos',
-    categoryLabel: 'Trazabilidad Inmutable',
-    color: '#D97706',
-    borderColor: '#B45309',
-    bgLight: '#FFFBEB',
-    iconName: 'Layers',
-    description: 'Es la “caja negra” del Portal Bogotá. Registra de forma segura e inmutable cada evento o transacción que genera la ciudadanía.',
-    example: 'Cuando una persona de la ciudadanía solicita un subsidio, el sistema guarda en orden cronológico exacto cada etapa del trámite para que nunca se pierda la trazabilidad.',
-    shape: {
-      pathD: 'M 90,585 L 300,585 L 300,740 L 90,740 Z',
-      centerX: 195,
-      centerY: 663,
-      shapeClass: 'clip-rect-room',
-      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-    },
-    simulationStep: {
-      order: 7,
-      stepTitle: 'Paso 7: Registro en Bitácora Inmutable',
-      actionDescription: 'La transacción queda sellada de forma inmutable para la ciudadanía.'
-    }
-  },
+  // =========================================================================
+  // CAPA 1: TECHO Y ÁTICO (COBERTURA, CANALES Y MONITOREO - 5 BLOQUES)
+  // =========================================================================
   {
     id: 'observabilidad',
     number: 6,
@@ -225,11 +18,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Monitorea en tiempo real el rendimiento del sistema, el registro de eventos y funcionamiento de los modelos de IA.',
     example: 'Si miles de personas ingresan al tiempo el último día de pago de impuestos, el sistema detecta el alto tráfico y reasigna recursos para evitar que la página se ponga lenta o se caiga.',
     shape: {
-      pathD: 'M 300,585 L 520,585 L 520,740 L 300,740 Z',
-      centerX: 410,
-      centerY: 663,
-      shapeClass: 'clip-rect-room',
-      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      pathD: 'M 340,20 L 430,20 L 490,210 L 290,210 Z',
+      centerX: 388,
+      centerY: 115,
+      shapeClass: 'clip-trapezoid-top',
+      clipPathCss: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)',
     }
   },
   {
@@ -246,11 +39,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Canal automatizado para enviar notificaciones masivas o individuales por correo y SMS a la ciudadanía.',
     example: 'Enviar un mensaje de texto a una persona de la ciudadanía confirmando que su cupo escolar ha sido asignado.',
     shape: {
-      pathD: 'M 520,585 L 730,585 L 730,740 L 520,740 Z',
-      centerX: 625,
-      centerY: 663,
-      shapeClass: 'clip-rect-room',
-      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      pathD: 'M 230,20 L 340,20 L 290,210 L 160,210 Z',
+      centerX: 255,
+      centerY: 115,
+      shapeClass: 'clip-trapezoid-left-roof',
+      clipPathCss: 'polygon(45% 0%, 100% 0%, 80% 100%, 0% 100%)',
     },
     simulationStep: {
       order: 8,
@@ -258,10 +51,6 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       actionDescription: 'Se notifica formalmente el resultado del trámite a la ciudadanía.'
     }
   },
-
-  // =======================================================
-  // NIVEL 3: BASE Y CIMIENTOS (5 BLOQUES MODULARES SÓLIDOS)
-  // =======================================================
   {
     id: 'programacion',
     number: 7,
@@ -276,11 +65,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Ejecuta tareas recurrentes o en fechas y horas específicas de forma automática.',
     example: 'Programar la tarea de notificar a las personas de la ciudadanía que declararon renta en la vigencia anterior.',
     shape: {
-      pathD: 'M 90,740 L 300,740 L 300,860 L 90,860 Z',
-      centerX: 195,
-      centerY: 800,
-      shapeClass: 'clip-base-module',
-      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      pathD: 'M 430,20 L 590,210 L 490,210 Z',
+      centerX: 505,
+      centerY: 130,
+      shapeClass: 'clip-slope-right-top',
+      clipPathCss: 'polygon(0% 0%, 100% 100%, 35% 100%)',
     }
   },
   {
@@ -297,11 +86,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Permite integrar rápidamente datos geoespaciales, mapas y puntos de interés relacionados con la oferta de servicios del Distrito.',
     example: 'Consultar en un mapa la ubicación de las comisarías de familia más cercanas y los servicios a los que puede acceder la ciudadanía.',
     shape: {
-      pathD: 'M 300,740 L 520,740 L 520,860 L 300,860 Z',
-      centerX: 410,
-      centerY: 800,
-      shapeClass: 'clip-base-module',
-      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      pathD: 'M 160,210 L 410,210 L 280,430 L 90,430 Z',
+      centerX: 235,
+      centerY: 320,
+      shapeClass: 'clip-slope-left',
+      clipPathCss: 'polygon(25% 0%, 100% 0%, 65% 100%, 0% 100%)',
     }
   },
   {
@@ -318,11 +107,217 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Permite medir la percepción de la ciudadanía tras realizar un trámite o acceder a un servicio digital.',
     example: 'Al terminar la generación del Certificado de Industria y Comercio, aparece una breve encuesta de 3 preguntas para calificar la experiencia.',
     shape: {
-      pathD: 'M 520,740 L 730,740 L 730,860 L 520,860 Z',
-      centerX: 625,
-      centerY: 800,
-      shapeClass: 'clip-base-module',
+      pathD: 'M 410,210 L 590,210 L 730,530 L 540,430 Z',
+      centerX: 565,
+      centerY: 345,
+      shapeClass: 'clip-slope-right',
+      clipPathCss: 'polygon(0% 0%, 60% 0%, 100% 100%, 40% 70%)',
+    }
+  },
+
+  // =========================================================================
+  // CAPA 2: CUERPO MEDIO / MUROS, PUERTA Y VENTANAS (6 BLOQUES)
+  // =========================================================================
+  {
+    id: 'firma',
+    number: 9,
+    name: 'Firma electrónica',
+    shortName: 'Firma electrónica',
+    category: 'transaccional',
+    categoryLabel: 'Validez Jurídica',
+    color: '#DB2777',
+    borderColor: '#BE185D',
+    bgLight: '#FDF2F8',
+    iconName: 'FileSignature',
+    description: 'Permite la firma electrónica de documentos y verificación de integridad.',
+    example: 'Cuando una persona de la ciudadanía solicita un subsidio de vivienda o un acuerdo de pago con la Alcaldía, puede firmar la solicitud directamente desde su celular usando una clave segura o su correo, sin tener que imprimir el formulario, ni desplazarse a una oficina.',
+    shape: {
+      pathD: 'M 90,430 L 280,430 L 280,625 L 90,625 Z',
+      centerX: 185,
+      centerY: 528,
+      shapeClass: 'clip-rect-room',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 6,
+      stepTitle: 'Paso 6: Suscripción Jurídica Digital',
+      actionDescription: 'La ciudadanía suscribe el trámite digitalmente con plena validez legal.'
+    }
+  },
+  {
+    id: 'workflow',
+    number: 13,
+    name: 'Flujo de trabajo (Workflow)',
+    shortName: 'Flujo de trabajo (Workflow)',
+    category: 'orquestacion',
+    categoryLabel: 'Orquestación de Procesos',
+    color: '#4F46E5',
+    borderColor: '#4338CA',
+    bgLight: '#EEF2FF',
+    iconName: 'GitBranch',
+    description: 'Motor que modela, automatiza y orquesta los procesos y aprobaciones internas entre entidades frente a un trámite o servicio.',
+    example: 'Enviar automáticamente una solicitud de licencia de construcción para que la revise primero un área técnica, luego la jurídica y finalmente se emita la respuesta a la ciudadanía.',
+    shape: {
+      pathD: 'M 280,430 L 540,430 L 540,625 L 280,625 Z',
+      centerX: 410,
+      centerY: 528,
+      shapeClass: 'clip-rect-room',
+      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 3,
+      stepTitle: 'Paso 3: Enrutamiento Automático',
+      actionDescription: 'El motor de workflow orquesta las revisiones y aprobaciones distritales.'
+    }
+  },
+  {
+    id: 'consentimiento',
+    number: 10,
+    name: 'Consentimiento',
+    shortName: 'Consentimiento',
+    category: 'seguridad',
+    categoryLabel: 'Soberanía de Datos',
+    color: '#7C3AED',
+    borderColor: '#6D28D9',
+    bgLight: '#F5F3FF',
+    iconName: 'ShieldCheck',
+    description: 'La ciudadanía autoriza, administra y controla de manera transparente cómo las entidades del Distrito pueden utilizar y compartir sus datos personales para fines misionales.',
+    example: 'Al inscribirse en un programa de la Secretaría de Integración Social, la persona de la ciudadanía autoriza consultar sus datos también por la Secretaría de Educación o Secretaría de Salud para ser focalizada en otros beneficios o servicios distritales.',
+    shape: {
+      pathD: 'M 540,430 L 730,530 L 730,625 L 540,625 Z',
+      centerX: 635,
+      centerY: 540,
+      shapeClass: 'clip-rect-room',
+      clipPathCss: 'polygon(0% 0%, 100% 45%, 100% 100%, 0% 100%)',
+    }
+  },
+  {
+    id: 'registro',
+    number: 14,
+    name: 'Registro',
+    shortName: 'Registro',
+    category: 'transaccional',
+    categoryLabel: 'Gestión Documental',
+    color: '#059669',
+    borderColor: '#047857',
+    bgLight: '#ECFDF5',
+    iconName: 'FileText',
+    description: 'Encargado de registrar una solicitud y asignar un número de caso, validar información y emitir notificaciones.',
+    example: 'Al radicar una solicitud, el sistema recibe los documentos, valida datos y entrega de inmediato un número de radicado para seguimiento en tiempo real de la ciudadanía.',
+    shape: {
+      pathD: 'M 90,625 L 280,625 L 280,820 L 90,820 Z',
+      centerX: 185,
+      centerY: 722,
+      shapeClass: 'clip-rect-room',
+      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 2,
+      stepTitle: 'Paso 2: Radicación y Asignación de Caso',
+      actionDescription: 'Se genera número oficial de radicado para seguimiento continuo de la ciudadanía.'
+    }
+  },
+  {
+    id: 'identidad',
+    number: 2,
+    name: 'Identidad y acceso',
+    shortName: 'Identidad y acceso',
+    category: 'seguridad',
+    categoryLabel: 'Puerta Principal / Acceso',
+    color: '#2563EB',
+    borderColor: '#1D4ED8',
+    bgLight: '#EFF6FF',
+    iconName: 'Fingerprint',
+    description: 'Permite a la ciudadanía acceder a los servicios digitales de Bogotá, usando credenciales verificables emitidas por el Portal Bogotá y entidades distritales, así mismo mediante el uso de autenticación federada. Se utilizan estándares como Keycloak, OIDC y OAuth2.',
+    example: 'Iniciar sesión una sola vez en el Portal y para consultar desde citas médicas en la Secretaría de Salud hasta obligaciones tributarias con la Secretaría de Hacienda.',
+    shape: {
+      pathD: 'M 280,625 L 540,625 L 540,820 L 280,820 Z',
+      centerX: 410,
+      centerY: 722,
+      shapeClass: 'clip-rect-door',
+      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 1,
+      stepTitle: 'Paso 1: Autenticación de la Ciudadanía',
+      actionDescription: 'La ciudadanía inicia sesión con autenticación federada y credenciales seguras.'
+    }
+  },
+  {
+    id: 'pagos',
+    number: 3,
+    name: 'Pagos',
+    shortName: 'Pagos',
+    category: 'transaccional',
+    categoryLabel: 'Recaudo Seguro',
+    color: '#0D9488',
+    borderColor: '#0F766E',
+    bgLight: '#F0FDFA',
+    iconName: 'CreditCard',
+    description: 'Permite que cualquier Entidad Distrital lo use para habilitar pagos virtuales en sus plataformas de manera segura, validando las obligaciones pendientes de la ciudadanía, el pago y verificación de la transacción.',
+    example: 'Pagar los impuestos distritales o el permiso para usar el estadio Nemesio Camacho El Campín.',
+    shape: {
+      pathD: 'M 540,625 L 730,625 L 730,820 L 540,820 Z',
+      centerX: 635,
+      centerY: 722,
+      shapeClass: 'clip-rect-room',
+      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 5,
+      stepTitle: 'Paso 5: Pago Virtual Seguro',
+      actionDescription: 'La ciudadanía liquida y cancela obligaciones con verificación instantánea.'
+    }
+  },
+
+  // =========================================================================
+  // CAPA 3: CIMIENTOS / PISO BASE INFERIOR (DATOS E INFRAESTRUCTURA - 4 BLOQUES)
+  // =========================================================================
+  {
+    id: 'dwh',
+    number: 15,
+    name: 'Integración DWH (Data Warehouse)',
+    shortName: 'Integración DWH',
+    category: 'analitica',
+    categoryLabel: 'Inteligencia Distrital',
+    color: '#B45309',
+    borderColor: '#92400E',
+    bgLight: '#FFFBEB',
+    iconName: 'BarChart3',
+    description: 'Sincroniza y centraliza la información transaccional de múltiples secretarías en un repositorio analítico unificado del Distrito.',
+    example: 'Habilitación de tableros analíticos para cruzar datos de sectores Educación, Social y Movilidad, permitiendo identificar con precisión qué zonas de la ciudad necesitan con urgencia nuevos colegios o centros médicos para la ciudadanía.',
+    shape: {
+      pathD: 'M 90,820 L 250,820 L 250,975 L 115,975 Q 90,975 90,950 Z',
+      centerX: 170,
+      centerY: 898,
+      shapeClass: 'clip-foundation-left',
+      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    }
+  },
+  {
+    id: 'eventstore',
+    number: 5,
+    name: 'EventStore',
+    shortName: 'EventStore',
+    category: 'datos',
+    categoryLabel: 'Trazabilidad Inmutable',
+    color: '#D97706',
+    borderColor: '#B45309',
+    bgLight: '#FFFBEB',
+    iconName: 'Layers',
+    description: 'Es la “caja negra” del Portal Bogotá. Registra de forma segura e inmutable cada evento o transacción que genera la ciudadanía.',
+    example: 'Cuando una persona de la ciudadanía solicita un subsidio, el sistema guarda en orden cronológico exacto cada etapa del trámite para que nunca se pierda la trazabilidad.',
+    shape: {
+      pathD: 'M 250,820 L 410,820 L 410,975 L 250,975 Z',
+      centerX: 330,
+      centerY: 898,
+      shapeClass: 'clip-foundation-mid-left',
+      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 7,
+      stepTitle: 'Paso 7: Registro en Bitácora Inmutable',
+      actionDescription: 'La transacción queda sellada de forma inmutable para la ciudadanía.'
     }
   },
   {
@@ -339,32 +334,37 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Mantiene registros únicos de personas, organizaciones y servicios para asegurar la consistencia de datos maestros.',
     example: 'Si la ciudadanía actualiza su dirección en la Secretaría de Planeación, el cambio se refleja en la base maestra para que la Secretaría de Salud y la Secretaría de Hacienda consulten el dato actualizado sin pedirlo de nuevo.',
     shape: {
-      pathD: 'M 90,860 L 410,860 L 410,975 L 115,975 Q 90,975 90,950 Z',
-      centerX: 250,
-      centerY: 918,
-      shapeClass: 'clip-foundation-left',
+      pathD: 'M 410,820 L 570,820 L 570,975 L 410,975 Z',
+      centerX: 490,
+      centerY: 898,
+      shapeClass: 'clip-foundation-mid-right',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
     }
   },
   {
-    id: 'dwh',
-    number: 15,
-    name: 'Integración DWH (Data Warehouse)',
-    shortName: 'Integración DWH',
-    category: 'analitica',
-    categoryLabel: 'Inteligencia Distrital',
-    color: '#B45309',
-    borderColor: '#92400E',
-    bgLight: '#FFFBEB',
-    iconName: 'BarChart3',
-    description: 'Sincroniza y centraliza la información transaccional de múltiples secretarías en un repositorio analítico unificado del Distrito.',
-    example: 'Habilitación de tableros analíticos para cruzar datos de sectores Educación, Social y Movilidad, permitiendo identificar con precisión qué zonas de la ciudad necesitan con urgencia nuevos colegios o centros médicos para la ciudadanía.',
+    id: 'interoperabilidad',
+    number: 1,
+    name: 'Interoperabilidad',
+    shortName: 'Interoperabilidad',
+    category: 'orquestacion',
+    categoryLabel: 'Conectividad Distrital',
+    color: '#0891B2',
+    borderColor: '#0E7490',
+    bgLight: '#ECFEFF',
+    iconName: 'Network',
+    description: 'El habilitante que permite a entidades del Distrito compartir información entre sí de forma segura.',
+    example: 'Si la Secretaría de Educación necesita verificar un dato sobre la residencia de un estudiante y su nivel socioeconómico para el proceso de matrícula, este bloque permite conectarse con la Secretaría de Planeación para validarlo.',
     shape: {
-      pathD: 'M 410,860 L 730,860 L 730,950 Q 730,975 705,975 L 410,975 Z',
-      centerX: 570,
-      centerY: 918,
+      pathD: 'M 570,820 L 730,820 L 730,950 Q 730,975 705,975 L 570,975 Z',
+      centerX: 650,
+      centerY: 898,
       shapeClass: 'clip-foundation-right',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 4,
+      stepTitle: 'Paso 4: Intercambio Seguro de Información',
+      actionDescription: 'Las entidades distritales consultan y validan datos internamente de forma segura.'
     }
   },
 ];
