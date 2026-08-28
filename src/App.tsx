@@ -31,7 +31,8 @@ import {
   X,
   ChevronRight,
   Hammer,
-  ArrowLeft
+  ArrowLeft,
+  Eye
 } from 'lucide-react';
 import { BUILDING_BLOCKS, SIMULATION_STEPS } from './data/buildingBlocks';
 import { DragState } from './types';
@@ -67,8 +68,9 @@ export default function App() {
   const [isSimulationMode, setIsSimulationMode] = useState<boolean>(false);
   const [currentSimStep, setCurrentSimStep] = useState<number>(0);
   const [isSimPlaying, setIsSimPlaying] = useState<boolean>(false);
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'unplaced'>('all');
   const [showConceptModal, setShowConceptModal] = useState<boolean>(false);
+  const [showCelebrationModal, setShowCelebrationModal] = useState<boolean>(true);
   const [isLandscape, setIsLandscape] = useState<boolean>(false);
 
   const svgHouseRef = useRef<SVGSVGElement>(null);
@@ -98,6 +100,7 @@ export default function App() {
   const progressCount = placedBlockIds.length;
   const score = progressCount * 100;
   const isCompleted = progressCount === BUILDING_BLOCKS.length;
+  const pendingCount = BUILDING_BLOCKS.length - progressCount;
 
   const activeBlock = useMemo(() => {
     return BUILDING_BLOCKS.find(b => b.id === activeBlockId) || BUILDING_BLOCKS[0];
@@ -106,6 +109,7 @@ export default function App() {
   // Victory fanfare & confetti
   useEffect(() => {
     if (isCompleted && !isSimulationMode) {
+      setShowCelebrationModal(true);
       soundFx.playFanfare();
       const duration = 3.5 * 1000;
       const end = Date.now() + duration;
@@ -169,6 +173,7 @@ export default function App() {
     setIsSimPlaying(false);
     setCurrentSimStep(0);
     setShowConceptModal(false);
+    setShowCelebrationModal(true);
   };
 
   // Auto-complete (Demo presentation feature)
@@ -176,6 +181,7 @@ export default function App() {
     soundFx.playSnap();
     setPlacedBlockIds(BUILDING_BLOCKS.map(b => b.id));
     setActiveBlockId('identidad');
+    setShowCelebrationModal(true);
   };
 
   // Place a block
@@ -293,14 +299,10 @@ export default function App() {
     setActiveBlockId(SIMULATION_STEPS[0].blockId);
   };
 
-  // Filtered blocks for dock
+  // Filtered blocks for dock (Simplified to only 2 options: 'all' or 'unplaced')
   const filteredBlocks = useMemo(() => {
-    if (categoryFilter === 'all') return BUILDING_BLOCKS;
     if (categoryFilter === 'unplaced') return BUILDING_BLOCKS.filter(b => !placedBlockIds.includes(b.id));
-    if (categoryFilter === 'cimientos') return BUILDING_BLOCKS.filter(b => ['dwh', 'eventstore', 'registros_digitales', 'interoperabilidad'].includes(b.id));
-    if (categoryFilter === 'cuerpo') return BUILDING_BLOCKS.filter(b => ['identidad', 'registro', 'workflow', 'pagos', 'firma', 'consentimiento'].includes(b.id));
-    if (categoryFilter === 'techo') return BUILDING_BLOCKS.filter(b => ['observabilidad', 'mensajeria', 'programacion', 'sig_gis', 'satisfaccion'].includes(b.id));
-    return BUILDING_BLOCKS.filter(b => b.category === categoryFilter);
+    return BUILDING_BLOCKS;
   }, [categoryFilter, placedBlockIds]);
 
   // Current simulation step data
@@ -398,87 +400,50 @@ export default function App() {
         <div className="flex-1 min-h-0 w-full max-w-[1920px] mx-auto p-3 lg:p-4 grid grid-cols-12 gap-4 overflow-hidden items-stretch">
           
           {/* Col 1 (Left, 3 cols): Inventario con scroll vertical */}
-          <section className="col-span-3 h-full flex flex-col bg-white border border-slate-200 rounded-[15px] p-4 shadow-2xs overflow-hidden">
+          <section className={`col-span-3 h-full flex flex-col bg-white border border-slate-200 rounded-[15px] p-4 shadow-2xs overflow-hidden transition-all duration-500 ${isCompleted ? 'opacity-80' : 'opacity-100'}`}>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-[#CC0E35] text-white flex items-center justify-center font-bold text-xs">
                   <Layers className="w-4 h-4" />
                 </div>
                 <h3 className="font-title text-xs xl:text-sm font-extrabold text-[#333333] uppercase tracking-tight">
-                  Inventario ({15 - progressCount} pendientes)
+                  Inventario ({pendingCount} pendientes)
                 </h3>
               </div>
 
-              {/* Filter Pills */}
-              <div className="flex items-center gap-1">
+              {/* 2 Filter Buttons: Todos & Pendientes */}
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => {
                     soundFx.playTap();
                     setCategoryFilter('all');
                   }}
-                  className={`px-2 py-0.5 rounded-lg text-[10px] font-title font-bold transition-all ${
+                  className={`px-3 py-1 text-xs font-title font-semibold rounded-full transition-all ${
                     categoryFilter === 'all'
-                      ? 'bg-[#333333] text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-[#CC0E35] text-white shadow-2xs'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  Todos
+                  Todos ({BUILDING_BLOCKS.length})
                 </button>
                 <button
                   onClick={() => {
                     soundFx.playTap();
                     setCategoryFilter('unplaced');
                   }}
-                  className={`px-2 py-0.5 rounded-lg text-[10px] font-title font-bold transition-all ${
+                  className={`px-3 py-1 text-xs font-title font-semibold rounded-full transition-all ${
                     categoryFilter === 'unplaced'
-                      ? 'bg-[#CC0E35] text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-[#CC0E35] text-white shadow-2xs'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  Pendientes
+                  Pendientes ({pendingCount})
                 </button>
               </div>
             </div>
 
-            {/* Semantic Category Filters */}
-            <div className="flex items-center gap-1 pt-2 pb-1 overflow-x-auto no-scrollbar">
-              <button
-                onClick={() => {
-                  soundFx.playTap();
-                  setCategoryFilter('cimientos');
-                }}
-                className={`px-2 py-0.5 rounded text-[9px] font-title font-bold shrink-0 transition-all ${
-                  categoryFilter === 'cimientos' ? 'bg-[#FAB62D] text-[#333333]' : 'bg-slate-100 text-slate-600'
-                }`}
-              >
-                1. Cimientos (4)
-              </button>
-              <button
-                onClick={() => {
-                  soundFx.playTap();
-                  setCategoryFilter('cuerpo');
-                }}
-                className={`px-2 py-0.5 rounded text-[9px] font-title font-bold shrink-0 transition-all ${
-                  categoryFilter === 'cuerpo' ? 'bg-[#FAB62D] text-[#333333]' : 'bg-slate-100 text-slate-600'
-                }`}
-              >
-                2. Cuerpo (6)
-              </button>
-              <button
-                onClick={() => {
-                  soundFx.playTap();
-                  setCategoryFilter('techo');
-                }}
-                className={`px-2 py-0.5 rounded text-[9px] font-title font-bold shrink-0 transition-all ${
-                  categoryFilter === 'techo' ? 'bg-[#FAB62D] text-[#333333]' : 'bg-slate-100 text-slate-600'
-                }`}
-              >
-                3. Techo (5)
-              </button>
-            </div>
-
             {/* Cards Grid (2 cols) */}
-            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar grid grid-cols-2 gap-2.5 pt-2 pr-0.5">
+            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar grid grid-cols-2 gap-2.5 pt-3 pr-0.5">
               {filteredBlocks.map(block => {
                 const isPlaced = placedBlockIds.includes(block.id);
                 const isSelected = activeBlockId === block.id;
@@ -566,6 +531,26 @@ export default function App() {
               </div>
             </div>
 
+            {/* Re-open celebration button if completed & modal was closed */}
+            {isCompleted && !showCelebrationModal && !isSimulationMode && (
+              <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
+                <button
+                  onClick={() => setShowCelebrationModal(true)}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[15px] bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-bold text-xs shadow-md transition-all active:scale-95"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Ver Felicitaciones</span>
+                </button>
+                <button
+                  onClick={startSimulation}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[15px] bg-[#CC0E35] hover:bg-red-700 text-white font-title font-bold text-xs shadow-md transition-all active:scale-95"
+                >
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  <span>Simulación</span>
+                </button>
+              </div>
+            )}
+
             <div className="flex-1 min-h-0 w-full flex items-center justify-center relative max-h-[100%] aspect-[800/1000]">
               <svg
                 ref={svgHouseRef}
@@ -632,7 +617,7 @@ export default function App() {
                   />
                 </g>
 
-                {/* Outer Red Silhouette of the House of Bogotá (Perímetro Calibrado) */}
+                {/* Outer Red Silhouette of the House of Bogotá (Con marco perimetral visible de 15px) */}
                 <path
                   d="M 260,15 L 460,15 L 730,510 L 755,530 L 710,530 L 710,970 Q 710,985 690,985 L 110,985 Q 90,985 90,970 L 90,430 L 65,430 L 260,15 Z"
                   fill="url(#legoStudsRed)"
@@ -642,7 +627,7 @@ export default function App() {
                   className="drop-shadow-lg"
                 />
 
-                {/* 15 Balanced Polygonal Tangram Slots */}
+                {/* 15 Balanced Polygonal Tangram Slots (Inscritos con 15px de inset) */}
                 {BUILDING_BLOCKS.map(block => {
                   const isPlaced = placedBlockIds.includes(block.id);
                   const isActiveGuide = activeBlockId === block.id;
@@ -702,7 +687,7 @@ export default function App() {
                             x={block.shape.centerX}
                             y={block.shape.centerY + 10}
                             fontFamily="Montserrat"
-                            fontSize="13"
+                            fontSize="13.5"
                             fontWeight="800"
                             fill="#FFFFFF"
                             textAnchor="middle"
@@ -809,8 +794,17 @@ export default function App() {
               </svg>
 
               {/* Victory Celebration Modal Overlay (Horizontal) */}
-              {isCompleted && !isSimulationMode && (
-                <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 bg-white border-3 border-[#FAB62D] p-6 sm:p-7 rounded-[15px] shadow-2xl text-center flex flex-col items-center gap-3.5 z-30 animate-bounce-subtle text-[#333333]">
+              {isCompleted && showCelebrationModal && !isSimulationMode && (
+                <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 bg-white border-3 border-[#FAB62D] p-6 sm:p-7 rounded-[15px] shadow-2xl text-center flex flex-col items-center gap-3.5 z-30 animate-bounce-subtle text-[#333333] relative">
+                  {/* Close button to view full completed house */}
+                  <button
+                    onClick={() => setShowCelebrationModal(false)}
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all"
+                    title="Cerrar y Ver Casa Completa"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+
                   {/* Official Campaign Logo */}
                   <img
                     src="/assets/logo-campana.png"
@@ -836,10 +830,10 @@ export default function App() {
                       <span>Iniciar Simulación de Trámite</span>
                     </button>
                     <button
-                      onClick={handleReset}
+                      onClick={() => setShowCelebrationModal(false)}
                       className="w-full sm:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-title font-bold text-xs sm:text-sm rounded-[15px] border border-slate-200 transition-all"
                     >
-                      Volver a Jugar
+                      Ver Casa Completa
                     </button>
                   </div>
                 </div>
@@ -1104,6 +1098,27 @@ export default function App() {
           {/* FILA 2: LA CASA DE BOGOTÁ (CENTRO ~55% DEL ALTO - 100% VISIBLE)       */}
           {/* ===================================================================== */}
           <section className="flex-1 min-h-0 w-full flex items-center justify-center relative p-0.5 overflow-hidden">
+            
+            {/* Re-open celebration button if completed & modal was closed on mobile/portrait */}
+            {isCompleted && !showCelebrationModal && !isSimulationMode && (
+              <div className="absolute top-2 right-2 z-20 flex items-center gap-1.5">
+                <button
+                  onClick={() => setShowCelebrationModal(true)}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-[12px] bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-bold text-[10px] sm:text-xs shadow-md transition-all active:scale-95"
+                >
+                  <Eye className="w-3 h-3" />
+                  <span>Felicitaciones</span>
+                </button>
+                <button
+                  onClick={startSimulation}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-[12px] bg-[#CC0E35] hover:bg-red-700 text-white font-title font-bold text-[10px] sm:text-xs shadow-md transition-all active:scale-95"
+                >
+                  <Play className="w-3 h-3 fill-current" />
+                  <span>Simular</span>
+                </button>
+              </div>
+            )}
+
             <div className="flex-1 min-h-0 w-full flex items-center justify-center relative max-h-[100%] aspect-[800/1000]">
               <svg
                 ref={svgHouseRef}
@@ -1180,7 +1195,7 @@ export default function App() {
                   className="drop-shadow-lg"
                 />
 
-                {/* 15 Balanced Polygonal Tangram Slots */}
+                {/* 15 Balanced Polygonal Tangram Slots (Inscritos con 15px de inset) */}
                 {BUILDING_BLOCKS.map(block => {
                   const isPlaced = placedBlockIds.includes(block.id);
                   const isActiveGuide = activeBlockId === block.id;
@@ -1240,7 +1255,7 @@ export default function App() {
                             x={block.shape.centerX}
                             y={block.shape.centerY + 10}
                             fontFamily="Montserrat"
-                            fontSize="13"
+                            fontSize="13.5"
                             fontWeight="800"
                             fill="#FFFFFF"
                             textAnchor="middle"
@@ -1347,8 +1362,17 @@ export default function App() {
               </svg>
 
               {/* Victory Celebration Modal Overlay (Vertical) */}
-              {isCompleted && !isSimulationMode && (
-                <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 bg-white border-3 border-[#FAB62D] p-6 sm:p-7 rounded-[15px] shadow-2xl text-center flex flex-col items-center gap-3.5 z-30 animate-bounce-subtle text-[#333333]">
+              {isCompleted && showCelebrationModal && !isSimulationMode && (
+                <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 bg-white border-3 border-[#FAB62D] p-6 sm:p-7 rounded-[15px] shadow-2xl text-center flex flex-col items-center gap-3.5 z-30 animate-bounce-subtle text-[#333333] relative">
+                  {/* Close button to view full completed house */}
+                  <button
+                    onClick={() => setShowCelebrationModal(false)}
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all"
+                    title="Cerrar y Ver Casa Completa"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+
                   {/* Official Campaign Logo */}
                   <img
                     src="/assets/logo-campana.png"
@@ -1374,10 +1398,10 @@ export default function App() {
                       <span>Iniciar Simulación de Trámite</span>
                     </button>
                     <button
-                      onClick={handleReset}
+                      onClick={() => setShowCelebrationModal(false)}
                       className="w-full sm:w-auto px-5 py-3 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-title font-bold text-xs sm:text-sm rounded-[15px] border border-slate-200 transition-all"
                     >
-                      Volver a Jugar
+                      Ver Casa Completa
                     </button>
                   </div>
                 </div>
@@ -1386,70 +1410,45 @@ export default function App() {
           </section>
 
           {/* ===================================================================== */}
-          {/* FILA 3: DOCK DE INVENTARIO TÁCTIL (BOTTOM - CON PADDING Y SCROLL FLUIDO) */}
+          {/* FILA 3: DOCK DE INVENTARIO TÁCTIL (AUTO-OCULTABLE AL COMPLETAR 15/15)   */}
           {/* ===================================================================== */}
-          <section className="shrink-0 w-full bg-white border border-slate-200 rounded-[15px] p-2 sm:p-3 pb-3 sm:pb-3.5 shadow-xs">
+          <section
+            className={`shrink-0 w-full bg-white border border-slate-200 rounded-[15px] p-2 sm:p-3 pb-3 sm:pb-3.5 shadow-xs transition-all duration-500 ${
+              isCompleted ? 'opacity-0 pointer-events-none -translate-y-4 max-h-0 py-0 overflow-hidden' : 'opacity-100'
+            }`}
+          >
             <div className="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-100 gap-1">
               <span className="font-title text-[11px] sm:text-xs font-extrabold text-[#333333] uppercase truncate">
-                Inventario ({15 - progressCount} pendientes)
+                Inventario ({pendingCount} pendientes)
               </span>
               
-              {/* Category Pills */}
-              <div className="flex items-center gap-1 overflow-x-auto no-scrollbar shrink-0">
+              {/* 2 Filter Buttons: Todos & Pendientes */}
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={() => {
                     soundFx.playTap();
                     setCategoryFilter('all');
                   }}
-                  className={`px-2 py-0.5 rounded-[15px] text-[9px] sm:text-[10px] font-title font-bold transition-all ${
-                    categoryFilter === 'all' ? 'bg-[#333333] text-white' : 'bg-slate-100 text-slate-600'
+                  className={`px-3 py-1 text-[10px] sm:text-xs font-title font-semibold rounded-full transition-all ${
+                    categoryFilter === 'all'
+                      ? 'bg-[#CC0E35] text-white shadow-2xs'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  Todos
+                  Todos ({BUILDING_BLOCKS.length})
                 </button>
                 <button
                   onClick={() => {
                     soundFx.playTap();
                     setCategoryFilter('unplaced');
                   }}
-                  className={`px-2 py-0.5 rounded-[15px] text-[9px] sm:text-[10px] font-title font-bold transition-all ${
-                    categoryFilter === 'unplaced' ? 'bg-[#CC0E35] text-white' : 'bg-slate-100 text-slate-600'
+                  className={`px-3 py-1 text-[10px] sm:text-xs font-title font-semibold rounded-full transition-all ${
+                    categoryFilter === 'unplaced'
+                      ? 'bg-[#CC0E35] text-white shadow-2xs'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  Pendientes
-                </button>
-                <button
-                  onClick={() => {
-                    soundFx.playTap();
-                    setCategoryFilter('cimientos');
-                  }}
-                  className={`px-2 py-0.5 rounded-[15px] text-[9px] sm:text-[10px] font-title font-bold transition-all ${
-                    categoryFilter === 'cimientos' ? 'bg-[#FAB62D] text-[#333333]' : 'bg-slate-100 text-slate-600'
-                  }`}
-                >
-                  Cimientos
-                </button>
-                <button
-                  onClick={() => {
-                    soundFx.playTap();
-                    setCategoryFilter('cuerpo');
-                  }}
-                  className={`px-2 py-0.5 rounded-[15px] text-[9px] sm:text-[10px] font-title font-bold transition-all ${
-                    categoryFilter === 'cuerpo' ? 'bg-[#FAB62D] text-[#333333]' : 'bg-slate-100 text-slate-600'
-                  }`}
-                >
-                  Cuerpo
-                </button>
-                <button
-                  onClick={() => {
-                    soundFx.playTap();
-                    setCategoryFilter('techo');
-                  }}
-                  className={`px-2 py-0.5 rounded-[15px] text-[9px] sm:text-[10px] font-title font-bold transition-all ${
-                    categoryFilter === 'techo' ? 'bg-[#FAB62D] text-[#333333]' : 'bg-slate-100 text-slate-600'
-                  }`}
-                >
-                  Techo
+                  Pendientes ({pendingCount})
                 </button>
               </div>
             </div>
@@ -1482,7 +1481,7 @@ export default function App() {
                       </span>
                       {isPlaced ? (
                         <span className="w-3.5 h-3.5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[8px]">
-                          <Check className="w-2 h-2 stroke-[3]" />
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
                         </span>
                       ) : (
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
@@ -1494,7 +1493,7 @@ export default function App() {
                         className="w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-md flex items-center justify-center text-white shrink-0"
                         style={{ backgroundColor: block.color }}
                       >
-                        <BlockIcon name={block.iconName} className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                        <BlockIcon name={block.iconName} className="w-3.5 h-3.5" />
                       </div>
                       <span className="font-title text-[10.5px] sm:text-xs font-bold text-[#333333] leading-tight line-clamp-1">
                         {block.name}
