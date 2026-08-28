@@ -60,6 +60,49 @@ const BlockIcon: React.FC<{ name: string; className?: string }> = ({ name, class
   }
 };
 
+// Helper for wrapping text into multiple full lines for SVG tooltips
+function wrapText(text: string, maxLineLength: number = 44): string[] {
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let currentLine = '';
+
+  for (const word of words) {
+    if ((currentLine + (currentLine ? ' ' : '') + word).length <= maxLineLength) {
+      currentLine += (currentLine ? ' ' : '') + word;
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+  return lines;
+}
+
+// 10 Segments of Transaction Flow:
+// 2 (Identidad) ➔ 15 (DWH) ➔ 14 (Registro) ➔ 13 (Workflow) ➔ 5 (EventStore) ➔ 11 (Registros Digitales) ➔ 1 (Interoperabilidad) ➔ 8 (Mensajería) ➔ 10 (Consentimiento) ➔ 3 (Pagos) ➔ 4 (Satisfacción)
+const SIMULATION_SEGMENTS = [
+  // Paso 1 -> Paso 2: #2 (Identidad) -> #15 (DWH)
+  { id: 'seg-1-2', fromX: 390, fromY: 722, toX: 176, toY: 890, minStep: 1 },
+  // Paso 2 -> Paso 3: #15 (DWH) -> #14 (Registro)
+  { id: 'seg-2-3', fromX: 176, fromY: 890, toX: 190, toY: 722, minStep: 2 },
+  // Paso 3 -> Paso 4: #14 (Registro) -> #13 (Workflow)
+  { id: 'seg-3-4', fromX: 190, fromY: 722, toX: 390, toY: 528, minStep: 3 },
+  // Paso 4 -> Paso 5: #13 (Workflow) -> #5 (EventStore)
+  { id: 'seg-4-5', fromX: 390, fromY: 528, toX: 318, toY: 890, minStep: 4 },
+  // Paso 5 -> Paso 6a: #5 (EventStore) -> #11 (Registros Digitales)
+  { id: 'seg-5-6a', fromX: 318, fromY: 890, toX: 461, toY: 890, minStep: 5 },
+  // Paso 6a -> Paso 6b: #11 (Registros Digitales) -> #1 (Interoperabilidad)
+  { id: 'seg-6a-6b', fromX: 461, fromY: 890, toX: 603, toY: 890, minStep: 5 },
+  // Paso 6b -> Paso 7: #1 (Interoperabilidad) -> #8 (Mensajería)
+  { id: 'seg-6b-7', fromX: 603, fromY: 890, toX: 255, toY: 145, minStep: 6 },
+  // Paso 7 -> Paso 8: #8 (Mensajería) -> #10 (Consentimiento)
+  { id: 'seg-7-8', fromX: 255, fromY: 145, toX: 590, toY: 528, minStep: 7 },
+  // Paso 8 -> Paso 9: #10 (Consentimiento) -> #3 (Pagos)
+  { id: 'seg-8-9', fromX: 590, fromY: 528, toX: 590, toY: 722, minStep: 8 },
+  // Paso 9 -> Paso 10: #3 (Pagos) -> #4 (Satisfacción ciudadana)
+  { id: 'seg-9-10', fromX: 590, fromY: 722, toX: 495, toY: 325, minStep: 9 },
+];
+
 export default function App() {
   // Game State
   const [placedBlockIds, setPlacedBlockIds] = useState<string[]>([]);
@@ -136,7 +179,7 @@ export default function App() {
           setActiveBlockId(SIMULATION_STEPS[next].blockId);
           return next;
         });
-      }, 4500);
+      }, 4800);
     }
     return () => clearInterval(timer);
   }, [isSimulationMode, isSimPlaying]);
@@ -288,6 +331,86 @@ export default function App() {
 
   // Current simulation step data
   const currentSimData = SIMULATION_STEPS[currentSimStep] || SIMULATION_STEPS[0];
+
+  // Render high-legibility, multi-line tooltip without truncation
+  const renderSimulationTooltip = (isPortraitMode = false) => {
+    if (!isSimulationMode) return null;
+    const currentBlock = BUILDING_BLOCKS.find(b => b.id === currentSimData.blockId);
+    if (!currentBlock) return null;
+
+    const lines = wrapText(currentSimData.description, 45);
+    const tooltipWidth = 440;
+    const lineHeight = 19;
+    const tooltipHeight = 46 + lines.length * lineHeight;
+
+    const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 230), 570);
+
+    // If near the top roof/attic, place tooltip below the block; otherwise place above
+    const isNearTop = currentBlock.shape.centerY < 340;
+    const tooltipY = isNearTop
+      ? currentBlock.shape.centerY + 68 + tooltipHeight / 2
+      : currentBlock.shape.centerY - 52 - tooltipHeight / 2;
+
+    const arrowY = isNearTop
+      ? tooltipY - tooltipHeight / 2
+      : tooltipY + tooltipHeight / 2;
+
+    return (
+      <g pointerEvents="none" className="animate-in fade-in zoom-in-95 duration-200">
+        {/* Tooltip Arrow Pointer */}
+        <polygon
+          points={
+            isNearTop
+              ? `${currentBlock.shape.centerX - 10},${arrowY} ${currentBlock.shape.centerX + 10},${arrowY} ${currentBlock.shape.centerX},${arrowY - 10}`
+              : `${currentBlock.shape.centerX - 10},${arrowY} ${currentBlock.shape.centerX + 10},${arrowY} ${currentBlock.shape.centerX},${arrowY + 10}`
+          }
+          fill="#1F2937"
+        />
+        {/* Tooltip Container */}
+        <rect
+          x={tooltipX - tooltipWidth / 2}
+          y={tooltipY - tooltipHeight / 2}
+          width={tooltipWidth}
+          height={tooltipHeight}
+          rx={16}
+          fill="#1F2937"
+          stroke="#FAB62D"
+          strokeWidth="2.5"
+          filter={isPortraitMode ? 'url(#laserGlowPortrait)' : 'drop-shadow(0 14px 28px rgba(0,0,0,0.6))'}
+        />
+        {/* Title ONLY (without 'Paso X de X') */}
+        <text
+          x={tooltipX}
+          y={tooltipY - tooltipHeight / 2 + 22}
+          fontFamily="Montserrat"
+          fontSize="15"
+          fontWeight="900"
+          fill="#FAB62D"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          className="tracking-tight"
+        >
+          {currentSimData.title}
+        </text>
+        {/* Description Lines (All lines completely rendered with high font size) */}
+        {lines.map((line, lIdx) => (
+          <text
+            key={`tooltip-line-${lIdx}`}
+            x={tooltipX}
+            y={tooltipY - tooltipHeight / 2 + 45 + lIdx * lineHeight}
+            fontFamily="Work Sans"
+            fontSize="12.5"
+            fontWeight="600"
+            fill="#FFFFFF"
+            textAnchor="middle"
+            dominantBaseline="middle"
+          >
+            {line}
+          </text>
+        ))}
+      </g>
+    );
+  };
 
   return (
     <div
@@ -768,47 +891,37 @@ export default function App() {
                   );
                 })}
 
-                {/* Simulation Laser Connectors (2 ➔ 15 ➔ 14 ➔ 13 ➔ 5 ➔ 11+1 ➔ 8 ➔ 10 ➔ 3 ➔ 4) */}
+                {/* Simulation Laser Connectors: Completo y continuo (2 ➔ 15 ➔ 14 ➔ 13 ➔ 5 ➔ 11 ➔ 1 ➔ 8 ➔ 10 ➔ 3 ➔ 4) */}
                 {isSimulationMode && (
                   <g pointerEvents="none">
-                    {SIMULATION_STEPS.slice(0, currentSimStep).map((step, idx) => {
-                      const nextStep = SIMULATION_STEPS[idx + 1];
-                      if (!nextStep) return null;
-                      const fromBlock = BUILDING_BLOCKS.find(b => b.id === step.blockId);
-                      const toBlock = BUILDING_BLOCKS.find(b => b.id === nextStep.blockId);
-                      if (!fromBlock || !toBlock) return null;
-
-                      return (
-                        <g key={`sim-line-${idx}`}>
-                          <line
-                            x1={fromBlock.shape.centerX}
-                            y1={fromBlock.shape.centerY}
-                            x2={toBlock.shape.centerX}
-                            y2={toBlock.shape.centerY}
-                            stroke="#FAB62D"
-                            strokeWidth="6"
-                            strokeLinecap="round"
-                            className="animate-laser-flow"
-                            filter="url(#laserGlow)"
-                          />
-                          {/* Interoperability link in step 6 */}
-                          {step.blockId === 'registros_digitales' && (
-                            <line
-                              x1={461}
-                              y1={890}
-                              x2={603}
-                              y2={890}
-                              stroke="#0891B2"
-                              strokeWidth="5"
-                              strokeDasharray="6 4"
-                              strokeLinecap="round"
-                              className="animate-pulse"
-                              filter="url(#laserGlow)"
-                            />
-                          )}
-                        </g>
-                      );
-                    })}
+                    {SIMULATION_SEGMENTS.filter(seg => currentSimStep >= seg.minStep).map(seg => (
+                      <g key={`sim-seg-${seg.id}`}>
+                        {/* Glow halo */}
+                        <line
+                          x1={seg.fromX}
+                          y1={seg.fromY}
+                          x2={seg.toX}
+                          y2={seg.toY}
+                          stroke="#FAB62D"
+                          strokeWidth="7"
+                          strokeLinecap="round"
+                          filter="url(#laserGlow)"
+                          opacity="0.8"
+                        />
+                        {/* Core laser line */}
+                        <line
+                          x1={seg.fromX}
+                          y1={seg.fromY}
+                          x2={seg.toX}
+                          y2={seg.toY}
+                          stroke="#FFFFFF"
+                          strokeWidth="3.5"
+                          strokeDasharray="10 6"
+                          strokeLinecap="round"
+                          className="animate-laser-flow"
+                        />
+                      </g>
+                    ))}
                   </g>
                 )}
 
@@ -892,74 +1005,8 @@ export default function App() {
                   </g>
                 )}
 
-                {/* TOOLTIP CONTEXTUAL FLOTANTE GRANDE Y ULTRA LEGIBLE */}
-                {isSimulationMode && (() => {
-                  const currentBlock = BUILDING_BLOCKS.find(b => b.id === currentSimData.blockId);
-                  if (!currentBlock) return null;
-                  
-                  // Clamped tooltip coordinates
-                  const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 200), 600);
-                  const isNearTop = currentBlock.shape.centerY < 250;
-                  const tooltipY = isNearTop
-                    ? currentBlock.shape.centerY + 68
-                    : currentBlock.shape.centerY - 72;
-
-                  return (
-                    <g pointerEvents="none" className="animate-in fade-in zoom-in-95 duration-200">
-                      {/* Tooltip Arrow */}
-                      <polygon
-                        points={
-                          isNearTop
-                            ? `${currentBlock.shape.centerX - 10},${tooltipY - 30} ${currentBlock.shape.centerX + 10},${tooltipY - 30} ${currentBlock.shape.centerX},${tooltipY - 38}`
-                            : `${currentBlock.shape.centerX - 10},${tooltipY + 30} ${currentBlock.shape.centerX + 10},${tooltipY + 30} ${currentBlock.shape.centerX},${tooltipY + 38}`
-                        }
-                        fill="#1F2937"
-                      />
-                      {/* Tooltip Container (Amplio y de alto contraste) */}
-                      <rect
-                        x={tooltipX - 180}
-                        y={tooltipY - 32}
-                        width="360"
-                        height="64"
-                        rx="15"
-                        fill="#1F2937"
-                        stroke="#FAB62D"
-                        strokeWidth="2.5"
-                        filter="drop-shadow(0 12px 24px rgba(0,0,0,0.5))"
-                      />
-                      {/* Tooltip Title */}
-                      <text
-                        x={tooltipX}
-                        y={tooltipY - 12}
-                        fontFamily="Montserrat"
-                        fontSize="13.5"
-                        fontWeight="900"
-                        fill="#FAB62D"
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        className="tracking-tight"
-                      >
-                        Paso {currentSimStep + 1} de 10: {currentSimData.title}
-                      </text>
-                      {/* Tooltip Description (Textos grandes y legibles) */}
-                      <text
-                        x={tooltipX}
-                        y={tooltipY + 12}
-                        fontFamily="Work Sans"
-                        fontSize="11"
-                        fontWeight="600"
-                        fill="#FFFFFF"
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        className="tracking-normal"
-                      >
-                        {currentSimData.description.length > 58
-                          ? currentSimData.description.substring(0, 56) + '...'
-                          : currentSimData.description}
-                      </text>
-                    </g>
-                  );
-                })()}
+                {/* TOOLTIP CONTEXTUAL FLOTANTE GRANDE Y ULTRA LEGIBLE SIN CORTES */}
+                {renderSimulationTooltip(false)}
               </svg>
             </div>
 
@@ -1483,47 +1530,37 @@ export default function App() {
                   );
                 })}
 
-                {/* Simulation Laser Connectors (2 ➔ 15 ➔ 14 ➔ 13 ➔ 5 ➔ 11+1 ➔ 8 ➔ 10 ➔ 3 ➔ 4) */}
+                {/* Simulation Laser Connectors: Completo y continuo (2 ➔ 15 ➔ 14 ➔ 13 ➔ 5 ➔ 11 ➔ 1 ➔ 8 ➔ 10 ➔ 3 ➔ 4) */}
                 {isSimulationMode && (
                   <g pointerEvents="none">
-                    {SIMULATION_STEPS.slice(0, currentSimStep).map((step, idx) => {
-                      const nextStep = SIMULATION_STEPS[idx + 1];
-                      if (!nextStep) return null;
-                      const fromBlock = BUILDING_BLOCKS.find(b => b.id === step.blockId);
-                      const toBlock = BUILDING_BLOCKS.find(b => b.id === nextStep.blockId);
-                      if (!fromBlock || !toBlock) return null;
-
-                      return (
-                        <g key={`sim-line-portrait-${idx}`}>
-                          <line
-                            x1={fromBlock.shape.centerX}
-                            y1={fromBlock.shape.centerY}
-                            x2={toBlock.shape.centerX}
-                            y2={toBlock.shape.centerY}
-                            stroke="#FAB62D"
-                            strokeWidth="6"
-                            strokeLinecap="round"
-                            className="animate-laser-flow"
-                            filter="url(#laserGlowPortrait)"
-                          />
-                          {/* Interoperability link in step 6 */}
-                          {step.blockId === 'registros_digitales' && (
-                            <line
-                              x1={461}
-                              y1={890}
-                              x2={603}
-                              y2={890}
-                              stroke="#0891B2"
-                              strokeWidth="5"
-                              strokeDasharray="6 4"
-                              strokeLinecap="round"
-                              className="animate-pulse"
-                              filter="url(#laserGlowPortrait)"
-                            />
-                          )}
-                        </g>
-                      );
-                    })}
+                    {SIMULATION_SEGMENTS.filter(seg => currentSimStep >= seg.minStep).map(seg => (
+                      <g key={`sim-seg-portrait-${seg.id}`}>
+                        {/* Glow halo */}
+                        <line
+                          x1={seg.fromX}
+                          y1={seg.fromY}
+                          x2={seg.toX}
+                          y2={seg.toY}
+                          stroke="#FAB62D"
+                          strokeWidth="7"
+                          strokeLinecap="round"
+                          filter="url(#laserGlowPortrait)"
+                          opacity="0.8"
+                        />
+                        {/* Core laser line */}
+                        <line
+                          x1={seg.fromX}
+                          y1={seg.fromY}
+                          x2={seg.toX}
+                          y2={seg.toY}
+                          stroke="#FFFFFF"
+                          strokeWidth="3.5"
+                          strokeDasharray="10 6"
+                          strokeLinecap="round"
+                          className="animate-laser-flow"
+                        />
+                      </g>
+                    ))}
                   </g>
                 )}
 
@@ -1607,74 +1644,8 @@ export default function App() {
                   </g>
                 )}
 
-                {/* TOOLTIP CONTEXTUAL FLOTANTE GRANDE Y ULTRA LEGIBLE (Portrait) */}
-                {isSimulationMode && (() => {
-                  const currentBlock = BUILDING_BLOCKS.find(b => b.id === currentSimData.blockId);
-                  if (!currentBlock) return null;
-                  
-                  // Clamped tooltip coordinates
-                  const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 200), 600);
-                  const isNearTop = currentBlock.shape.centerY < 250;
-                  const tooltipY = isNearTop
-                    ? currentBlock.shape.centerY + 68
-                    : currentBlock.shape.centerY - 72;
-
-                  return (
-                    <g pointerEvents="none" className="animate-in fade-in zoom-in-95 duration-200">
-                      {/* Tooltip Arrow */}
-                      <polygon
-                        points={
-                          isNearTop
-                            ? `${currentBlock.shape.centerX - 10},${tooltipY - 30} ${currentBlock.shape.centerX + 10},${tooltipY - 30} ${currentBlock.shape.centerX},${tooltipY - 38}`
-                            : `${currentBlock.shape.centerX - 10},${tooltipY + 30} ${currentBlock.shape.centerX + 10},${tooltipY + 30} ${currentBlock.shape.centerX},${tooltipY + 38}`
-                        }
-                        fill="#1F2937"
-                      />
-                      {/* Tooltip Container (Amplio y de alto contraste) */}
-                      <rect
-                        x={tooltipX - 180}
-                        y={tooltipY - 32}
-                        width="360"
-                        height="64"
-                        rx="15"
-                        fill="#1F2937"
-                        stroke="#FAB62D"
-                        strokeWidth="2.5"
-                        filter="drop-shadow(0 12px 24px rgba(0,0,0,0.5))"
-                      />
-                      {/* Tooltip Title */}
-                      <text
-                        x={tooltipX}
-                        y={tooltipY - 12}
-                        fontFamily="Montserrat"
-                        fontSize="13.5"
-                        fontWeight="900"
-                        fill="#FAB62D"
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        className="tracking-tight"
-                      >
-                        Paso {currentSimStep + 1} de 10: {currentSimData.title}
-                      </text>
-                      {/* Tooltip Description (Textos grandes y legibles) */}
-                      <text
-                        x={tooltipX}
-                        y={tooltipY + 12}
-                        fontFamily="Work Sans"
-                        fontSize="11"
-                        fontWeight="600"
-                        fill="#FFFFFF"
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        className="tracking-normal"
-                      >
-                        {currentSimData.description.length > 58
-                          ? currentSimData.description.substring(0, 56) + '...'
-                          : currentSimData.description}
-                      </text>
-                    </g>
-                  );
-                })()}
+                {/* TOOLTIP CONTEXTUAL FLOTANTE GRANDE Y ULTRA LEGIBLE SIN CORTES (Portrait) */}
+                {renderSimulationTooltip(true)}
               </svg>
             </div>
           </section>
