@@ -106,35 +106,19 @@ export default function App() {
     return BUILDING_BLOCKS.find(b => b.id === activeBlockId) || BUILDING_BLOCKS[0];
   }, [activeBlockId]);
 
-  // Victory fanfare & confetti
+  // Victory fanfare & confetti (Una sola vez, sin repetición)
   useEffect(() => {
     if (isCompleted && !isSimulationMode) {
       setShowCelebrationModal(true);
       soundFx.playFanfare();
-      const duration = 3.5 * 1000;
-      const end = Date.now() + duration;
 
-      const frame = () => {
-        confetti({
-          particleCount: 6,
-          angle: 60,
-          spread: 60,
-          origin: { x: 0.1, y: 0.65 },
-          colors: ['#CC0E35', '#FAB62D', '#FFFFFF', '#99001B']
-        });
-        confetti({
-          particleCount: 6,
-          angle: 120,
-          spread: 60,
-          origin: { x: 0.9, y: 0.65 },
-          colors: ['#CC0E35', '#FAB62D', '#FFFFFF', '#3366CC']
-        });
-
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      };
-      frame();
+      // Disparo único y moderado de serpentinas
+      confetti({
+        particleCount: 45,
+        spread: 65,
+        origin: { y: 0.6 },
+        colors: ['#CC0E35', '#FAB62D', '#FFFFFF', '#99001B']
+      });
     }
   }, [isCompleted, isSimulationMode]);
 
@@ -153,7 +137,7 @@ export default function App() {
           setActiveBlockId(SIMULATION_STEPS[next].blockId);
           return next;
         });
-      }, 4000);
+      }, 4200);
     }
     return () => clearInterval(timer);
   }, [isSimulationMode, isSimPlaying]);
@@ -370,7 +354,7 @@ export default function App() {
             {/* Sound Button */}
             <button
               onClick={handleToggleSound}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-[15px] bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 flex items-center justify-center transition-all"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-[15px] bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 flex items-center justify-center transition-all cursor-pointer"
               title={isMuted ? 'Activar Sonido' : 'Silenciar'}
             >
               {isMuted ? <VolumeX className="w-4 h-4 text-red-500" /> : <Volume2 className="w-4 h-4 text-slate-700" />}
@@ -379,7 +363,7 @@ export default function App() {
             {/* Reset Button */}
             <button
               onClick={handleReset}
-              className="flex items-center gap-1 px-2.5 sm:px-3.5 py-1.5 rounded-[15px] bg-slate-100 hover:bg-red-50 active:scale-95 text-slate-700 hover:text-[#CC0E35] border border-slate-200 hover:border-red-300 font-title font-bold text-[10px] sm:text-xs transition-all"
+              className="flex items-center gap-1 px-2.5 sm:px-3.5 py-1.5 rounded-[15px] bg-slate-100 hover:bg-red-50 active:scale-95 text-slate-700 hover:text-[#CC0E35] border border-slate-200 hover:border-red-300 font-title font-bold text-[10px] sm:text-xs transition-all cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span className="hidden md:inline">Reiniciar</span>
@@ -416,7 +400,7 @@ export default function App() {
                     soundFx.playTap();
                     setCategoryFilter('all');
                   }}
-                  className={`px-3 py-1 text-xs font-title font-semibold rounded-full transition-all ${
+                  className={`px-3 py-1 text-xs font-title font-semibold rounded-full transition-all cursor-pointer ${
                     categoryFilter === 'all'
                       ? 'bg-[#CC0E35] text-white shadow-2xs'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -429,7 +413,7 @@ export default function App() {
                     soundFx.playTap();
                     setCategoryFilter('unplaced');
                   }}
-                  className={`px-3 py-1 text-xs font-title font-semibold rounded-full transition-all ${
+                  className={`px-3 py-1 text-xs font-title font-semibold rounded-full transition-all cursor-pointer ${
                     categoryFilter === 'unplaced'
                       ? 'bg-[#CC0E35] text-white shadow-2xs'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -504,7 +488,7 @@ export default function App() {
                 <span>💡 1 Tap ficha + 1 Tap casa</span>
                 <button
                   onClick={handleAutoComplete}
-                  className="font-bold text-slate-400 hover:text-[#CC0E35] transition-colors underline"
+                  className="font-bold text-slate-400 hover:text-[#CC0E35] transition-colors underline cursor-pointer"
                 >
                   Modo Demo
                 </button>
@@ -625,7 +609,7 @@ export default function App() {
                   className="drop-shadow-lg"
                 />
 
-                {/* 15 Balanced Polygonal Tangram Slots (Totalmente inscritos con holgura derecha de 35px) */}
+                {/* 15 Balanced Polygonal Tangram Slots */}
                 {BUILDING_BLOCKS.map(block => {
                   const isPlaced = placedBlockIds.includes(block.id);
                   const isActiveGuide = activeBlockId === block.id;
@@ -785,7 +769,7 @@ export default function App() {
                   );
                 })}
 
-                {/* Simulation Laser Connectors / Neon Path */}
+                {/* Simulation Laser Connectors / Neon Path (2 ➔ 15 ➔ 14 ➔ 13 ➔ 5 ➔ 11+1 ➔ 8 ➔ 10 ➔ 3 ➔ 4) */}
                 {isSimulationMode && (
                   <g pointerEvents="none">
                     {SIMULATION_STEPS.slice(0, currentSimStep).map((step, idx) => {
@@ -796,26 +780,146 @@ export default function App() {
                       if (!fromBlock || !toBlock) return null;
 
                       return (
-                        <line
-                          key={`sim-line-${idx}`}
-                          x1={fromBlock.shape.centerX}
-                          y1={fromBlock.shape.centerY}
-                          x2={toBlock.shape.centerX}
-                          y2={toBlock.shape.centerY}
-                          stroke="#FAB62D"
-                          strokeWidth="6"
-                          strokeLinecap="round"
-                          className="animate-laser-flow"
-                          filter="url(#laserGlow)"
-                        />
+                        <g key={`sim-line-${idx}`}>
+                          <line
+                            x1={fromBlock.shape.centerX}
+                            y1={fromBlock.shape.centerY}
+                            x2={toBlock.shape.centerX}
+                            y2={toBlock.shape.centerY}
+                            stroke="#FAB62D"
+                            strokeWidth="6"
+                            strokeLinecap="round"
+                            className="animate-laser-flow"
+                            filter="url(#laserGlow)"
+                          />
+                          {/* Interoperability link in step 6 */}
+                          {step.blockId === 'registros_digitales' && (
+                            <line
+                              x1={461}
+                              y1={890}
+                              x2={603}
+                              y2={890}
+                              stroke="#0891B2"
+                              strokeWidth="5"
+                              strokeDasharray="6 4"
+                              strokeLinecap="round"
+                              className="animate-pulse"
+                              filter="url(#laserGlow)"
+                            />
+                          )}
+                        </g>
                       );
                     })}
                   </g>
                 )}
+
+                {/* SIMULATION STEP 1: Punto de partida destacado sobre el Bloque #2 */}
+                {isSimulationMode && currentSimStep === 0 && (
+                  <g pointerEvents="none" className="animate-bounce-subtle">
+                    {/* Ripple circle around door */}
+                    <circle
+                      cx={390}
+                      cy={722}
+                      r={70}
+                      fill="none"
+                      stroke="#FAB62D"
+                      strokeWidth="4"
+                      className="animate-ping opacity-75"
+                    />
+                    <circle
+                      cx={390}
+                      cy={722}
+                      r={55}
+                      fill="none"
+                      stroke="#CC0E35"
+                      strokeWidth="3"
+                    />
+                    {/* Floating badge */}
+                    <rect
+                      x={390 - 130}
+                      y={722 - 76}
+                      width="260"
+                      height="28"
+                      rx="14"
+                      fill="#CC0E35"
+                      stroke="#FFFFFF"
+                      strokeWidth="2"
+                      filter="drop-shadow(0 4px 8px rgba(0,0,0,0.35))"
+                    />
+                    <text
+                      x={390}
+                      y={722 - 60}
+                      fontFamily="Montserrat"
+                      fontSize="9.5"
+                      fontWeight="800"
+                      fill="#FFFFFF"
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      1. PUNTO DE PARTIDA: INGRESO AL PORTAL
+                    </text>
+                  </g>
+                )}
+
+                {/* SIMULATION TOOLTIP CONTEXTUAL FLOTANTE (Pasos 2 a 10) */}
+                {isSimulationMode && currentSimStep > 0 && (() => {
+                  const currentBlock = BUILDING_BLOCKS.find(b => b.id === currentSimData.blockId);
+                  if (!currentBlock) return null;
+                  const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 160), 640);
+                  const tooltipY = currentBlock.shape.centerY - 58;
+
+                  return (
+                    <g pointerEvents="none" className="animate-in fade-in zoom-in-95 duration-200">
+                      {/* Tooltip Arrow */}
+                      <polygon
+                        points={`${currentBlock.shape.centerX - 8},${tooltipY + 18} ${currentBlock.shape.centerX + 8},${tooltipY + 18} ${currentBlock.shape.centerX},${tooltipY + 26}`}
+                        fill="#333333"
+                      />
+                      {/* Tooltip Bubble */}
+                      <rect
+                        x={tooltipX - 135}
+                        y={tooltipY - 24}
+                        width="270"
+                        height="44"
+                        rx="12"
+                        fill="#333333"
+                        stroke="#FAB62D"
+                        strokeWidth="2"
+                        filter="drop-shadow(0 8px 16px rgba(0,0,0,0.4))"
+                      />
+                      <text
+                        x={tooltipX}
+                        y={tooltipY - 9}
+                        fontFamily="Montserrat"
+                        fontSize="10"
+                        fontWeight="800"
+                        fill="#FAB62D"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        Paso {currentSimStep + 1}: {currentSimData.title}
+                      </text>
+                      <text
+                        x={tooltipX}
+                        y={tooltipY + 7}
+                        fontFamily="Work Sans"
+                        fontSize="8"
+                        fontWeight="500"
+                        fill="#FFFFFF"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        {currentSimData.description.length > 55
+                          ? currentSimData.description.substring(0, 52) + '...'
+                          : currentSimData.description}
+                      </text>
+                    </g>
+                  );
+                })()}
               </svg>
             </div>
 
-            {/* Simulation Step HUD Bar (Coreografía de 10 Pasos) */}
+            {/* Simulation Step HUD Bar (Coreografía Oficial de 10 Pasos) */}
             {isSimulationMode && (
               <div className="w-full max-w-xl bg-white border-2 border-[#FAB62D] text-[#333333] rounded-[15px] p-3 shadow-lg flex items-center justify-between gap-3 z-20 mt-1 shrink-0">
                 <div className="flex items-center gap-2.5 truncate">
@@ -844,6 +948,7 @@ export default function App() {
                     }}
                     disabled={currentSimStep === 0}
                     className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 flex items-center justify-center text-slate-700 cursor-pointer"
+                    title="Paso Anterior"
                   >
                     <SkipBack className="w-3.5 h-3.5" />
                   </button>
@@ -856,7 +961,7 @@ export default function App() {
                     className="px-3 py-1.5 rounded-lg bg-[#FAB62D] hover:bg-amber-400 text-[#333333] font-title font-bold flex items-center gap-1 shadow-2xs active:scale-95 text-xs cursor-pointer"
                   >
                     {isSimPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-                    <span>{isSimPlaying ? 'Pausa' : 'Play'}</span>
+                    <span>{isSimPlaying ? 'Pausa' : 'Reanudar'}</span>
                   </button>
 
                   <button
@@ -868,8 +973,9 @@ export default function App() {
                       }
                     }}
                     disabled={currentSimStep === SIMULATION_STEPS.length - 1}
-                    className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 flex items-center justify-center text-slate-700 cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 flex items-center gap-1 text-slate-700 font-title font-bold text-xs cursor-pointer"
                   >
+                    <span>Siguiente</span>
                     <SkipForward className="w-3.5 h-3.5" />
                   </button>
 
@@ -877,7 +983,7 @@ export default function App() {
                     onClick={() => setIsSimulationMode(false)}
                     className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-[#CC0E35] font-title font-bold text-xs cursor-pointer"
                   >
-                    Salir
+                    Cerrar Simulación
                   </button>
                 </div>
               </div>
@@ -1173,7 +1279,7 @@ export default function App() {
                   className="drop-shadow-lg"
                 />
 
-                {/* 15 Balanced Polygonal Tangram Slots (Totalmente inscritos con holgura derecha de 35px) */}
+                {/* 15 Balanced Polygonal Tangram Slots */}
                 {BUILDING_BLOCKS.map(block => {
                   const isPlaced = placedBlockIds.includes(block.id);
                   const isActiveGuide = activeBlockId === block.id;
@@ -1333,7 +1439,7 @@ export default function App() {
                   );
                 })}
 
-                {/* Simulation Laser Connectors / Neon Path */}
+                {/* Simulation Laser Connectors (2 ➔ 15 ➔ 14 ➔ 13 ➔ 5 ➔ 11+1 ➔ 8 ➔ 10 ➔ 3 ➔ 4) */}
                 {isSimulationMode && (
                   <g pointerEvents="none">
                     {SIMULATION_STEPS.slice(0, currentSimStep).map((step, idx) => {
@@ -1344,22 +1450,142 @@ export default function App() {
                       if (!fromBlock || !toBlock) return null;
 
                       return (
-                        <line
-                          key={`sim-line-${idx}`}
-                          x1={fromBlock.shape.centerX}
-                          y1={fromBlock.shape.centerY}
-                          x2={toBlock.shape.centerX}
-                          y2={toBlock.shape.centerY}
-                          stroke="#FAB62D"
-                          strokeWidth="6"
-                          strokeLinecap="round"
-                          className="animate-laser-flow"
-                          filter="url(#laserGlowPortrait)"
-                        />
+                        <g key={`sim-line-portrait-${idx}`}>
+                          <line
+                            x1={fromBlock.shape.centerX}
+                            y1={fromBlock.shape.centerY}
+                            x2={toBlock.shape.centerX}
+                            y2={toBlock.shape.centerY}
+                            stroke="#FAB62D"
+                            strokeWidth="6"
+                            strokeLinecap="round"
+                            className="animate-laser-flow"
+                            filter="url(#laserGlowPortrait)"
+                          />
+                          {/* Interoperability link in step 6 */}
+                          {step.blockId === 'registros_digitales' && (
+                            <line
+                              x1={461}
+                              y1={890}
+                              x2={603}
+                              y2={890}
+                              stroke="#0891B2"
+                              strokeWidth="5"
+                              strokeDasharray="6 4"
+                              strokeLinecap="round"
+                              className="animate-pulse"
+                              filter="url(#laserGlowPortrait)"
+                            />
+                          )}
+                        </g>
                       );
                     })}
                   </g>
                 )}
+
+                {/* SIMULATION STEP 1: Punto de partida destacado sobre el Bloque #2 (Portrait) */}
+                {isSimulationMode && currentSimStep === 0 && (
+                  <g pointerEvents="none" className="animate-bounce-subtle">
+                    {/* Ripple circle around door */}
+                    <circle
+                      cx={390}
+                      cy={722}
+                      r={70}
+                      fill="none"
+                      stroke="#FAB62D"
+                      strokeWidth="4"
+                      className="animate-ping opacity-75"
+                    />
+                    <circle
+                      cx={390}
+                      cy={722}
+                      r={55}
+                      fill="none"
+                      stroke="#CC0E35"
+                      strokeWidth="3"
+                    />
+                    {/* Floating badge */}
+                    <rect
+                      x={390 - 130}
+                      y={722 - 76}
+                      width="260"
+                      height="28"
+                      rx="14"
+                      fill="#CC0E35"
+                      stroke="#FFFFFF"
+                      strokeWidth="2"
+                      filter="drop-shadow(0 4px 8px rgba(0,0,0,0.35))"
+                    />
+                    <text
+                      x={390}
+                      y={722 - 60}
+                      fontFamily="Montserrat"
+                      fontSize="9.5"
+                      fontWeight="800"
+                      fill="#FFFFFF"
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      1. PUNTO DE PARTIDA: INGRESO AL PORTAL
+                    </text>
+                  </g>
+                )}
+
+                {/* SIMULATION TOOLTIP CONTEXTUAL FLOTANTE (Pasos 2 a 10 Portrait) */}
+                {isSimulationMode && currentSimStep > 0 && (() => {
+                  const currentBlock = BUILDING_BLOCKS.find(b => b.id === currentSimData.blockId);
+                  if (!currentBlock) return null;
+                  const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 160), 640);
+                  const tooltipY = currentBlock.shape.centerY - 58;
+
+                  return (
+                    <g pointerEvents="none" className="animate-in fade-in zoom-in-95 duration-200">
+                      {/* Tooltip Arrow */}
+                      <polygon
+                        points={`${currentBlock.shape.centerX - 8},${tooltipY + 18} ${currentBlock.shape.centerX + 8},${tooltipY + 18} ${currentBlock.shape.centerX},${tooltipY + 26}`}
+                        fill="#333333"
+                      />
+                      {/* Tooltip Bubble */}
+                      <rect
+                        x={tooltipX - 135}
+                        y={tooltipY - 24}
+                        width="270"
+                        height="44"
+                        rx="12"
+                        fill="#333333"
+                        stroke="#FAB62D"
+                        strokeWidth="2"
+                        filter="drop-shadow(0 8px 16px rgba(0,0,0,0.4))"
+                      />
+                      <text
+                        x={tooltipX}
+                        y={tooltipY - 9}
+                        fontFamily="Montserrat"
+                        fontSize="10"
+                        fontWeight="800"
+                        fill="#FAB62D"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        Paso {currentSimStep + 1}: {currentSimData.title}
+                      </text>
+                      <text
+                        x={tooltipX}
+                        y={tooltipY + 7}
+                        fontFamily="Work Sans"
+                        fontSize="8"
+                        fontWeight="500"
+                        fill="#FFFFFF"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        {currentSimData.description.length > 55
+                          ? currentSimData.description.substring(0, 52) + '...'
+                          : currentSimData.description}
+                      </text>
+                    </g>
+                  );
+                })()}
               </svg>
             </div>
           </section>
@@ -1436,7 +1662,7 @@ export default function App() {
                       </span>
                       {isPlaced ? (
                         <span className="w-3.5 h-3.5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[8px]">
-                          <Check className="w-2 h-2 stroke-[3]" />
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
                         </span>
                       ) : (
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
@@ -1448,7 +1674,7 @@ export default function App() {
                         className="w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-md flex items-center justify-center text-white shrink-0"
                         style={{ backgroundColor: block.color }}
                       >
-                        <BlockIcon name={block.iconName} className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                        <BlockIcon name={block.iconName} className="w-3.5 h-3.5" />
                       </div>
                       <span className="font-title text-[10.5px] sm:text-xs font-bold text-[#333333] leading-tight line-clamp-1">
                         {block.name}

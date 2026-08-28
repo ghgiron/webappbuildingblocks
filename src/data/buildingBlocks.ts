@@ -26,8 +26,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 7,
-      stepTitle: 'Paso 7: Notificación Automática',
-      actionDescription: 'La persona recibe una notificación automática por SMS y correo electrónico con el estado de su trámite.'
+      stepTitle: '7. Notificación de pago habilitado',
+      actionDescription: 'La ciudadanía recibe un mensaje de texto/correo indicando que la solicitud fue aprobada y está lista para pagar en línea.'
     }
   },
   {
@@ -115,8 +115,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 10,
-      stepTitle: 'Paso 10: Medición de Experiencia',
-      actionDescription: 'Se presenta una breve encuesta para medir la percepción y calificar la experiencia del servicio digital.'
+      stepTitle: '10. Recibo y calificación',
+      actionDescription: 'La ciudadanía descarga su comprobante y califica su experiencia con el servicio en una breve encuesta.'
     }
   },
 
@@ -165,9 +165,9 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
     },
     simulationStep: {
-      order: 3,
-      stepTitle: 'Paso 3: Orquestación Distrital',
-      actionDescription: 'El motor de procesos orquesta el trámite y coordina las validaciones entre las entidades distritales.'
+      order: 4,
+      stepTitle: '4. Orquestación del proceso',
+      actionDescription: 'El motor de procesos coordina las revisiones y validaciones internas entre las entidades/áreas competentes.'
     }
   },
   {
@@ -192,8 +192,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 8,
-      stepTitle: 'Paso 8: Autorización Transparente',
-      actionDescription: 'La ciudadanía ingresa datos complementarios y autoriza de forma transparente el uso de su información.'
+      stepTitle: '8. Autorización de datos',
+      actionDescription: 'La ciudadanía ingresa información complementaria y autoriza el uso transparente de sus datos personales.'
     }
   },
   {
@@ -217,9 +217,9 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
     },
     simulationStep: {
-      order: 2,
-      stepTitle: 'Paso 2: Radicación Oficial',
-      actionDescription: 'Realiza una solicitud formal y el sistema genera automáticamente un número de radicado para seguimiento.'
+      order: 3,
+      stepTitle: '3. Radicación de solicitud',
+      actionDescription: 'Se radica el trámite y se genera un número de radicado.'
     }
   },
   {
@@ -244,8 +244,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 1,
-      stepTitle: 'Paso 1: Acceso Seguro',
-      actionDescription: 'La ciudadanía se identifica e ingresa al Portal Bogotá a través de la puerta principal de acceso seguro.'
+      stepTitle: '1. Ingreso seguro',
+      actionDescription: 'La ciudadanía inicia sesión una sola vez en el Portal para realizar trámites y servicios Distritales.'
     }
   },
   {
@@ -270,8 +270,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 9,
-      stepTitle: 'Paso 9: Recaudo y Pago Virtual',
-      actionDescription: 'Se procesa el pago virtual seguro de las obligaciones distritales asociadas a la solicitud.'
+      stepTitle: '9. Pago virtual y recaudo por SDH',
+      actionDescription: 'Se procesa y confirma la transacción electrónica para saldar las obligaciones del trámite.'
     }
   },
 
@@ -299,9 +299,9 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
     },
     simulationStep: {
-      order: 4,
-      stepTitle: 'Paso 4: Huella Ciudadana',
-      actionDescription: 'El flujo consulta y registra los datos históricos en la analítica de la Huella Ciudadana.'
+      order: 2,
+      stepTitle: '2. Consulta de Huella Ciudadana',
+      actionDescription: 'El sistema consulta el historial de interacciones de la ciudadanía.'
     }
   },
   {
@@ -326,8 +326,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 5,
-      stepTitle: 'Paso 5: Bitácora Inmutable',
-      actionDescription: 'Se registra de forma inmutable y cronológica el evento de dominio en la caja negra del Portal.'
+      stepTitle: '5. Trazabilidad inmutable',
+      actionDescription: 'Se registran en orden cronológico exacto los eventos del trámite en la "caja negra" del Portal.'
     }
   },
   {
@@ -352,8 +352,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 6,
-      stepTitle: 'Paso 6: Actualización Base Maestra',
-      actionDescription: 'Se actualiza la información en la base maestra del Registro Social de Bogotá mediante el canal seguro de interoperabilidad distrital.'
+      stepTitle: '6. Actualización distrital',
+      actionDescription: 'Se actualizan/consultan los datos maestros, por ejemplo del Registro Social de Bogotá mediante interoperabilidad entre entidades.'
     }
   },
   {
@@ -380,78 +380,79 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
 ];
 
 // =========================================================================
-// SECUENCIA NARRATIVA OFICIAL DE SIMULACIÓN TRANSACCIONAL (10 PASOS)
+// SECUENCIA OFICIAL DE PASOS EN LA SIMULACIÓN DE TRÁMITE
+// (2 ➔ 15 ➔ 14 ➔ 13 ➔ 5 ➔ 11 + 1 ➔ 8 ➔ 10 ➔ 3 ➔ 4)
 // =========================================================================
 export const SIMULATION_STEPS: SimulationStepData[] = [
   {
     order: 1,
     blockId: 'identidad',
-    title: 'Paso 1: Identidad y acceso',
-    description: 'La ciudadanía se identifica e ingresa al Portal Bogotá a través de la puerta principal de acceso seguro.',
+    title: '1. Ingreso seguro',
+    description: 'La ciudadanía inicia sesión una sola vez en el Portal para realizar trámites y servicios Distritales.',
     entity: 'Portal Bogotá / Acceso Seguro'
   },
   {
     order: 2,
-    blockId: 'registro',
-    title: 'Paso 2: Registro',
-    description: 'Realiza una solicitud formal y el sistema genera automáticamente un número de radicado para seguimiento.',
-    entity: 'Ventanilla Única Distrital'
+    blockId: 'dwh',
+    title: '2. Consulta de Huella Ciudadana',
+    description: 'El sistema consulta el historial de interacciones de la ciudadanía.',
+    entity: 'Analítica / Huella Ciudadana'
   },
   {
     order: 3,
-    blockId: 'workflow',
-    title: 'Paso 3: Flujo de trabajo (Workflow)',
-    description: 'El motor de procesos orquesta el trámite y coordina las validaciones entre las entidades distritales.',
-    entity: 'Motor de Procesos Distrital'
+    blockId: 'registro',
+    title: '3. Radicación de solicitud',
+    description: 'Se radica el trámite y se genera un número de radicado.',
+    entity: 'Ventanilla Única Distrital'
   },
   {
     order: 4,
-    blockId: 'dwh',
-    title: 'Paso 4: Integración DWH',
-    description: 'El flujo consulta y registra los datos históricos en la analítica de la Huella Ciudadana.',
-    entity: 'Repositorio Analítico / Huella Ciudadana'
+    blockId: 'workflow',
+    title: '4. Orquestación del proceso',
+    description: 'El motor de procesos coordina las revisiones y validaciones internas entre las entidades/áreas competentes.',
+    entity: 'Motor de Procesos Distrital'
   },
   {
     order: 5,
     blockId: 'eventstore',
-    title: 'Paso 5: EventStore',
-    description: 'Se registra de forma inmutable y cronológica el evento de dominio en la caja negra del Portal.',
-    entity: 'Bitácora Inmutable del Portal'
+    title: '5. Trazabilidad inmutable',
+    description: 'Se registran en orden cronológico exacto los eventos del trámite en la "caja negra" del Portal.',
+    entity: 'Caja Negra del Portal Bogotá'
   },
   {
     order: 6,
     blockId: 'registros_digitales',
     relatedBlockIds: ['interoperabilidad'],
-    title: 'Paso 6: Registros Digitales e Interoperabilidad',
-    description: 'Se actualiza la información en la base maestra del Registro Social de Bogotá mediante el canal seguro de interoperabilidad distrital.',
-    entity: 'Registro Social y Malla Distrital'
+    title: '6. Actualización distrital',
+    description: 'Se actualizan/consultan los datos maestros, por ejemplo del Registro Social de Bogotá mediante interoperabilidad entre entidades.',
+    entity: 'Registro Social y Malla de Interoperabilidad'
   },
   {
     order: 7,
     blockId: 'mensajeria',
-    title: 'Paso 7: Mensajería',
-    description: 'La persona recibe una notificación automática por SMS y correo electrónico con el estado de su trámite.',
+    title: '7. Notificación de pago habilitado',
+    description: 'La ciudadanía recibe un mensaje de texto/correo indicando que la solicitud fue aprobada y está lista para pagar en línea.',
     entity: 'Canal Multicanal Distrital'
   },
   {
     order: 8,
     blockId: 'consentimiento',
-    title: 'Paso 8: Consentimiento',
-    description: 'La ciudadanía ingresa datos complementarios y autoriza de forma transparente el uso de su información.',
+    title: '8. Autorización de datos',
+    description: 'La ciudadanía ingresa información complementaria y autoriza el uso transparente de sus datos personales.',
     entity: 'Soberanía y Gestión de Datos'
   },
   {
     order: 9,
     blockId: 'pagos',
-    title: 'Paso 9: Pagos',
-    description: 'Se procesa el pago virtual seguro de las obligaciones distritales asociadas a la solicitud.',
-    entity: 'Pasarela de Pagos Distrital'
+    title: '9. Pago virtual y recaudo por SDH',
+    description: 'Se procesa y confirma la transacción electrónica para saldar las obligaciones del trámite.',
+    entity: 'Pasarela de Pagos Distrital / SDH'
   },
   {
     order: 10,
     blockId: 'satisfaccion',
-    title: 'Paso 10: Satisfacción ciudadana',
-    description: 'Se presenta una breve encuesta para medir la percepción y calificar la experiencia del servicio digital.',
+    title: '10. Recibo y calificación',
+    description: 'La ciudadanía descarga su comprobante y califica su experiencia con el servicio en una breve encuesta.',
     entity: 'Medición de Percepción Ciudadana'
   }
 ];
