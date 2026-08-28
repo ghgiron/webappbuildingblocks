@@ -32,7 +32,9 @@ import {
   ChevronRight,
   Hammer,
   ArrowLeft,
-  Eye
+  Eye,
+  Flag,
+  Sparkle
 } from 'lucide-react';
 import { BUILDING_BLOCKS, SIMULATION_STEPS } from './data/buildingBlocks';
 import { DragState } from './types';
@@ -106,13 +108,12 @@ export default function App() {
     return BUILDING_BLOCKS.find(b => b.id === activeBlockId) || BUILDING_BLOCKS[0];
   }, [activeBlockId]);
 
-  // Victory fanfare & confetti (Una sola vez, sin repetición)
+  // Victory fanfare & confetti (Disparo único y moderado)
   useEffect(() => {
     if (isCompleted && !isSimulationMode) {
       setShowCelebrationModal(true);
       soundFx.playFanfare();
 
-      // Disparo único y moderado de serpentinas
       confetti({
         particleCount: 45,
         spread: 65,
@@ -137,7 +138,7 @@ export default function App() {
           setActiveBlockId(SIMULATION_STEPS[next].blockId);
           return next;
         });
-      }, 4200);
+      }, 4500);
     }
     return () => clearInterval(timer);
   }, [isSimulationMode, isSimPlaying]);
@@ -769,7 +770,7 @@ export default function App() {
                   );
                 })}
 
-                {/* Simulation Laser Connectors / Neon Path (2 ➔ 15 ➔ 14 ➔ 13 ➔ 5 ➔ 11+1 ➔ 8 ➔ 10 ➔ 3 ➔ 4) */}
+                {/* Simulation Laser Connectors (2 ➔ 15 ➔ 14 ➔ 13 ➔ 5 ➔ 11+1 ➔ 8 ➔ 10 ➔ 3 ➔ 4) */}
                 {isSimulationMode && (
                   <g pointerEvents="none">
                     {SIMULATION_STEPS.slice(0, currentSimStep).map((step, idx) => {
@@ -813,14 +814,70 @@ export default function App() {
                   </g>
                 )}
 
-                {/* SIMULATION STEP 1: Punto de partida destacado sobre el Bloque #2 */}
+                {/* MARCAS PERMANENTES DE INICIO (#2) Y FIN (#4) DURANTE LA SIMULACIÓN */}
+                {isSimulationMode && (
+                  <g pointerEvents="none">
+                    {/* MARCA DE INICIO: Bloque #2 (Identidad / Puerta) */}
+                    <g className="drop-shadow-md">
+                      <rect
+                        x={390 - 75}
+                        y={722 + 42}
+                        width="150"
+                        height="26"
+                        rx="13"
+                        fill="#059669"
+                        stroke="#FFFFFF"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x={390}
+                        y={722 + 56}
+                        fontFamily="Montserrat"
+                        fontSize="11"
+                        fontWeight="900"
+                        fill="#FFFFFF"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        🟢 INICIO DEL FLUJO
+                      </text>
+                    </g>
+
+                    {/* MARCA DE FIN: Bloque #4 (Satisfacción / Tejado) */}
+                    <g className="drop-shadow-md">
+                      <rect
+                        x={495 - 65}
+                        y={325 - 58}
+                        width="130"
+                        height="26"
+                        rx="13"
+                        fill="#CC0E35"
+                        stroke="#FAB62D"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x={495}
+                        y={325 - 44}
+                        fontFamily="Montserrat"
+                        fontSize="11"
+                        fontWeight="900"
+                        fill="#FFFFFF"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        🏁 FIN DEL FLUJO
+                      </text>
+                    </g>
+                  </g>
+                )}
+
+                {/* SIMULATION STEP 1: Ripple expansivo de partida */}
                 {isSimulationMode && currentSimStep === 0 && (
-                  <g pointerEvents="none" className="animate-bounce-subtle">
-                    {/* Ripple circle around door */}
+                  <g pointerEvents="none">
                     <circle
                       cx={390}
                       cy={722}
-                      r={70}
+                      r={72}
                       fill="none"
                       stroke="#FAB62D"
                       strokeWidth="4"
@@ -829,88 +886,77 @@ export default function App() {
                     <circle
                       cx={390}
                       cy={722}
-                      r={55}
+                      r={56}
                       fill="none"
-                      stroke="#CC0E35"
+                      stroke="#059669"
                       strokeWidth="3"
                     />
-                    {/* Floating badge */}
-                    <rect
-                      x={390 - 130}
-                      y={722 - 76}
-                      width="260"
-                      height="28"
-                      rx="14"
-                      fill="#CC0E35"
-                      stroke="#FFFFFF"
-                      strokeWidth="2"
-                      filter="drop-shadow(0 4px 8px rgba(0,0,0,0.35))"
-                    />
-                    <text
-                      x={390}
-                      y={722 - 60}
-                      fontFamily="Montserrat"
-                      fontSize="9.5"
-                      fontWeight="800"
-                      fill="#FFFFFF"
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      1. PUNTO DE PARTIDA: INGRESO AL PORTAL
-                    </text>
                   </g>
                 )}
 
-                {/* SIMULATION TOOLTIP CONTEXTUAL FLOTANTE (Pasos 2 a 10) */}
-                {isSimulationMode && currentSimStep > 0 && (() => {
+                {/* TOOLTIP CONTEXTUAL FLOTANTE GRANDE Y ULTRA LEGIBLE */}
+                {isSimulationMode && (() => {
                   const currentBlock = BUILDING_BLOCKS.find(b => b.id === currentSimData.blockId);
                   if (!currentBlock) return null;
-                  const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 160), 640);
-                  const tooltipY = currentBlock.shape.centerY - 58;
+                  
+                  // Clamped tooltip coordinates
+                  const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 200), 600);
+                  const isNearTop = currentBlock.shape.centerY < 250;
+                  const tooltipY = isNearTop
+                    ? currentBlock.shape.centerY + 68
+                    : currentBlock.shape.centerY - 72;
 
                   return (
                     <g pointerEvents="none" className="animate-in fade-in zoom-in-95 duration-200">
                       {/* Tooltip Arrow */}
                       <polygon
-                        points={`${currentBlock.shape.centerX - 8},${tooltipY + 18} ${currentBlock.shape.centerX + 8},${tooltipY + 18} ${currentBlock.shape.centerX},${tooltipY + 26}`}
-                        fill="#333333"
+                        points={
+                          isNearTop
+                            ? `${currentBlock.shape.centerX - 10},${tooltipY - 30} ${currentBlock.shape.centerX + 10},${tooltipY - 30} ${currentBlock.shape.centerX},${tooltipY - 38}`
+                            : `${currentBlock.shape.centerX - 10},${tooltipY + 30} ${currentBlock.shape.centerX + 10},${tooltipY + 30} ${currentBlock.shape.centerX},${tooltipY + 38}`
+                        }
+                        fill="#1F2937"
                       />
-                      {/* Tooltip Bubble */}
+                      {/* Tooltip Container (Amplio y de alto contraste) */}
                       <rect
-                        x={tooltipX - 135}
-                        y={tooltipY - 24}
-                        width="270"
-                        height="44"
-                        rx="12"
-                        fill="#333333"
+                        x={tooltipX - 180}
+                        y={tooltipY - 32}
+                        width="360"
+                        height="64"
+                        rx="15"
+                        fill="#1F2937"
                         stroke="#FAB62D"
-                        strokeWidth="2"
-                        filter="drop-shadow(0 8px 16px rgba(0,0,0,0.4))"
+                        strokeWidth="2.5"
+                        filter="drop-shadow(0 12px 24px rgba(0,0,0,0.5))"
                       />
+                      {/* Tooltip Title */}
                       <text
                         x={tooltipX}
-                        y={tooltipY - 9}
+                        y={tooltipY - 12}
                         fontFamily="Montserrat"
-                        fontSize="10"
-                        fontWeight="800"
+                        fontSize="13.5"
+                        fontWeight="900"
                         fill="#FAB62D"
                         textAnchor="middle"
                         dominantBaseline="middle"
+                        className="tracking-tight"
                       >
-                        Paso {currentSimStep + 1}: {currentSimData.title}
+                        Paso {currentSimStep + 1} de 10: {currentSimData.title}
                       </text>
+                      {/* Tooltip Description (Textos grandes y legibles) */}
                       <text
                         x={tooltipX}
-                        y={tooltipY + 7}
+                        y={tooltipY + 12}
                         fontFamily="Work Sans"
-                        fontSize="8"
-                        fontWeight="500"
+                        fontSize="11"
+                        fontWeight="600"
                         fill="#FFFFFF"
                         textAnchor="middle"
                         dominantBaseline="middle"
+                        className="tracking-normal"
                       >
-                        {currentSimData.description.length > 55
-                          ? currentSimData.description.substring(0, 52) + '...'
+                        {currentSimData.description.length > 58
+                          ? currentSimData.description.substring(0, 56) + '...'
                           : currentSimData.description}
                       </text>
                     </g>
@@ -1483,14 +1529,70 @@ export default function App() {
                   </g>
                 )}
 
-                {/* SIMULATION STEP 1: Punto de partida destacado sobre el Bloque #2 (Portrait) */}
+                {/* MARCAS PERMANENTES DE INICIO (#2) Y FIN (#4) DURANTE LA SIMULACIÓN */}
+                {isSimulationMode && (
+                  <g pointerEvents="none">
+                    {/* MARCA DE INICIO: Bloque #2 (Identidad / Puerta) */}
+                    <g className="drop-shadow-md">
+                      <rect
+                        x={390 - 75}
+                        y={722 + 42}
+                        width="150"
+                        height="26"
+                        rx="13"
+                        fill="#059669"
+                        stroke="#FFFFFF"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x={390}
+                        y={722 + 56}
+                        fontFamily="Montserrat"
+                        fontSize="11"
+                        fontWeight="900"
+                        fill="#FFFFFF"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        🟢 INICIO DEL FLUJO
+                      </text>
+                    </g>
+
+                    {/* MARCA DE FIN: Bloque #4 (Satisfacción / Tejado) */}
+                    <g className="drop-shadow-md">
+                      <rect
+                        x={495 - 65}
+                        y={325 - 58}
+                        width="130"
+                        height="26"
+                        rx="13"
+                        fill="#CC0E35"
+                        stroke="#FAB62D"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x={495}
+                        y={325 - 44}
+                        fontFamily="Montserrat"
+                        fontSize="11"
+                        fontWeight="900"
+                        fill="#FFFFFF"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        🏁 FIN DEL FLUJO
+                      </text>
+                    </g>
+                  </g>
+                )}
+
+                {/* SIMULATION STEP 1: Ripple expansivo de partida (Portrait) */}
                 {isSimulationMode && currentSimStep === 0 && (
-                  <g pointerEvents="none" className="animate-bounce-subtle">
-                    {/* Ripple circle around door */}
+                  <g pointerEvents="none">
                     <circle
                       cx={390}
                       cy={722}
-                      r={70}
+                      r={72}
                       fill="none"
                       stroke="#FAB62D"
                       strokeWidth="4"
@@ -1499,88 +1601,77 @@ export default function App() {
                     <circle
                       cx={390}
                       cy={722}
-                      r={55}
+                      r={56}
                       fill="none"
-                      stroke="#CC0E35"
+                      stroke="#059669"
                       strokeWidth="3"
                     />
-                    {/* Floating badge */}
-                    <rect
-                      x={390 - 130}
-                      y={722 - 76}
-                      width="260"
-                      height="28"
-                      rx="14"
-                      fill="#CC0E35"
-                      stroke="#FFFFFF"
-                      strokeWidth="2"
-                      filter="drop-shadow(0 4px 8px rgba(0,0,0,0.35))"
-                    />
-                    <text
-                      x={390}
-                      y={722 - 60}
-                      fontFamily="Montserrat"
-                      fontSize="9.5"
-                      fontWeight="800"
-                      fill="#FFFFFF"
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      1. PUNTO DE PARTIDA: INGRESO AL PORTAL
-                    </text>
                   </g>
                 )}
 
-                {/* SIMULATION TOOLTIP CONTEXTUAL FLOTANTE (Pasos 2 a 10 Portrait) */}
-                {isSimulationMode && currentSimStep > 0 && (() => {
+                {/* TOOLTIP CONTEXTUAL FLOTANTE GRANDE Y ULTRA LEGIBLE (Portrait) */}
+                {isSimulationMode && (() => {
                   const currentBlock = BUILDING_BLOCKS.find(b => b.id === currentSimData.blockId);
                   if (!currentBlock) return null;
-                  const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 160), 640);
-                  const tooltipY = currentBlock.shape.centerY - 58;
+                  
+                  // Clamped tooltip coordinates
+                  const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 200), 600);
+                  const isNearTop = currentBlock.shape.centerY < 250;
+                  const tooltipY = isNearTop
+                    ? currentBlock.shape.centerY + 68
+                    : currentBlock.shape.centerY - 72;
 
                   return (
                     <g pointerEvents="none" className="animate-in fade-in zoom-in-95 duration-200">
                       {/* Tooltip Arrow */}
                       <polygon
-                        points={`${currentBlock.shape.centerX - 8},${tooltipY + 18} ${currentBlock.shape.centerX + 8},${tooltipY + 18} ${currentBlock.shape.centerX},${tooltipY + 26}`}
-                        fill="#333333"
+                        points={
+                          isNearTop
+                            ? `${currentBlock.shape.centerX - 10},${tooltipY - 30} ${currentBlock.shape.centerX + 10},${tooltipY - 30} ${currentBlock.shape.centerX},${tooltipY - 38}`
+                            : `${currentBlock.shape.centerX - 10},${tooltipY + 30} ${currentBlock.shape.centerX + 10},${tooltipY + 30} ${currentBlock.shape.centerX},${tooltipY + 38}`
+                        }
+                        fill="#1F2937"
                       />
-                      {/* Tooltip Bubble */}
+                      {/* Tooltip Container (Amplio y de alto contraste) */}
                       <rect
-                        x={tooltipX - 135}
-                        y={tooltipY - 24}
-                        width="270"
-                        height="44"
-                        rx="12"
-                        fill="#333333"
+                        x={tooltipX - 180}
+                        y={tooltipY - 32}
+                        width="360"
+                        height="64"
+                        rx="15"
+                        fill="#1F2937"
                         stroke="#FAB62D"
-                        strokeWidth="2"
-                        filter="drop-shadow(0 8px 16px rgba(0,0,0,0.4))"
+                        strokeWidth="2.5"
+                        filter="drop-shadow(0 12px 24px rgba(0,0,0,0.5))"
                       />
+                      {/* Tooltip Title */}
                       <text
                         x={tooltipX}
-                        y={tooltipY - 9}
+                        y={tooltipY - 12}
                         fontFamily="Montserrat"
-                        fontSize="10"
-                        fontWeight="800"
+                        fontSize="13.5"
+                        fontWeight="900"
                         fill="#FAB62D"
                         textAnchor="middle"
                         dominantBaseline="middle"
+                        className="tracking-tight"
                       >
-                        Paso {currentSimStep + 1}: {currentSimData.title}
+                        Paso {currentSimStep + 1} de 10: {currentSimData.title}
                       </text>
+                      {/* Tooltip Description (Textos grandes y legibles) */}
                       <text
                         x={tooltipX}
-                        y={tooltipY + 7}
+                        y={tooltipY + 12}
                         fontFamily="Work Sans"
-                        fontSize="8"
-                        fontWeight="500"
+                        fontSize="11"
+                        fontWeight="600"
                         fill="#FFFFFF"
                         textAnchor="middle"
                         dominantBaseline="middle"
+                        className="tracking-normal"
                       >
-                        {currentSimData.description.length > 55
-                          ? currentSimData.description.substring(0, 52) + '...'
+                        {currentSimData.description.length > 58
+                          ? currentSimData.description.substring(0, 56) + '...'
                           : currentSimData.description}
                       </text>
                     </g>
