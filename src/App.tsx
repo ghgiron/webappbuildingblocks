@@ -26,7 +26,10 @@ import {
   SkipBack,
   CheckCircle2,
   Trophy,
-  Check
+  Check,
+  Info,
+  X,
+  ChevronRight
 } from 'lucide-react';
 import { BUILDING_BLOCKS, SIMULATION_STEPS } from './data/buildingBlocks';
 import { DragState } from './types';
@@ -63,6 +66,7 @@ export default function App() {
   const [currentSimStep, setCurrentSimStep] = useState<number>(0);
   const [isSimPlaying, setIsSimPlaying] = useState<boolean>(false);
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [showConceptModal, setShowConceptModal] = useState<boolean>(false);
 
   const svgHouseRef = useRef<SVGSVGElement>(null);
 
@@ -150,6 +154,7 @@ export default function App() {
     setIsSimulationMode(false);
     setIsSimPlaying(false);
     setCurrentSimStep(0);
+    setShowConceptModal(false);
   };
 
   // Auto-complete (Demo presentation feature)
@@ -268,43 +273,33 @@ export default function App() {
     <div
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      className="min-h-screen w-full bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-slate-100 flex flex-col font-sans select-none overflow-x-hidden antialiased"
+      className="min-h-screen w-full bg-[#F8F9FA] text-slate-900 flex flex-col font-sans select-none overflow-x-hidden antialiased"
     >
       {/* ========================================================================= */}
-      {/* 1. HEADER INSTITUCIONAL RESPONSIVE                                        */}
+      {/* 1. HEADER INSTITUCIONAL ULTRA-LIMPIO (TEMA CLARO #FFFFFF / #F8F9FA)       */}
       {/* ========================================================================= */}
-      <header className="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 text-slate-900 shadow-sm sticky top-0 z-30 px-3 sm:px-6 lg:px-8 py-3">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <header className="w-full bg-white border-b border-slate-200 text-slate-900 shadow-xs sticky top-0 z-30 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+          
           {/* Left: Official Logos and App Title */}
-          <div className="flex items-center justify-between md:justify-start gap-3 sm:gap-4">
-            <div className="flex items-center gap-2.5 sm:gap-3">
-              <img
-                src="/assets/logo-bogota.png"
-                alt="Alcaldía Mayor de Bogotá"
-                className="h-9 sm:h-12 w-auto object-contain drop-shadow-xs"
-              />
-              <div className="h-7 sm:h-9 w-px bg-slate-300"></div>
-              <div className="flex flex-col">
-                <span className="text-xs sm:text-sm font-black text-bogota-red uppercase tracking-wider leading-none">
-                  Portal Transaccional
-                </span>
-                <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-tight mt-0.5">
-                  Alcaldía Mayor de Bogotá
-                </span>
-              </div>
-            </div>
-
-            {/* Campaign Logo for Mobile Right */}
-            <div className="flex md:hidden items-center gap-2">
-              <img
-                src="/assets/logo-campana.png"
-                alt="Aquí Sí Pasa"
-                className="h-10 w-auto object-contain"
-              />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <img
+              src="/assets/logo-bogota.png"
+              alt="Alcaldía Mayor de Bogotá"
+              className="h-8 sm:h-11 w-auto object-contain drop-shadow-2xs"
+            />
+            <div className="h-6 sm:h-8 w-px bg-slate-200"></div>
+            <div className="flex flex-col">
+              <span className="text-[11px] sm:text-xs font-black text-bogota-red uppercase tracking-wider leading-none">
+                Portal Transaccional
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-tight mt-0.5">
+                Alcaldía Mayor de Bogotá
+              </span>
             </div>
           </div>
 
-          {/* Slogan Banner (Center) */}
+          {/* Slogan Banner (Center - Desktop only) */}
           <div className="hidden lg:flex flex-col text-center">
             <h1 className="text-sm xl:text-base font-black text-slate-900 tracking-tight leading-tight">
               Entre todos construimos la Bogotá
@@ -314,129 +309,117 @@ export default function App() {
             </p>
           </div>
 
-          {/* Right: Campaign Logo + Game Controls & Gamification */}
-          <div className="flex items-center justify-between md:justify-end gap-2.5 sm:gap-3">
-            {/* Desktop Campaign Logo */}
-            <div className="hidden md:flex items-center">
-              <img
-                src="/assets/logo-campana.png"
-                alt="Aquí Sí Pasa - Bogotá Mi Ciudad, Mi Casa"
-                className="h-11 sm:h-13 w-auto object-contain"
-              />
-            </div>
+          {/* Right: Campaign Logo + Game Badges & Controls */}
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            {/* Campaign Logo */}
+            <img
+              src="/assets/logo-campana.png"
+              alt="Aquí Sí Pasa - Bogotá Mi Ciudad, Mi Casa"
+              className="h-8 sm:h-11 w-auto object-contain"
+            />
 
             {/* Score & Progress Badges */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 font-bold text-xs sm:text-sm text-slate-800">
-                <span className="hidden sm:inline text-slate-500 text-xs">Progreso:</span>
-                <span className="px-1.5 py-0.5 rounded-md bg-bogota-red text-white font-black text-xs">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <div className="flex items-center gap-1 bg-slate-100 px-2 sm:px-2.5 py-1 rounded-lg border border-slate-200 font-bold text-[11px] sm:text-xs text-slate-700">
+                <span className="hidden sm:inline text-slate-500">Progreso:</span>
+                <span className="px-1.5 py-0.2 rounded bg-bogota-red text-white font-black">
                   {progressCount}/15
                 </span>
               </div>
-              <div className="flex items-center gap-1 bg-amber-100 text-amber-950 px-2.5 sm:px-3 py-1.5 rounded-xl border border-amber-200 font-black text-xs sm:text-sm shadow-xs">
-                <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
+              <div className="flex items-center gap-1 bg-amber-50 text-amber-900 px-2 sm:px-2.5 py-1 rounded-lg border border-amber-200 font-black text-[11px] sm:text-xs shadow-2xs">
+                <Trophy className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-600" />
                 <span>{score} pts</span>
               </div>
             </div>
 
-            {/* Quick Action Buttons */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Action Buttons */}
+            <div className="flex items-center gap-1 sm:gap-1.5">
               <button
                 onClick={handleToggleSound}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 flex items-center justify-center transition-all shadow-xs"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 flex items-center justify-center transition-all"
                 title={isMuted ? 'Activar Sonido' : 'Silenciar'}
               >
-                {isMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700" />}
+                {isMuted ? <VolumeX className="w-4 h-4 text-red-500" /> : <Volume2 className="w-4 h-4 text-slate-700" />}
               </button>
 
               <button
                 onClick={handleReset}
-                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-full bg-slate-100 hover:bg-red-50 active:scale-95 text-slate-700 hover:text-bogota-red border border-slate-200 hover:border-red-300 font-bold text-xs sm:text-sm transition-all shadow-xs"
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full bg-slate-100 hover:bg-red-50 active:scale-95 text-slate-700 hover:text-bogota-red border border-slate-200 hover:border-red-300 font-bold text-xs transition-all"
               >
-                <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">Reiniciar</span>
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Reiniciar</span>
               </button>
             </div>
           </div>
         </div>
-
-        {/* Mobile/Tablet Slogan Bar */}
-        <div className="flex lg:hidden flex-col text-center pt-2 mt-1 border-t border-slate-100">
-          <h2 className="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight leading-tight">
-            Entre todos construimos la Bogotá
-          </h2>
-          <p className="text-[11px] sm:text-xs font-medium text-slate-600">
-            Soluciones compartidas para <span className="font-black text-bogota-red">la ciudadanía</span>
-          </p>
-        </div>
       </header>
 
       {/* ========================================================================= */}
-      {/* 2. MAIN LAYOUT: RESPONSIVE SPLIT SCREEN (GRID 12 COLS EN DESKTOP)        */}
+      {/* 2. MAIN CONTENT AREA (MOBILE COMPACT & DESKTOP SPLIT-SCREEN)              */}
       {/* ========================================================================= */}
-      <main className="max-w-7xl mx-auto w-full flex-1 p-3 sm:p-5 lg:p-6 flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-stretch">
+      <main className="max-w-7xl mx-auto w-full flex-1 p-2.5 sm:p-4 lg:p-6 flex flex-col lg:grid lg:grid-cols-12 gap-3 sm:gap-5 lg:gap-8 items-center lg:items-start justify-between">
         
         {/* ========================================================================= */}
-        {/* COLUMNA IZQUIERDA (lg:col-span-5): TARJETA PEDAGÓGICA + DOCK INVENTARIO   */}
+        {/* DESKTOP LEFT COLUMN (lg:col-span-5): TARJETA PEDAGÓGICA PERMANENTE        */}
         {/* ========================================================================= */}
-        <section className="lg:col-span-5 flex flex-col gap-4 w-full justify-between">
+        <section className="hidden lg:flex lg:col-span-5 flex-col gap-4 w-full">
           
-          {/* A. TARJETA PEDAGÓGICA DINÁMICA */}
-          <div className="w-full bg-white text-slate-900 border-2 border-bogota-red rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-lg relative overflow-hidden transition-all duration-300">
+          {/* Tarjeta Pedagógica Dinámica en Desktop */}
+          <div className="w-full bg-white text-slate-900 border-2 border-bogota-red rounded-3xl p-5 shadow-sm relative overflow-hidden transition-all duration-300">
             {/* Watermark icon */}
-            <div className="absolute -right-6 -bottom-6 text-red-50 pointer-events-none select-none opacity-40">
-              <BlockIcon name={activeBlock.iconName} className="w-36 h-36" />
+            <div className="absolute -right-6 -bottom-6 text-red-50 pointer-events-none select-none opacity-50">
+              <BlockIcon name={activeBlock.iconName} className="w-40 h-40" />
             </div>
 
-            <div className="relative z-10 flex flex-col gap-2.5 sm:gap-3">
+            <div className="relative z-10 flex flex-col gap-3">
               {/* Header: Icon, Category & Title */}
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-sm shrink-0"
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-xs shrink-0"
                     style={{ backgroundColor: activeBlock.color }}
                   >
-                    <BlockIcon name={activeBlock.iconName} className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <BlockIcon name={activeBlock.iconName} className="w-6 h-6" />
                   </div>
                   <div>
-                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 inline-block mb-0.5">
+                    <span className="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 inline-block mb-0.5">
                       {activeBlock.categoryLabel} • Bloque #{activeBlock.number}
                     </span>
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-tight">
+                    <h3 className="text-lg font-black text-slate-900 tracking-tight leading-tight">
                       {activeBlock.name}
                     </h3>
                   </div>
                 </div>
 
-                {/* Placed status badge */}
+                {/* Status Badge */}
                 {placedBlockIds.includes(activeBlock.id) ? (
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px] shrink-0">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="hidden sm:inline">Ensamblado</span>
+                  <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>Ensamblado</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-[11px] shrink-0 animate-pulse">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-xs shrink-0 animate-pulse">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
                     <span>Toca la casa</span>
                   </div>
                 )}
               </div>
 
               {/* Description & Citizen Example */}
-              <div className="flex flex-col gap-2 pt-1 text-slate-700">
-                <div className="bg-slate-50 p-2.5 sm:p-3 rounded-xl border border-slate-100">
-                  <p className="text-[10px] sm:text-[11px] font-black text-bogota-red uppercase tracking-wider mb-0.5">
+              <div className="flex flex-col gap-2.5 pt-1 text-slate-700">
+                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                  <p className="text-[11px] font-black text-bogota-red uppercase tracking-wider mb-0.5">
                     ¿Qué es?
                   </p>
-                  <p className="text-xs sm:text-sm leading-snug font-medium text-slate-800">
+                  <p className="text-sm leading-snug font-medium text-slate-800">
                     {activeBlock.description}
                   </p>
                 </div>
-                <div className="bg-amber-50/90 p-2.5 sm:p-3 rounded-xl border border-amber-100">
-                  <p className="text-[10px] sm:text-[11px] font-black text-amber-800 uppercase tracking-wider mb-0.5">
+                <div className="bg-amber-50/90 p-3 rounded-2xl border border-amber-100">
+                  <p className="text-[11px] font-black text-amber-800 uppercase tracking-wider mb-0.5">
                     Ejemplo tangible en la vida real:
                   </p>
-                  <p className="text-xs sm:text-xs leading-snug font-semibold text-slate-800">
+                  <p className="text-xs leading-snug font-semibold text-slate-800">
                     {activeBlock.example}
                   </p>
                 </div>
@@ -444,30 +427,29 @@ export default function App() {
             </div>
           </div>
 
-          {/* B. DOCK DE INVENTARIO TÁCTIL (GRID ADAPTATIVO) */}
-          <div className="w-full bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-xl flex flex-col gap-3">
-            {/* Header and filters */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          {/* Desktop Inventory Dock */}
+          <div className="w-full bg-white border border-slate-200 rounded-3xl p-4 shadow-sm flex flex-col gap-3">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-bogota-red text-white flex items-center justify-center font-bold text-xs">
                   <Layers className="w-4 h-4" />
                 </div>
-                <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-tight">
-                  Inventario de Bloques ({15 - progressCount} pendientes)
+                <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">
+                  Inventario ({15 - progressCount} pendientes)
                 </h4>
               </div>
 
-              {/* Filter tabs */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
+              {/* Filter Tabs */}
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => {
                     soundFx.playTap();
                     setCategoryFilter('all');
                   }}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all whitespace-nowrap ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
                     categoryFilter === 'all'
-                      ? 'bg-white text-slate-900 shadow-xs'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
                   Todos (15)
@@ -477,10 +459,10 @@ export default function App() {
                     soundFx.playTap();
                     setCategoryFilter('unplaced');
                   }}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all whitespace-nowrap ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
                     categoryFilter === 'unplaced'
                       ? 'bg-bogota-red text-white shadow-xs'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
                   Pendientes
@@ -490,32 +472,19 @@ export default function App() {
                     soundFx.playTap();
                     setCategoryFilter('transaccional');
                   }}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all whitespace-nowrap ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
                     categoryFilter === 'transaccional'
                       ? 'bg-bogota-red text-white shadow-xs'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
                   Transaccional
                 </button>
-                <button
-                  onClick={() => {
-                    soundFx.playTap();
-                    setCategoryFilter('seguridad');
-                  }}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all whitespace-nowrap ${
-                    categoryFilter === 'seguridad'
-                      ? 'bg-bogota-red text-white shadow-xs'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                  }`}
-                >
-                  Seguridad
-                </button>
               </div>
             </div>
 
-            {/* Grid of building block cards (2 cols mobile, 3 cols tablet, 3 cols desktop) */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5 max-h-[260px] sm:max-h-[320px] lg:max-h-[380px] overflow-y-auto no-scrollbar pr-1">
+            {/* Grid 3 cols */}
+            <div className="grid grid-cols-3 gap-2.5 max-h-[320px] overflow-y-auto no-scrollbar pr-1">
               {filteredBlocks.map(block => {
                 const isPlaced = placedBlockIds.includes(block.id);
                 const isSelected = activeBlockId === block.id;
@@ -524,18 +493,17 @@ export default function App() {
                   <div
                     key={block.id}
                     onPointerDown={e => handlePointerDownPiece(e, block.id)}
-                    className={`relative min-h-[72px] sm:min-h-[82px] rounded-xl sm:rounded-2xl p-2 sm:p-2.5 flex flex-col justify-between border-2 transition-all cursor-grab active:cursor-grabbing ${
+                    className={`relative min-h-[86px] rounded-2xl p-2.5 flex flex-col justify-between border-2 transition-all cursor-grab active:cursor-grabbing ${
                       isSelected
-                        ? 'bg-amber-50 text-slate-900 border-bogota-yellow shadow-lg scale-[1.02] ring-2 ring-bogota-yellow'
+                        ? 'bg-amber-50 border-bogota-yellow shadow-md scale-[1.02] ring-2 ring-bogota-yellow'
                         : isPlaced
-                        ? 'bg-slate-800/80 text-slate-400 border-emerald-500/50 opacity-80'
-                        : 'bg-slate-800 text-slate-200 border-slate-700 hover:border-slate-500 shadow-xs'
+                        ? 'bg-slate-50 border-emerald-300 opacity-80'
+                        : 'bg-white border-slate-200 hover:border-slate-300 shadow-2xs'
                     }`}
                   >
-                    {/* Header: Number & Status */}
                     <div className="flex items-center justify-between">
                       <span
-                        className="text-[9px] sm:text-[10px] font-black uppercase px-1.5 py-0.5 rounded text-white"
+                        className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded text-white"
                         style={{ backgroundColor: block.color }}
                       >
                         #{block.number}
@@ -545,25 +513,23 @@ export default function App() {
                           <Check className="w-3 h-3 stroke-[3]" />
                         </span>
                       ) : (
-                        <span className="w-2 h-2 rounded-full bg-slate-600"></span>
+                        <span className="w-2 h-2 rounded-full bg-slate-300"></span>
                       )}
                     </div>
 
-                    {/* Icon & Literal Name */}
                     <div className="flex items-center gap-1.5 my-auto">
                       <div
-                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-white shrink-0 shadow-2xs"
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0 shadow-2xs"
                         style={{ backgroundColor: block.color }}
                       >
-                        <BlockIcon name={block.iconName} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <BlockIcon name={block.iconName} className="w-4 h-4" />
                       </div>
-                      <span className="text-[11px] sm:text-xs font-black leading-tight line-clamp-2">
+                      <span className="text-xs font-black text-slate-800 leading-tight line-clamp-2">
                         {block.name}
                       </span>
                     </div>
 
-                    {/* Footer Action Tag */}
-                    <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-bold text-slate-400">
+                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
                       <span className="truncate">{block.categoryLabel}</span>
                       <span className="text-bogota-red font-black shrink-0">
                         {isPlaced ? 'Listo' : 'Encajar'}
@@ -576,8 +542,8 @@ export default function App() {
 
             {/* Quick Demo Mode trigger */}
             {progressCount < 15 && (
-              <div className="flex items-center justify-between pt-1 border-t border-slate-700 text-xs text-slate-400">
-                <span>💡 Toca una ficha y luego su ranura en la casa</span>
+              <div className="flex items-center justify-between pt-1 border-t border-slate-100 text-xs text-slate-500">
+                <span>💡 Toca una ficha y luego su espacio en la casa</span>
                 <button
                   onClick={handleAutoComplete}
                   className="font-bold text-slate-400 hover:text-bogota-red transition-colors underline"
@@ -590,12 +556,44 @@ export default function App() {
         </section>
 
         {/* ========================================================================= */}
-        {/* COLUMNA DERECHA (lg:col-span-7): LA CASA TANGRAM CENTRAL + SIMULACIÓN     */}
+        {/* ESCENARIO CENTRAL (CASA TANGRAM - SIEMPRE VISIBLE EN MÓVIL Y DESKTOP)    */}
         {/* ========================================================================= */}
-        <section className="lg:col-span-7 flex flex-col items-center justify-center w-full relative">
+        <section className="w-full lg:col-span-7 flex flex-col items-center justify-center relative">
           
+          {/* Mobile Active Block 1-Line Action Banner (Tap opens Modal/Bottom Sheet) */}
+          <div className="w-full lg:hidden flex items-center justify-between bg-white border border-slate-200 rounded-2xl px-3 py-2 shadow-2xs mb-2">
+            <div className="flex items-center gap-2 overflow-hidden">
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0 shadow-2xs"
+                style={{ backgroundColor: activeBlock.color }}
+              >
+                <BlockIcon name={activeBlock.iconName} className="w-4 h-4" />
+              </div>
+              <div className="flex flex-col truncate">
+                <span className="text-[10px] font-bold text-slate-500 leading-none">
+                  Bloque #{activeBlock.number}
+                </span>
+                <span className="text-xs font-black text-slate-900 truncate leading-tight">
+                  {activeBlock.name}
+                </span>
+              </div>
+            </div>
+
+            {/* Button to open Pedagogical Modal/Bottom Sheet */}
+            <button
+              onClick={() => {
+                soundFx.playTap();
+                setShowConceptModal(true);
+              }}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 active:scale-95 text-bogota-red font-black text-xs shrink-0 transition-all border border-red-200"
+            >
+              <Info className="w-3.5 h-3.5" />
+              <span>Ver concepto</span>
+            </button>
+          </div>
+
           {/* Bogotá Sky Stars (Top Right) */}
-          <div className="absolute top-2 right-4 sm:right-8 flex items-center gap-2 pointer-events-none z-10">
+          <div className="absolute top-1 right-3 sm:right-6 flex items-center gap-1.5 pointer-events-none z-10">
             <div className="text-bogota-yellow drop-shadow-[0_0_8px_rgba(253,195,0,0.8)] text-2xl sm:text-4xl font-black animate-bounce-subtle">
               ★
             </div>
@@ -607,13 +605,13 @@ export default function App() {
             </div>
           </div>
 
-          {/* Interactive SVG House Canvas (Fluid viewBox 0 0 800 1000) */}
-          <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl aspect-[800/1000] flex items-center justify-center my-auto">
+          {/* Interactive SVG House Canvas (Fits Mobile Height ~320-380px without scrolling) */}
+          <div className="relative w-full max-w-[340px] sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-[330px] sm:h-[420px] lg:h-[540px] flex items-center justify-center my-auto">
             <svg
               ref={svgHouseRef}
               viewBox="0 0 800 1000"
               preserveAspectRatio="xMidYMid meet"
-              className="w-full h-full drop-shadow-2xl overflow-visible"
+              className="w-full h-full drop-shadow-xl overflow-visible"
             >
               <defs>
                 {/* LEGO Stud Pattern for Empty Slots */}
@@ -836,15 +834,15 @@ export default function App() {
 
             {/* Victory Celebration Modal Overlay */}
             {isCompleted && !isSimulationMode && (
-              <div className="absolute inset-x-3 sm:inset-x-6 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-xl border-4 border-bogota-yellow p-6 sm:p-8 rounded-3xl shadow-2xl text-center flex flex-col items-center gap-3 sm:gap-4 z-30 animate-bounce-subtle text-slate-900">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-bogota-red text-bogota-yellow flex items-center justify-center text-3xl sm:text-4xl font-black shadow-lg">
+              <div className="absolute inset-x-2 sm:inset-x-6 top-1/2 -translate-y-1/2 bg-white border-4 border-bogota-yellow p-5 sm:p-8 rounded-3xl shadow-2xl text-center flex flex-col items-center gap-3 z-30 animate-bounce-subtle text-slate-900">
+                <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-bogota-red text-bogota-yellow flex items-center justify-center text-2xl sm:text-4xl font-black shadow-lg">
                   ★
                 </div>
                 <div>
                   <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-bogota-red bg-red-50 px-3 py-1 rounded-md">
                     ¡CASA DE BOGOTÁ ENSAMBLADA!
                   </span>
-                  <h3 className="text-xl sm:text-3xl font-black text-slate-900 mt-1">
+                  <h3 className="text-lg sm:text-3xl font-black text-slate-900 mt-1">
                     ¡Felicitaciones a la Ciudadanía!
                   </h3>
                   <p className="text-xs sm:text-sm font-semibold text-slate-600 max-w-md mt-1">
@@ -852,17 +850,17 @@ export default function App() {
                   </p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center gap-3 pt-2 w-full justify-center">
+                <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-1 w-full justify-center">
                   <button
                     onClick={startSimulation}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-bogota-red hover:bg-red-700 active:scale-95 text-white font-extrabold text-sm sm:text-base rounded-2xl shadow-xl transition-all"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 bg-bogota-red hover:bg-red-700 active:scale-95 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg transition-all"
                   >
-                    <Play className="w-5 h-5 fill-white" />
+                    <Play className="w-4 h-4 fill-white" />
                     <span>Iniciar Simulación de Trámite</span>
                   </button>
                   <button
                     onClick={handleReset}
-                    className="w-full sm:w-auto px-5 py-3.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-bold text-sm rounded-2xl transition-all"
+                    className="w-full sm:w-auto px-4 py-3 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-bold text-xs rounded-xl transition-all"
                   >
                     Volver a Jugar
                   </button>
@@ -873,26 +871,26 @@ export default function App() {
 
           {/* Simulation Step HUD Bar */}
           {isSimulationMode && (
-            <div className="w-full max-w-2xl bg-slate-900/95 backdrop-blur-xl border-2 border-bogota-yellow text-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-3 z-20 mt-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-bogota-yellow text-slate-900 font-black flex items-center justify-center text-lg shadow-md shrink-0">
+            <div className="w-full max-w-2xl bg-white border-2 border-bogota-yellow text-slate-900 rounded-2xl p-3 sm:p-4 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-2.5 z-20 mt-2">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-bogota-yellow text-slate-900 font-black flex items-center justify-center text-sm sm:text-base shadow-xs shrink-0">
                   {currentSimStep + 1}
                 </div>
                 <div>
-                  <span className="text-[10px] sm:text-xs font-black uppercase text-amber-400 tracking-wider">
+                  <span className="text-[9px] sm:text-[10px] font-black uppercase text-amber-800 tracking-wider">
                     {currentSimData.entity}
                   </span>
-                  <h4 className="text-sm sm:text-base font-black tracking-tight leading-tight">
+                  <h4 className="text-xs sm:text-sm font-black tracking-tight leading-tight">
                     {currentSimData.title}
                   </h4>
-                  <p className="text-[11px] sm:text-xs font-medium text-slate-300 line-clamp-2">
+                  <p className="text-[10px] sm:text-xs font-medium text-slate-600 line-clamp-1 sm:line-clamp-2">
                     {currentSimData.description}
                   </p>
                 </div>
               </div>
 
               {/* Controls */}
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   onClick={() => {
                     soundFx.playTap();
@@ -900,9 +898,9 @@ export default function App() {
                     setActiveBlockId(SIMULATION_STEPS[Math.max(0, currentSimStep - 1)].blockId);
                   }}
                   disabled={currentSimStep === 0}
-                  className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 flex items-center justify-center text-white"
+                  className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 flex items-center justify-center text-slate-700"
                 >
-                  <SkipBack className="w-4 h-4" />
+                  <SkipBack className="w-3.5 h-3.5" />
                 </button>
 
                 <button
@@ -910,9 +908,9 @@ export default function App() {
                     soundFx.playTap();
                     setIsSimPlaying(!isSimPlaying);
                   }}
-                  className="px-3.5 py-2 rounded-xl bg-bogota-yellow hover:bg-amber-400 text-slate-900 font-black flex items-center gap-1.5 shadow-md active:scale-95 text-xs"
+                  className="px-3 py-1.5 rounded-lg bg-bogota-yellow hover:bg-amber-400 text-slate-900 font-black flex items-center gap-1 shadow-xs active:scale-95 text-xs"
                 >
-                  {isSimPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-slate-900" />}
+                  {isSimPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-slate-900" />}
                   <span>{isSimPlaying ? 'Pausar' : 'Play'}</span>
                 </button>
 
@@ -925,14 +923,14 @@ export default function App() {
                     }
                   }}
                   disabled={currentSimStep === SIMULATION_STEPS.length - 1}
-                  className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 flex items-center justify-center text-white"
+                  className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 flex items-center justify-center text-slate-700"
                 >
-                  <SkipForward className="w-4 h-4" />
+                  <SkipForward className="w-3.5 h-3.5" />
                 </button>
 
                 <button
                   onClick={() => setIsSimulationMode(false)}
-                  className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-900/50 text-slate-300 hover:text-white font-bold text-xs"
+                  className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-bogota-red font-bold text-xs"
                 >
                   Salir
                 </button>
@@ -940,10 +938,168 @@ export default function App() {
             </div>
           )}
         </section>
+
+        {/* ========================================================================= */}
+        {/* MOBILE DOCK COMPACTO (2 FILAS O SCROLL HORIZONTAL DE ALTO CONTRASTE)      */}
+        {/* ========================================================================= */}
+        <section className="w-full lg:hidden bg-white border border-slate-200 rounded-2xl p-2.5 shadow-sm mt-1">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[11px] font-black text-slate-900 uppercase">
+              Inventario ({15 - progressCount} pendientes)
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => {
+                  soundFx.playTap();
+                  setCategoryFilter('all');
+                }}
+                className={`px-2 py-0.5 rounded text-[10px] font-black ${
+                  categoryFilter === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
+                }`}
+              >
+                Todos
+              </button>
+              <button
+                onClick={() => {
+                  soundFx.playTap();
+                  setCategoryFilter('unplaced');
+                }}
+                className={`px-2 py-0.5 rounded text-[10px] font-black ${
+                  categoryFilter === 'unplaced' ? 'bg-bogota-red text-white' : 'bg-slate-100 text-slate-600'
+                }`}
+              >
+                Pendientes
+              </button>
+            </div>
+          </div>
+
+          {/* 2-row scrollable grid on mobile (fits in 130px height) */}
+          <div className="grid grid-flow-col auto-cols-[145px] grid-rows-2 gap-2 overflow-x-auto no-scrollbar py-0.5">
+            {filteredBlocks.map(block => {
+              const isPlaced = placedBlockIds.includes(block.id);
+              const isSelected = activeBlockId === block.id;
+
+              return (
+                <div
+                  key={block.id}
+                  onPointerDown={e => handlePointerDownPiece(e, block.id)}
+                  className={`relative h-[62px] rounded-xl p-1.5 flex flex-col justify-between border-2 transition-all cursor-grab active:cursor-grabbing ${
+                    isSelected
+                      ? 'bg-amber-50 border-bogota-yellow shadow-sm ring-1 ring-bogota-yellow'
+                      : isPlaced
+                      ? 'bg-slate-50 border-emerald-300 opacity-75'
+                      : 'bg-white border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="text-[8px] font-black uppercase px-1 rounded text-white"
+                      style={{ backgroundColor: block.color }}
+                    >
+                      #{block.number}
+                    </span>
+                    {isPlaced ? (
+                      <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px]">
+                        <Check className="w-2.5 h-2.5 stroke-[3]" />
+                      </span>
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <div
+                      className="w-5 h-5 rounded flex items-center justify-center text-white shrink-0"
+                      style={{ backgroundColor: block.color }}
+                    >
+                      <BlockIcon name={block.iconName} className="w-3 h-3" />
+                    </div>
+                    <span className="text-[10px] font-extrabold text-slate-800 leading-tight truncate">
+                      {block.name}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       </main>
 
       {/* ========================================================================= */}
-      {/* FLOATING DRAGGED PIECE AVATAR (Follows touch pointer)                     */}
+      {/* 3. MODAL / BOTTOM SHEET SUAVE DE CONCEPTO Y EJEMPLO (MOBILE / TABLET)     */}
+      {/* ========================================================================= */}
+      {showConceptModal && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+          {/* Backdrop overlay */}
+          <div
+            onClick={() => setShowConceptModal(false)}
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+          ></div>
+
+          {/* Bottom Sheet Modal Container */}
+          <div className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl border-t-4 sm:border-2 border-bogota-red p-5 sm:p-6 shadow-2xl z-10 flex flex-col gap-4 max-h-[85vh] overflow-y-auto animate-in slide-in-from-bottom duration-200">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center text-white shadow-xs"
+                  style={{ backgroundColor: activeBlock.color }}
+                >
+                  <BlockIcon name={activeBlock.iconName} className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 inline-block mb-0.5">
+                    {activeBlock.categoryLabel} • Bloque #{activeBlock.number}
+                  </span>
+                  <h3 className="text-lg font-black text-slate-900 tracking-tight leading-tight">
+                    {activeBlock.name}
+                  </h3>
+                </div>
+              </div>
+
+              {/* Close button */}
+              <button
+                onClick={() => setShowConceptModal(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Description "¿Qué es?" */}
+            <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
+              <p className="text-[11px] font-black text-bogota-red uppercase tracking-wider mb-1">
+                ¿Qué es?
+              </p>
+              <p className="text-sm leading-snug font-medium text-slate-800">
+                {activeBlock.description}
+              </p>
+            </div>
+
+            {/* Citizen Example */}
+            <div className="bg-amber-50/90 p-3.5 rounded-2xl border border-amber-100">
+              <p className="text-[11px] font-black text-amber-800 uppercase tracking-wider mb-1">
+                Ejemplo tangible en la vida real:
+              </p>
+              <p className="text-xs leading-snug font-semibold text-slate-800">
+                {activeBlock.example}
+              </p>
+            </div>
+
+            {/* Primary Action Button to close & place in house */}
+            <button
+              onClick={() => setShowConceptModal(false)}
+              className="w-full py-3.5 bg-bogota-red hover:bg-red-700 active:scale-95 text-white font-extrabold text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2"
+            >
+              <span>Entendido / Continuar jugando</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 4. FLOATING DRAGGED PIECE AVATAR (Follows touch pointer)                  */}
       {/* ========================================================================= */}
       {dragState.isDragging && dragState.blockId && (
         <div
@@ -958,9 +1114,9 @@ export default function App() {
             if (!block) return null;
             return (
               <div
-                className="w-48 sm:w-56 h-20 sm:h-24 rounded-2xl p-2.5 bg-white/95 text-slate-900 border-3 border-bogota-yellow shadow-2xl flex flex-col justify-between scale-105 rotate-2 backdrop-blur-md"
+                className="w-48 sm:w-56 h-20 sm:h-24 rounded-2xl p-2.5 bg-white text-slate-900 border-3 border-bogota-yellow shadow-2xl flex flex-col justify-between scale-105 rotate-2"
                 style={{
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.4), 0 0 25px rgba(255, 209, 0, 0.8)',
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.25), 0 0 25px rgba(255, 209, 0, 0.8)',
                 }}
               >
                 <div className="flex items-center justify-between">
