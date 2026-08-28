@@ -3,12 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --bogota-red: #D31424;
-  --bogota-red-dark: #B3001B;
+  --bogota-red: #CC0E35;
+  --bogota-red-dark: #99001B;
   --bogota-red-deep: #8A0A15;
-  --bogota-yellow: #FDC300;
-  --kiosk-width: 1080px;
-  --kiosk-height: 1920px;
+  --bogota-yellow: #FAB62D;
+  --bogota-black: #333333;
 }
 
 * {
@@ -24,11 +23,11 @@ body, html {
   width: 100%;
   min-height: 100%;
   background-color: #F8F9FA;
-  color: #1F2937;
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #333333;
+  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Custom Scrollbar for Dock if needed */
+/* Custom Scrollbar for Dock */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -39,7 +38,7 @@ body, html {
 
 /* LEGO Stud Procedural Gradients */
 .lego-stud-pattern {
-  background-color: #D31424;
+  background-color: #CC0E35;
   background-image: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 18%, rgba(0, 0, 0, 0.25) 36%, rgba(0, 0, 0, 0.45) 45%, transparent 48%);
   background-size: 32px 32px;
 }
@@ -53,18 +52,18 @@ body, html {
 /* Glowing slot beacon animation */
 @keyframes slotPulse {
   0% {
-    filter: drop-shadow(0 0 8px rgba(253, 195, 0, 0.7)) drop-shadow(0 0 20px rgba(253, 195, 0, 0.4));
-    stroke: #FDC300;
+    filter: drop-shadow(0 0 6px rgba(250, 182, 45, 0.7)) drop-shadow(0 0 15px rgba(250, 182, 45, 0.4));
+    stroke: #FAB62D;
     stroke-width: 6;
   }
   50% {
-    filter: drop-shadow(0 0 22px rgba(253, 195, 0, 1)) drop-shadow(0 0 45px rgba(253, 195, 0, 0.8));
-    stroke: #FFE58F;
-    stroke-width: 9;
+    filter: drop-shadow(0 0 18px rgba(250, 182, 45, 1)) drop-shadow(0 0 35px rgba(250, 182, 45, 0.8));
+    stroke: #FFD56B;
+    stroke-width: 8;
   }
   100% {
-    filter: drop-shadow(0 0 8px rgba(253, 195, 0, 0.7)) drop-shadow(0 0 20px rgba(253, 195, 0, 0.4));
-    stroke: #FDC300;
+    filter: drop-shadow(0 0 6px rgba(250, 182, 45, 0.7)) drop-shadow(0 0 15px rgba(250, 182, 45, 0.4));
+    stroke: #FAB62D;
     stroke-width: 6;
   }
 }
@@ -85,24 +84,8 @@ body, html {
   animation: laserDash 1.2s linear infinite;
 }
 
-/* Shiny Gold Shine Effect */
-@keyframes goldShimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.gold-shimmer {
-  background: linear-gradient(90deg, rgba(253, 195, 0, 0.1) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(253, 195, 0, 0.1) 100%);
-  background-size: 200% 100%;
-  animation: goldShimmer 2.5s infinite;
-}
-
 /* Tactile feedback classes */
 .touch-active-card:active {
-  transform: scale(0.96);
-  filter: brightness(0.95);
+  transform: scale(0.97);
+  filter: brightness(0.96);
 }

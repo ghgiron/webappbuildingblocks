@@ -8,25 +8,32 @@ export default {
     extend: {
       colors: {
         bogota: {
-          red: '#D31424',
-          'red-dark': '#B3001B',
+          red: '#CC0E35',
+          'red-dark': '#99001B',
           'red-deep': '#8A0A15',
-          'red-light': '#FFF1F2',
-          yellow: '#FDC300',
-          'yellow-dark': '#E5AB00',
-          'yellow-light': '#FEF9C3',
-          navy: '#0F172A',
-          dark: '#1F2937',
+          'red-light': '#FDF2F4',
+          yellow: '#FAB62D',
+          'yellow-dark': '#E5A218',
+          'yellow-light': '#FEF7E6',
+          blue: '#3366CC',
+          green: '#1B7A2E',
+          black: '#333333',
+          dark: '#111111',
+          gray: '#F8F9FA',
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['"Work Sans"', 'sans-serif'],
+        title: ['Montserrat', 'sans-serif'],
+        body: ['"Work Sans"', 'sans-serif'],
+      },
+      borderRadius: {
+        'bogota': '15px',
       },
       boxShadow: {
-        'kiosk-card': '0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
-        'kiosk-glow': '0 0 35px rgba(253, 195, 0, 0.65)',
-        'kiosk-red-glow': '0 0 35px rgba(211, 20, 36, 0.45)',
-        'lego-stud': 'inset 0 1px 2px rgba(255, 255, 255, 0.35), 0 2px 4px rgba(0, 0, 0, 0.25)',
+        'kiosk-card': '0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
+        'kiosk-glow': '0 0 25px rgba(250, 182, 45, 0.65)',
+        'kiosk-red-glow': '0 0 25px rgba(204, 14, 53, 0.35)',
       },
       animation: {
         'pulse-fast': 'pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
