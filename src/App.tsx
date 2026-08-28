@@ -153,7 +153,7 @@ export default function App() {
           setActiveBlockId(SIMULATION_STEPS[next].blockId);
           return next;
         });
-      }, 3600);
+      }, 4000);
     }
     return () => clearInterval(timer);
   }, [isSimulationMode, isSimPlaying]);
@@ -529,19 +529,19 @@ export default function App() {
               </div>
             </div>
 
-            {/* Re-open celebration button if completed & modal was closed */}
+            {/* Re-open celebration button if completed & modal was closed ("Felicitaciones") */}
             {isCompleted && !showCelebrationModal && !isSimulationMode && (
               <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
                 <button
                   onClick={() => setShowCelebrationModal(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[15px] bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-bold text-xs shadow-md transition-all active:scale-95"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[15px] bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"
                 >
                   <Eye className="w-3.5 h-3.5" />
-                  <span>Ver Felicitaciones</span>
+                  <span>Felicitaciones</span>
                 </button>
                 <button
                   onClick={startSimulation}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[15px] bg-[#CC0E35] hover:bg-red-700 text-white font-title font-bold text-xs shadow-md transition-all active:scale-95"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[15px] bg-[#CC0E35] hover:bg-red-700 text-white font-title font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
                   <span>Simulación</span>
@@ -629,7 +629,10 @@ export default function App() {
                 {BUILDING_BLOCKS.map(block => {
                   const isPlaced = placedBlockIds.includes(block.id);
                   const isActiveGuide = activeBlockId === block.id;
-                  const isSimActive = isSimulationMode && SIMULATION_STEPS[currentSimStep]?.blockId === block.id;
+                  const isSimActive = isSimulationMode && (
+                    SIMULATION_STEPS[currentSimStep]?.blockId === block.id ||
+                    SIMULATION_STEPS[currentSimStep]?.relatedBlockIds?.includes(block.id)
+                  );
                   const isAttic = ['mensajeria', 'observabilidad', 'programacion'].includes(block.id);
 
                   return (
@@ -655,7 +658,7 @@ export default function App() {
                         strokeLinejoin="round"
                         className={`transition-all duration-300 ${
                           isActiveGuide && !isPlaced ? 'animate-slot-guide' : ''
-                        } ${isSimActive ? 'drop-shadow-[0_0_25px_rgba(250,182,45,0.9)]' : ''}`}
+                        } ${isSimActive ? 'drop-shadow-[0_0_25px_rgba(250,182,45,0.95)] animate-pulse' : ''}`}
                       />
 
                       {/* Placed slot header & title in house */}
@@ -664,7 +667,7 @@ export default function App() {
                           <circle
                             cx={block.shape.centerX}
                             cy={block.shape.centerY - (isAttic ? 16 : 20)}
-                            r={isAttic ? 14 : 17}
+                            r={isAttic ? 13 : 17}
                             fill="rgba(255,255,255,0.22)"
                             stroke="rgba(255,255,255,0.4)"
                             strokeWidth="1.5"
@@ -673,7 +676,7 @@ export default function App() {
                             x={block.shape.centerX}
                             y={block.shape.centerY - (isAttic ? 11 : 14)}
                             fontFamily="Montserrat"
-                            fontSize={isAttic ? "11" : "13"}
+                            fontSize={isAttic ? "10.5" : "13"}
                             fontWeight="800"
                             fill="#FFFFFF"
                             textAnchor="middle"
@@ -682,20 +685,39 @@ export default function App() {
                             #{block.number}
                           </text>
 
-                          <text
-                            x={block.shape.centerX}
-                            y={block.shape.centerY + (isAttic ? 8 : 10)}
-                            fontFamily="Montserrat"
-                            fontSize={isAttic ? "10" : "13"}
-                            fontWeight="800"
-                            fill="#FFFFFF"
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                            className="tracking-tight"
-                            filter="drop-shadow(0 1px 2px rgba(0,0,0,0.45))"
-                          >
-                            {block.shortName}
-                          </text>
+                          {/* Bloque #6 en 2 líneas, resto en 1 línea */}
+                          {block.id === 'observabilidad' ? (
+                            <text
+                              x={block.shape.centerX}
+                              y={block.shape.centerY + 5}
+                              fontFamily="Montserrat"
+                              fontSize="9.5"
+                              fontWeight="800"
+                              fill="#FFFFFF"
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className="tracking-tight"
+                              filter="drop-shadow(0 1px 2px rgba(0,0,0,0.45))"
+                            >
+                              <tspan x={block.shape.centerX} dy="-2">Observabilidad</tspan>
+                              <tspan x={block.shape.centerX} dy="11">y analítica</tspan>
+                            </text>
+                          ) : (
+                            <text
+                              x={block.shape.centerX}
+                              y={block.shape.centerY + (isAttic ? 7 : 10)}
+                              fontFamily="Montserrat"
+                              fontSize={isAttic ? "10" : "13"}
+                              fontWeight="800"
+                              fill="#FFFFFF"
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className="tracking-tight"
+                              filter="drop-shadow(0 1px 2px rgba(0,0,0,0.45))"
+                            >
+                              {block.shortName}
+                            </text>
+                          )}
                         </g>
                       )}
 
@@ -704,24 +726,24 @@ export default function App() {
                         <g pointerEvents="none">
                           <circle
                             cx={block.shape.centerX}
-                            cy={block.shape.centerY}
-                            r={isActiveGuide ? (isAttic ? 19 : 22) : (isAttic ? 13 : 15)}
+                            cy={block.shape.centerY - (isAttic ? 6 : 0)}
+                            r={isActiveGuide ? (isAttic ? 17 : 22) : (isAttic ? 13 : 15)}
                             fill={isActiveGuide ? 'rgba(250, 182, 45, 0.95)' : 'rgba(0,0,0,0.35)'}
                             className={isActiveGuide ? 'animate-ping' : ''}
                           />
                           <circle
                             cx={block.shape.centerX}
-                            cy={block.shape.centerY}
-                            r={isActiveGuide ? (isAttic ? 16 : 18) : (isAttic ? 13 : 15)}
+                            cy={block.shape.centerY - (isAttic ? 6 : 0)}
+                            r={isActiveGuide ? (isAttic ? 15 : 18) : (isAttic ? 13 : 15)}
                             fill={isActiveGuide ? '#FAB62D' : 'rgba(0,0,0,0.5)'}
                             stroke="#FFFFFF"
                             strokeWidth={isActiveGuide ? 3 : 1}
                           />
                           <text
                             x={block.shape.centerX}
-                            y={block.shape.centerY + 1}
+                            y={block.shape.centerY - (isAttic ? 5 : -1)}
                             fontFamily="Montserrat"
-                            fontSize={isActiveGuide ? (isAttic ? '13' : '15') : (isAttic ? '11' : '12')}
+                            fontSize={isActiveGuide ? (isAttic ? '12' : '15') : (isAttic ? '10.5' : '12')}
                             fontWeight="800"
                             fill={isActiveGuide ? '#333333' : '#FFFFFF'}
                             textAnchor="middle"
@@ -733,11 +755,11 @@ export default function App() {
                           {/* Label beneath hint for active guide */}
                           {isActiveGuide && (
                             <rect
-                              x={block.shape.centerX - 50}
-                              y={block.shape.centerY + 22}
-                              width="100"
-                              height="20"
-                              rx="10"
+                              x={block.shape.centerX - (isAttic ? 42 : 50)}
+                              y={block.shape.centerY + (isAttic ? 14 : 22)}
+                              width={isAttic ? "84" : "100"}
+                              height={isAttic ? "18" : "20"}
+                              rx={isAttic ? "9" : "10"}
                               fill="#FAB62D"
                               stroke="#FFFFFF"
                               strokeWidth="1.5"
@@ -746,9 +768,9 @@ export default function App() {
                           {isActiveGuide && (
                             <text
                               x={block.shape.centerX}
-                              y={block.shape.centerY + 33}
+                              y={block.shape.centerY + (isAttic ? 23 : 33)}
                               fontFamily="Montserrat"
-                              fontSize="9.5"
+                              fontSize={isAttic ? "8.5" : "9.5"}
                               fontWeight="800"
                               fill="#333333"
                               textAnchor="middle"
@@ -793,20 +815,23 @@ export default function App() {
               </svg>
             </div>
 
-            {/* Simulation Step HUD Bar */}
+            {/* Simulation Step HUD Bar (Coreografía de 10 Pasos) */}
             {isSimulationMode && (
               <div className="w-full max-w-xl bg-white border-2 border-[#FAB62D] text-[#333333] rounded-[15px] p-3 shadow-lg flex items-center justify-between gap-3 z-20 mt-1 shrink-0">
                 <div className="flex items-center gap-2.5 truncate">
-                  <div className="w-8 h-8 rounded-[15px] bg-[#FAB62D] text-[#333333] font-title font-black flex items-center justify-center text-sm shadow-xs shrink-0">
-                    {currentSimStep + 1}
+                  <div className="w-9 h-9 rounded-[15px] bg-[#FAB62D] text-[#333333] font-title font-black flex items-center justify-center text-xs shadow-xs shrink-0">
+                    {currentSimStep + 1}/10
                   </div>
                   <div className="truncate">
                     <span className="font-title text-[9px] font-extrabold uppercase text-amber-800 tracking-wider">
-                      {currentSimData.entity}
+                      {currentSimData.entity} • Paso {currentSimStep + 1} de {SIMULATION_STEPS.length}
                     </span>
                     <h4 className="font-title text-xs font-extrabold tracking-tight leading-tight truncate">
                       {currentSimData.title}
                     </h4>
+                    <p className="font-body text-[11px] text-slate-600 truncate">
+                      {currentSimData.description}
+                    </p>
                   </div>
                 </div>
 
@@ -818,7 +843,7 @@ export default function App() {
                       setActiveBlockId(SIMULATION_STEPS[Math.max(0, currentSimStep - 1)].blockId);
                     }}
                     disabled={currentSimStep === 0}
-                    className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 flex items-center justify-center text-slate-700"
+                    className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 flex items-center justify-center text-slate-700 cursor-pointer"
                   >
                     <SkipBack className="w-3.5 h-3.5" />
                   </button>
@@ -828,7 +853,7 @@ export default function App() {
                       soundFx.playTap();
                       setIsSimPlaying(!isSimPlaying);
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-[#FAB62D] hover:bg-amber-400 text-[#333333] font-title font-bold flex items-center gap-1 shadow-2xs active:scale-95 text-xs"
+                    className="px-3 py-1.5 rounded-lg bg-[#FAB62D] hover:bg-amber-400 text-[#333333] font-title font-bold flex items-center gap-1 shadow-2xs active:scale-95 text-xs cursor-pointer"
                   >
                     {isSimPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
                     <span>{isSimPlaying ? 'Pausa' : 'Play'}</span>
@@ -843,14 +868,14 @@ export default function App() {
                       }
                     }}
                     disabled={currentSimStep === SIMULATION_STEPS.length - 1}
-                    className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 flex items-center justify-center text-slate-700"
+                    className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 flex items-center justify-center text-slate-700 cursor-pointer"
                   >
                     <SkipForward className="w-3.5 h-3.5" />
                   </button>
 
                   <button
                     onClick={() => setIsSimulationMode(false)}
-                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-[#CC0E35] font-title font-bold text-xs"
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-[#CC0E35] font-title font-bold text-xs cursor-pointer"
                   >
                     Salir
                   </button>
@@ -931,7 +956,7 @@ export default function App() {
               {!placedBlockIds.includes(activeBlock.id) && (
                 <button
                   onClick={() => handlePlaceBlock(activeBlock.id)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-[15px] bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-bold text-xs shadow-xs transition-all active:scale-95"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-[15px] bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-bold text-xs shadow-xs transition-all active:scale-95 cursor-pointer"
                 >
                   <Hammer className="w-3.5 h-3.5" />
                   <span>Colocar</span>
@@ -990,7 +1015,7 @@ export default function App() {
                   soundFx.playTap();
                   setShowConceptModal(true);
                 }}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[15px] bg-[#FEF7E6] hover:bg-[#FAB62D] text-[#333333] font-title font-bold text-xs shrink-0 border border-[#FAB62D] transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[15px] bg-[#FEF7E6] hover:bg-[#FAB62D] text-[#333333] font-title font-bold text-xs shrink-0 border border-[#FAB62D] transition-all cursor-pointer"
               >
                 <Info className="w-4 h-4 text-[#CC0E35]" />
                 <span>Ver completo</span>
@@ -1038,7 +1063,7 @@ export default function App() {
                     soundFx.playTap();
                     setShowConceptModal(true);
                   }}
-                  className="flex items-center gap-0.5 px-2 py-1 rounded-[12px] bg-[#FEF7E6] text-[#333333] font-title font-bold text-[10px] shrink-0 border border-[#FAB62D]"
+                  className="flex items-center gap-0.5 px-2 py-1 rounded-[12px] bg-[#FEF7E6] text-[#333333] font-title font-bold text-[10px] shrink-0 border border-[#FAB62D] cursor-pointer"
                 >
                   <Info className="w-3 h-3 text-[#CC0E35]" />
                   <span>Concepto</span>
@@ -1052,19 +1077,19 @@ export default function App() {
           {/* ===================================================================== */}
           <section className="flex-1 min-h-0 w-full flex items-center justify-center relative p-0.5 overflow-hidden">
             
-            {/* Re-open celebration button if completed & modal was closed on mobile/portrait */}
+            {/* Re-open celebration button if completed & modal was closed ("Felicitaciones") */}
             {isCompleted && !showCelebrationModal && !isSimulationMode && (
               <div className="absolute top-2 right-2 z-20 flex items-center gap-1.5">
                 <button
                   onClick={() => setShowCelebrationModal(true)}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-[12px] bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-bold text-[10px] sm:text-xs shadow-md transition-all active:scale-95"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-[12px] bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-bold text-[10px] sm:text-xs shadow-md transition-all active:scale-95 cursor-pointer"
                 >
                   <Eye className="w-3 h-3" />
                   <span>Felicitaciones</span>
                 </button>
                 <button
                   onClick={startSimulation}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-[12px] bg-[#CC0E35] hover:bg-red-700 text-white font-title font-bold text-[10px] sm:text-xs shadow-md transition-all active:scale-95"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-[12px] bg-[#CC0E35] hover:bg-red-700 text-white font-title font-bold text-[10px] sm:text-xs shadow-md transition-all active:scale-95 cursor-pointer"
                 >
                   <Play className="w-3 h-3 fill-current" />
                   <span>Simular</span>
@@ -1152,7 +1177,10 @@ export default function App() {
                 {BUILDING_BLOCKS.map(block => {
                   const isPlaced = placedBlockIds.includes(block.id);
                   const isActiveGuide = activeBlockId === block.id;
-                  const isSimActive = isSimulationMode && SIMULATION_STEPS[currentSimStep]?.blockId === block.id;
+                  const isSimActive = isSimulationMode && (
+                    SIMULATION_STEPS[currentSimStep]?.blockId === block.id ||
+                    SIMULATION_STEPS[currentSimStep]?.relatedBlockIds?.includes(block.id)
+                  );
                   const isAttic = ['mensajeria', 'observabilidad', 'programacion'].includes(block.id);
 
                   return (
@@ -1178,7 +1206,7 @@ export default function App() {
                         strokeLinejoin="round"
                         className={`transition-all duration-300 ${
                           isActiveGuide && !isPlaced ? 'animate-slot-guide' : ''
-                        } ${isSimActive ? 'drop-shadow-[0_0_25px_rgba(250,182,45,0.9)]' : ''}`}
+                        } ${isSimActive ? 'drop-shadow-[0_0_25px_rgba(250,182,45,0.95)] animate-pulse' : ''}`}
                       />
 
                       {/* Placed slot header & title in house */}
@@ -1187,7 +1215,7 @@ export default function App() {
                           <circle
                             cx={block.shape.centerX}
                             cy={block.shape.centerY - (isAttic ? 16 : 20)}
-                            r={isAttic ? 14 : 17}
+                            r={isAttic ? 13 : 17}
                             fill="rgba(255,255,255,0.22)"
                             stroke="rgba(255,255,255,0.4)"
                             strokeWidth="1.5"
@@ -1196,7 +1224,7 @@ export default function App() {
                             x={block.shape.centerX}
                             y={block.shape.centerY - (isAttic ? 11 : 14)}
                             fontFamily="Montserrat"
-                            fontSize={isAttic ? "11" : "13"}
+                            fontSize={isAttic ? "10.5" : "13"}
                             fontWeight="800"
                             fill="#FFFFFF"
                             textAnchor="middle"
@@ -1205,20 +1233,39 @@ export default function App() {
                             #{block.number}
                           </text>
 
-                          <text
-                            x={block.shape.centerX}
-                            y={block.shape.centerY + (isAttic ? 8 : 10)}
-                            fontFamily="Montserrat"
-                            fontSize={isAttic ? "10" : "13"}
-                            fontWeight="800"
-                            fill="#FFFFFF"
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                            className="tracking-tight"
-                            filter="drop-shadow(0 1px 2px rgba(0,0,0,0.45))"
-                          >
-                            {block.shortName}
-                          </text>
+                          {/* Bloque #6 en 2 líneas, resto en 1 línea */}
+                          {block.id === 'observabilidad' ? (
+                            <text
+                              x={block.shape.centerX}
+                              y={block.shape.centerY + 5}
+                              fontFamily="Montserrat"
+                              fontSize="9.5"
+                              fontWeight="800"
+                              fill="#FFFFFF"
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className="tracking-tight"
+                              filter="drop-shadow(0 1px 2px rgba(0,0,0,0.45))"
+                            >
+                              <tspan x={block.shape.centerX} dy="-2">Observabilidad</tspan>
+                              <tspan x={block.shape.centerX} dy="11">y analítica</tspan>
+                            </text>
+                          ) : (
+                            <text
+                              x={block.shape.centerX}
+                              y={block.shape.centerY + (isAttic ? 7 : 10)}
+                              fontFamily="Montserrat"
+                              fontSize={isAttic ? "10" : "13"}
+                              fontWeight="800"
+                              fill="#FFFFFF"
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className="tracking-tight"
+                              filter="drop-shadow(0 1px 2px rgba(0,0,0,0.45))"
+                            >
+                              {block.shortName}
+                            </text>
+                          )}
                         </g>
                       )}
 
@@ -1227,24 +1274,24 @@ export default function App() {
                         <g pointerEvents="none">
                           <circle
                             cx={block.shape.centerX}
-                            cy={block.shape.centerY}
-                            r={isActiveGuide ? (isAttic ? 19 : 22) : (isAttic ? 13 : 15)}
+                            cy={block.shape.centerY - (isAttic ? 6 : 0)}
+                            r={isActiveGuide ? (isAttic ? 17 : 22) : (isAttic ? 13 : 15)}
                             fill={isActiveGuide ? 'rgba(250, 182, 45, 0.95)' : 'rgba(0,0,0,0.35)'}
                             className={isActiveGuide ? 'animate-ping' : ''}
                           />
                           <circle
                             cx={block.shape.centerX}
-                            cy={block.shape.centerY}
-                            r={isActiveGuide ? (isAttic ? 16 : 18) : (isAttic ? 13 : 15)}
+                            cy={block.shape.centerY - (isAttic ? 6 : 0)}
+                            r={isActiveGuide ? (isAttic ? 15 : 18) : (isAttic ? 13 : 15)}
                             fill={isActiveGuide ? '#FAB62D' : 'rgba(0,0,0,0.5)'}
                             stroke="#FFFFFF"
                             strokeWidth={isActiveGuide ? 3 : 1}
                           />
                           <text
                             x={block.shape.centerX}
-                            y={block.shape.centerY + 1}
+                            y={block.shape.centerY - (isAttic ? 5 : -1)}
                             fontFamily="Montserrat"
-                            fontSize={isActiveGuide ? (isAttic ? '13' : '15') : (isAttic ? '11' : '12')}
+                            fontSize={isActiveGuide ? (isAttic ? '12' : '15') : (isAttic ? '10.5' : '12')}
                             fontWeight="800"
                             fill={isActiveGuide ? '#333333' : '#FFFFFF'}
                             textAnchor="middle"
@@ -1256,11 +1303,11 @@ export default function App() {
                           {/* Label beneath hint for active guide */}
                           {isActiveGuide && (
                             <rect
-                              x={block.shape.centerX - 50}
-                              y={block.shape.centerY + 22}
-                              width="100"
-                              height="20"
-                              rx="10"
+                              x={block.shape.centerX - (isAttic ? 42 : 50)}
+                              y={block.shape.centerY + (isAttic ? 14 : 22)}
+                              width={isAttic ? "84" : "100"}
+                              height={isAttic ? "18" : "20"}
+                              rx={isAttic ? "9" : "10"}
                               fill="#FAB62D"
                               stroke="#FFFFFF"
                               strokeWidth="1.5"
@@ -1269,9 +1316,9 @@ export default function App() {
                           {isActiveGuide && (
                             <text
                               x={block.shape.centerX}
-                              y={block.shape.centerY + 33}
+                              y={block.shape.centerY + (isAttic ? 23 : 33)}
                               fontFamily="Montserrat"
-                              fontSize="9.5"
+                              fontSize={isAttic ? "8.5" : "9.5"}
                               fontWeight="800"
                               fill="#333333"
                               textAnchor="middle"
@@ -1337,7 +1384,7 @@ export default function App() {
                     soundFx.playTap();
                     setCategoryFilter('all');
                   }}
-                  className={`px-3 py-1 text-[10px] sm:text-xs font-title font-semibold rounded-full transition-all ${
+                  className={`px-3 py-1 text-[10px] sm:text-xs font-title font-semibold rounded-full transition-all cursor-pointer ${
                     categoryFilter === 'all'
                       ? 'bg-[#CC0E35] text-white shadow-2xs'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -1350,7 +1397,7 @@ export default function App() {
                     soundFx.playTap();
                     setCategoryFilter('unplaced');
                   }}
-                  className={`px-3 py-1 text-[10px] sm:text-xs font-title font-semibold rounded-full transition-all ${
+                  className={`px-3 py-1 text-[10px] sm:text-xs font-title font-semibold rounded-full transition-all cursor-pointer ${
                     categoryFilter === 'unplaced'
                       ? 'bg-[#CC0E35] text-white shadow-2xs'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -1512,7 +1559,7 @@ export default function App() {
               {/* Close button */}
               <button
                 onClick={() => setShowConceptModal(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all"
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1545,7 +1592,7 @@ export default function App() {
                   soundFx.playTap();
                   setShowConceptModal(false);
                 }}
-                className="flex-1 py-3.5 bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-extrabold text-sm rounded-[15px] shadow-md transition-all flex items-center justify-center gap-2 active:scale-95"
+                className="flex-1 py-3.5 bg-[#FAB62D] hover:bg-[#CC0E35] text-[#333333] hover:text-white font-title font-extrabold text-sm rounded-[15px] shadow-md transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
               >
                 <span>¡Entendido!</span>
                 <ChevronRight className="w-4 h-4" />
@@ -1556,7 +1603,7 @@ export default function App() {
                     handlePlaceBlock(activeBlock.id);
                     setShowConceptModal(false);
                   }}
-                  className="px-5 py-3.5 bg-[#CC0E35] hover:bg-red-700 text-white font-title font-bold text-sm rounded-[15px] shadow-md transition-all flex items-center gap-1.5 active:scale-95"
+                  className="px-5 py-3.5 bg-[#CC0E35] hover:bg-red-700 text-white font-title font-bold text-sm rounded-[15px] shadow-md transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
                 >
                   <Hammer className="w-4 h-4" />
                   <span>Colocar ahora</span>

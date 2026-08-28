@@ -20,14 +20,14 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     shape: {
       pathD: 'M 275,35 L 325,35 L 295,215 L 195,215 Z',
       centerX: 255,
-      centerY: 125,
+      centerY: 145,
       shapeClass: 'clip-trapezoid-left-roof',
       clipPathCss: 'polygon(40% 0%, 100% 0%, 80% 100%, 0% 100%)',
     },
     simulationStep: {
-      order: 8,
-      stepTitle: 'Paso 8: Notificación Inmediata',
-      actionDescription: 'Se notifica formalmente el resultado del trámite a la ciudadanía.'
+      order: 7,
+      stepTitle: 'Paso 7: Notificación Automática',
+      actionDescription: 'La persona recibe una notificación automática por SMS y correo electrónico con el estado de su trámite.'
     }
   },
   {
@@ -46,7 +46,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     shape: {
       pathD: 'M 325,35 L 385,35 L 425,215 L 295,215 Z',
       centerX: 355,
-      centerY: 125,
+      centerY: 145,
       shapeClass: 'clip-trapezoid-top',
       clipPathCss: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)',
     }
@@ -67,7 +67,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     shape: {
       pathD: 'M 385,35 L 435,35 L 545,215 L 425,215 Z',
       centerX: 450,
-      centerY: 125,
+      centerY: 145,
       shapeClass: 'clip-slope-right-top',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 25% 100%)',
     }
@@ -112,6 +112,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       centerY: 325,
       shapeClass: 'clip-slope-right',
       clipPathCss: 'polygon(0% 0%, 75% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 10,
+      stepTitle: 'Paso 10: Medición de Experiencia',
+      actionDescription: 'Se presenta una breve encuesta para medir la percepción y calificar la experiencia del servicio digital.'
     }
   },
 
@@ -137,11 +142,6 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       centerY: 528,
       shapeClass: 'clip-rect-room',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-    },
-    simulationStep: {
-      order: 6,
-      stepTitle: 'Paso 6: Suscripción Jurídica Digital',
-      actionDescription: 'La ciudadanía suscribe el trámite digitalmente con plena validez legal.'
     }
   },
   {
@@ -166,8 +166,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 3,
-      stepTitle: 'Paso 3: Enrutamiento Automático',
-      actionDescription: 'El motor de workflow orquesta las revisiones y aprobaciones distritales.'
+      stepTitle: 'Paso 3: Orquestación Distrital',
+      actionDescription: 'El motor de procesos orquesta el trámite y coordina las validaciones entre las entidades distritales.'
     }
   },
   {
@@ -189,6 +189,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       centerY: 528,
       shapeClass: 'clip-rect-room',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 8,
+      stepTitle: 'Paso 8: Autorización Transparente',
+      actionDescription: 'La ciudadanía ingresa datos complementarios y autoriza de forma transparente el uso de su información.'
     }
   },
   {
@@ -213,8 +218,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 2,
-      stepTitle: 'Paso 2: Radicación y Asignación de Caso',
-      actionDescription: 'Se genera número oficial de radicado para seguimiento continuo de la ciudadanía.'
+      stepTitle: 'Paso 2: Radicación Oficial',
+      actionDescription: 'Realiza una solicitud formal y el sistema genera automáticamente un número de radicado para seguimiento.'
     }
   },
   {
@@ -239,8 +244,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     },
     simulationStep: {
       order: 1,
-      stepTitle: 'Paso 1: Autenticación de la Ciudadanía',
-      actionDescription: 'La ciudadanía inicia sesión con autenticación federada y credenciales seguras.'
+      stepTitle: 'Paso 1: Acceso Seguro',
+      actionDescription: 'La ciudadanía se identifica e ingresa al Portal Bogotá a través de la puerta principal de acceso seguro.'
     }
   },
   {
@@ -264,9 +269,9 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
     },
     simulationStep: {
-      order: 5,
-      stepTitle: 'Paso 5: Pago Virtual Seguro',
-      actionDescription: 'La ciudadanía liquida y cancela obligaciones con verificación instantánea.'
+      order: 9,
+      stepTitle: 'Paso 9: Recaudo y Pago Virtual',
+      actionDescription: 'Se procesa el pago virtual seguro de las obligaciones distritales asociadas a la solicitud.'
     }
   },
 
@@ -292,6 +297,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       centerY: 890,
       shapeClass: 'clip-foundation-left',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 4,
+      stepTitle: 'Paso 4: Huella Ciudadana',
+      actionDescription: 'El flujo consulta y registra los datos históricos en la analítica de la Huella Ciudadana.'
     }
   },
   {
@@ -315,9 +325,9 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
     },
     simulationStep: {
-      order: 7,
-      stepTitle: 'Paso 7: Registro en Bitácora Inmutable',
-      actionDescription: 'La transacción queda sellada de forma inmutable para la ciudadanía.'
+      order: 5,
+      stepTitle: 'Paso 5: Bitácora Inmutable',
+      actionDescription: 'Se registra de forma inmutable y cronológica el evento de dominio en la caja negra del Portal.'
     }
   },
   {
@@ -339,6 +349,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       centerY: 890,
       shapeClass: 'clip-foundation-mid-right',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    },
+    simulationStep: {
+      order: 6,
+      stepTitle: 'Paso 6: Actualización Base Maestra',
+      actionDescription: 'Se actualiza la información en la base maestra del Registro Social de Bogotá mediante el canal seguro de interoperabilidad distrital.'
     }
   },
   {
@@ -360,78 +375,83 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
       centerY: 890,
       shapeClass: 'clip-foundation-right',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-    },
-    simulationStep: {
-      order: 4,
-      stepTitle: 'Paso 4: Intercambio Seguro de Información',
-      actionDescription: 'Las entidades distritales consultan y validan datos internamente de forma segura.'
     }
   },
 ];
 
+// =========================================================================
+// SECUENCIA NARRATIVA OFICIAL DE SIMULACIÓN TRANSACCIONAL (10 PASOS)
+// =========================================================================
 export const SIMULATION_STEPS: SimulationStepData[] = [
   {
     order: 1,
     blockId: 'identidad',
-    title: '1. Identidad y acceso',
-    description: 'La ciudadanía accede al Portal Bogotá mediante autenticación federada y credenciales verificables con Keycloak/OAuth2.',
-    entity: 'Portal Bogotá / Autenticación Distrital',
-    citizenBenefit: 'Acceso unificado y seguro a todos los trámites distritales con una sola cuenta.'
+    title: 'Paso 1: Identidad y acceso',
+    description: 'La ciudadanía se identifica e ingresa al Portal Bogotá a través de la puerta principal de acceso seguro.',
+    entity: 'Portal Bogotá / Acceso Seguro'
   },
   {
     order: 2,
     blockId: 'registro',
-    title: '2. Registro',
-    description: 'El sistema radica la solicitud, valida los documentos y asigna un número de radicado oficial para seguimiento.',
-    entity: 'Ventanilla Única Distrital',
-    citizenBenefit: 'Número de radicado inmediato para seguimiento en tiempo real de la ciudadanía.'
+    title: 'Paso 2: Registro',
+    description: 'Realiza una solicitud formal y el sistema genera automáticamente un número de radicado para seguimiento.',
+    entity: 'Ventanilla Única Distrital'
   },
   {
     order: 3,
     blockId: 'workflow',
-    title: '3. Flujo de trabajo (Workflow)',
-    description: 'El motor orquesta y distribuye la solicitud entre las áreas técnicas y jurídicas competentes del Distrito.',
-    entity: 'Secretaría Distrital de Planeación',
-    citizenBenefit: 'Agilidad en la respuesta gracias a la orquestación y aprobaciones sin demoras.'
+    title: 'Paso 3: Flujo de trabajo (Workflow)',
+    description: 'El motor de procesos orquesta el trámite y coordina las validaciones entre las entidades distritales.',
+    entity: 'Motor de Procesos Distrital'
   },
   {
     order: 4,
-    blockId: 'interoperabilidad',
-    title: '4. Interoperabilidad',
-    description: 'Las entidades distritales comparten y validan la información de la solicitud de forma segura sin pedir papeles.',
-    entity: 'Malla de Interoperabilidad Distrital',
-    citizenBenefit: 'Cero trámites duplicados: las entidades validan datos internamente sin pedir fotocopias a la ciudadanía.'
+    blockId: 'dwh',
+    title: 'Paso 4: Integración DWH',
+    description: 'El flujo consulta y registra los datos históricos en la analítica de la Huella Ciudadana.',
+    entity: 'Repositorio Analítico / Huella Ciudadana'
   },
   {
     order: 5,
-    blockId: 'pagos',
-    title: '5. Pagos',
-    description: 'La pasarela virtual liquida y procesa el pago seguro de las obligaciones pendientes de la ciudadanía.',
-    entity: 'Secretaría Distrital de Hacienda',
-    citizenBenefit: 'Pagos virtuales 100% seguros con confirmación instantánea de la transacción.'
+    blockId: 'eventstore',
+    title: 'Paso 5: EventStore',
+    description: 'Se registra de forma inmutable y cronológica el evento de dominio en la caja negra del Portal.',
+    entity: 'Bitácora Inmutable del Portal'
   },
   {
     order: 6,
-    blockId: 'firma',
-    title: '6. Firma electrónica',
-    description: 'La ciudadanía suscribe digitalmente los documentos oficiales con verificación de integridad y plena validez legal.',
-    entity: 'Infraestructura de Firma Digital Distrital',
-    citizenBenefit: 'Firma válida desde el teléfono móvil sin desplazamientos a oficinas físicas.'
+    blockId: 'registros_digitales',
+    relatedBlockIds: ['interoperabilidad'],
+    title: 'Paso 6: Registros Digitales e Interoperabilidad',
+    description: 'Se actualiza la información en la base maestra del Registro Social de Bogotá mediante el canal seguro de interoperabilidad distrital.',
+    entity: 'Registro Social y Malla Distrital'
   },
   {
     order: 7,
-    blockId: 'eventstore',
-    title: '7. EventStore',
-    description: 'La "caja negra" registra de manera segura e inmutable cada evento y solicitud que genera la ciudadanía.',
-    entity: 'EventStore Distrital de Auditoría',
-    citizenBenefit: 'Trazabilidad total e inalterable para garantizar transparencia a la ciudadanía.'
+    blockId: 'mensajeria',
+    title: 'Paso 7: Mensajería',
+    description: 'La persona recibe una notificación automática por SMS y correo electrónico con el estado de su trámite.',
+    entity: 'Canal Multicanal Distrital'
   },
   {
     order: 8,
-    blockId: 'mensajeria',
-    title: '8. Mensajería',
-    description: 'Canal automatizado que envía de inmediato la notificación del trámite resuelto por SMS y correo electrónico a la ciudadanía.',
-    entity: 'Central de Notificaciones Distritales',
-    citizenBenefit: 'Notificación oficial directa al celular o correo de la ciudadanía al instante.'
+    blockId: 'consentimiento',
+    title: 'Paso 8: Consentimiento',
+    description: 'La ciudadanía ingresa datos complementarios y autoriza de forma transparente el uso de su información.',
+    entity: 'Soberanía y Gestión de Datos'
+  },
+  {
+    order: 9,
+    blockId: 'pagos',
+    title: 'Paso 9: Pagos',
+    description: 'Se procesa el pago virtual seguro de las obligaciones distritales asociadas a la solicitud.',
+    entity: 'Pasarela de Pagos Distrital'
+  },
+  {
+    order: 10,
+    blockId: 'satisfaccion',
+    title: 'Paso 10: Satisfacción ciudadana',
+    description: 'Se presenta una breve encuesta para medir la percepción y calificar la experiencia del servicio digital.',
+    entity: 'Medición de Percepción Ciudadana'
   }
 ];

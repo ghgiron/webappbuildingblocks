@@ -7,7 +7,7 @@ export type BlockCategory =
   | 'analitica';
 
 export interface TangramShape {
-  // SVG polygon path in the master house coordinate space (e.g. 0 0 800 1050)
+  // SVG polygon path in the master house coordinate space (e.g. 0 0 800 1000)
   pathD: string;
   // Visual center for label & icon placement inside the house
   centerX: number;
@@ -43,10 +43,11 @@ export interface BuildingBlock {
 export interface SimulationStepData {
   order: number;
   blockId: string;
+  relatedBlockIds?: string[];
   title: string;
   description: string;
   entity: string;
-  citizenBenefit: string;
+  citizenBenefit?: string;
 }
 
 export interface DragState {
