@@ -332,24 +332,24 @@ export default function App() {
   // Current simulation step data
   const currentSimData = SIMULATION_STEPS[currentSimStep] || SIMULATION_STEPS[0];
 
-  // Render high-legibility, multi-line tooltip without truncation
+  // Render high-legibility, multi-line tooltip without truncation with larger text
   const renderSimulationTooltip = (isPortraitMode = false) => {
     if (!isSimulationMode) return null;
     const currentBlock = BUILDING_BLOCKS.find(b => b.id === currentSimData.blockId);
     if (!currentBlock) return null;
 
-    const lines = wrapText(currentSimData.description, 45);
-    const tooltipWidth = 440;
-    const lineHeight = 19;
-    const tooltipHeight = 46 + lines.length * lineHeight;
+    const lines = wrapText(currentSimData.description, 40);
+    const tooltipWidth = 470;
+    const lineHeight = 22;
+    const tooltipHeight = 52 + lines.length * lineHeight;
 
-    const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 230), 570);
+    const tooltipX = Math.min(Math.max(currentBlock.shape.centerX, 245), 555);
 
     // If near the top roof/attic, place tooltip below the block; otherwise place above
     const isNearTop = currentBlock.shape.centerY < 340;
     const tooltipY = isNearTop
-      ? currentBlock.shape.centerY + 68 + tooltipHeight / 2
-      : currentBlock.shape.centerY - 52 - tooltipHeight / 2;
+      ? currentBlock.shape.centerY + 72 + tooltipHeight / 2
+      : currentBlock.shape.centerY - 54 - tooltipHeight / 2;
 
     const arrowY = isNearTop
       ? tooltipY - tooltipHeight / 2
@@ -361,8 +361,8 @@ export default function App() {
         <polygon
           points={
             isNearTop
-              ? `${currentBlock.shape.centerX - 10},${arrowY} ${currentBlock.shape.centerX + 10},${arrowY} ${currentBlock.shape.centerX},${arrowY - 10}`
-              : `${currentBlock.shape.centerX - 10},${arrowY} ${currentBlock.shape.centerX + 10},${arrowY} ${currentBlock.shape.centerX},${arrowY + 10}`
+              ? `${currentBlock.shape.centerX - 12},${arrowY} ${currentBlock.shape.centerX + 12},${arrowY} ${currentBlock.shape.centerX},${arrowY - 10}`
+              : `${currentBlock.shape.centerX - 12},${arrowY} ${currentBlock.shape.centerX + 12},${arrowY} ${currentBlock.shape.centerX},${arrowY + 10}`
           }
           fill="#1F2937"
         />
@@ -372,7 +372,7 @@ export default function App() {
           y={tooltipY - tooltipHeight / 2}
           width={tooltipWidth}
           height={tooltipHeight}
-          rx={16}
+          rx={18}
           fill="#1F2937"
           stroke="#FAB62D"
           strokeWidth="2.5"
@@ -381,9 +381,9 @@ export default function App() {
         {/* Title ONLY (without 'Paso X de X') */}
         <text
           x={tooltipX}
-          y={tooltipY - tooltipHeight / 2 + 22}
+          y={tooltipY - tooltipHeight / 2 + 25}
           fontFamily="Montserrat"
-          fontSize="15"
+          fontSize="16.5"
           fontWeight="900"
           fill="#FAB62D"
           textAnchor="middle"
@@ -392,14 +392,14 @@ export default function App() {
         >
           {currentSimData.title}
         </text>
-        {/* Description Lines (All lines completely rendered with high font size) */}
+        {/* Description Lines (Large 14.5px text, fully rendered without truncation) */}
         {lines.map((line, lIdx) => (
           <text
             key={`tooltip-line-${lIdx}`}
             x={tooltipX}
-            y={tooltipY - tooltipHeight / 2 + 45 + lIdx * lineHeight}
+            y={tooltipY - tooltipHeight / 2 + 52 + lIdx * lineHeight}
             fontFamily="Work Sans"
-            fontSize="12.5"
+            fontSize="14.5"
             fontWeight="600"
             fill="#FFFFFF"
             textAnchor="middle"

@@ -16,7 +16,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     bgLight: '#FEFCE8',
     iconName: 'BellRing',
     description: 'Canal automatizado para enviar notificaciones masivas o individuales por correo y SMS a la ciudadanía.',
-    example: 'Enviar un mensaje de texto a una persona de la ciudadanía confirmando que su cupo escolar ha sido asignado.',
+    example: 'Enviar un mensaje de texto al ciudadano confirmando que su cupo escolar ha sido asignado.',
     shape: {
       pathD: 'M 275,35 L 325,35 L 295,215 L 195,215 Z',
       centerX: 255,
@@ -27,7 +27,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     simulationStep: {
       order: 7,
       stepTitle: '7. Notificación de pago habilitado',
-      actionDescription: 'La ciudadanía recibe un mensaje de texto/correo indicando que la solicitud fue aprobada y está lista para pagar en línea.'
+      actionDescription: 'El ciudadano recibe un mensaje de texto/correo indicando que la solicitud fue aprobada y está lista para pagar en línea.'
     }
   },
   {
@@ -63,7 +63,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     bgLight: '#FFF7ED',
     iconName: 'Clock',
     description: 'Ejecuta tareas recurrentes o en fechas y horas específicas de forma automática.',
-    example: 'Programar la tarea de notificar a las personas de la ciudadanía que declararon renta en la vigencia anterior.',
+    example: 'Programar la tarea de notificar a las personas que declararon renta en la vigencia anterior.',
     shape: {
       pathD: 'M 385,35 L 435,35 L 545,215 L 425,215 Z',
       centerX: 450,
@@ -104,7 +104,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     borderColor: '#BE123C',
     bgLight: '#FFF1F2',
     iconName: 'HeartHandshake',
-    description: 'Permite medir la percepción de la ciudadanía tras realizar un trámite o acceder a un servicio digital.',
+    description: 'Permite medir la percepción tras realizar un trámite o acceder a un servicio digital.',
     example: 'Al terminar la generación del Certificado de Industria y Comercio, aparece una breve encuesta de 3 preguntas para calificar la experiencia.',
     shape: {
       pathD: 'M 360,215 L 545,215 L 675,430 L 360,430 Z',
@@ -116,7 +116,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     simulationStep: {
       order: 10,
       stepTitle: '10. Recibo y calificación',
-      actionDescription: 'La ciudadanía descarga su comprobante y califica su experiencia con el servicio en una breve encuesta.'
+      actionDescription: 'El ciudadano descarga su comprobante y califica su experiencia con el servicio en una breve encuesta.'
     }
   },
 
@@ -135,7 +135,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     bgLight: '#FDF2F8',
     iconName: 'FileSignature',
     description: 'Permite la firma electrónica de documentos y verificación de integridad.',
-    example: 'Cuando una persona de la ciudadanía solicita un subsidio de vivienda o un acuerdo de pago con la Alcaldía, puede firmar la solicitud directamente desde su celular usando una clave segura o su correo, sin tener que imprimir el formulario, ni desplazarse a una oficina.',
+    example: 'Cuando el ciudadano solicita un subsidio de vivienda o un acuerdo de pago con la Alcaldía, puede firmar la solicitud directamente desde su celular usando una clave segura o su correo, sin tener que imprimir el formulario, ni desplazarse a una oficina.',
     shape: {
       pathD: 'M 105,430 L 275,430 L 275,625 L 105,625 Z',
       centerX: 190,
@@ -156,7 +156,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     bgLight: '#EEF2FF',
     iconName: 'GitBranch',
     description: 'Motor que modela, automatiza y orquesta los procesos y aprobaciones internas entre entidades frente a un trámite o servicio.',
-    example: 'Enviar automáticamente una solicitud de licencia de construcción para que la revise primero un área técnica, luego la jurídica y finalmente se emita la respuesta a la ciudadanía.',
+    example: 'Enviar automáticamente una solicitud de licencia de construcción para que la revise primero un área técnica, luego la jurídica y finalmente se emita la respuesta.',
     shape: {
       pathD: 'M 275,430 L 505,430 L 505,625 L 275,625 Z',
       centerX: 390,
@@ -181,8 +181,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     borderColor: '#6D28D9',
     bgLight: '#F5F3FF',
     iconName: 'ShieldCheck',
-    description: 'La ciudadanía autoriza, administra y controla de manera transparente cómo las entidades del Distrito pueden utilizar y compartir sus datos personales para fines misionales.',
-    example: 'Al inscribirse en un programa de la Secretaría de Integración Social, la persona de la ciudadanía autoriza consultar sus datos también por la Secretaría de Educación o Secretaría de Salud para ser focalizada en otros beneficios o servicios distritales.',
+    description: 'El ciudadano autoriza, administra y controla de manera transparente cómo las entidades del Distrito pueden utilizar y compartir sus datos personales para fines misionales.',
+    example: 'Al inscribirse en un programa de la Secretaría de Integración Social, el ciudadano autoriza consultar sus datos también por la Secretaría de Educación o Secretaría de Salud para ser focalizado en otros beneficios o servicios distritales.',
     shape: {
       pathD: 'M 505,430 L 675,430 L 675,625 L 505,625 Z',
       centerX: 590,
@@ -193,7 +193,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     simulationStep: {
       order: 8,
       stepTitle: '8. Autorización de datos',
-      actionDescription: 'La ciudadanía ingresa información complementaria y autoriza el uso transparente de sus datos personales.'
+      actionDescription: 'El ciudadano ingresa información complementaria y autoriza el uso transparente de sus datos personales.'
     }
   },
   {
@@ -208,7 +208,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     bgLight: '#ECFDF5',
     iconName: 'FileText',
     description: 'Encargado de registrar una solicitud y asignar un número de caso, validar información y emitir notificaciones.',
-    example: 'Al radicar una solicitud, el sistema recibe los documentos, valida datos y entrega de inmediato un número de radicado para seguimiento en tiempo real de la ciudadanía.',
+    example: 'Al radicar una solicitud, el sistema recibe los documentos, valida datos y entrega de inmediato un número de radicado para seguimiento en tiempo real del ciudadano.',
     shape: {
       pathD: 'M 105,625 L 275,625 L 275,820 L 105,820 Z',
       centerX: 190,
@@ -233,8 +233,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     borderColor: '#1D4ED8',
     bgLight: '#EFF6FF',
     iconName: 'Fingerprint',
-    description: 'Permite a la ciudadanía acceder a los servicios digitales de Bogotá, usando credenciales verificables emitidas por el Portal Bogotá y entidades distritales, así mismo mediante el uso de autenticación federada. Se utilizan estándares como Keycloak, OIDC y OAuth2.',
-    example: 'Iniciar sesión una sola vez en el Portal y para consultar desde citas médicas en la Secretaría de Salud hasta obligaciones tributarias con la Secretaría de Hacienda.',
+    description: 'Permite al ciudadano acceder a los servicios digitales de Bogotá, usando credenciales verificables emitidas por el Portal Bogotá y entidades distritales, así mismo mediante el uso de autenticación federada. Se utilizan estándares como Keycloak, OIDC y OAuth2.',
+    example: 'Iniciar sesión una sola vez en el Portal para consultar desde citas médicas en la Secretaría de Salud hasta obligaciones tributarias con la Secretaría de Hacienda.',
     shape: {
       pathD: 'M 275,625 L 505,625 L 505,820 L 275,820 Z',
       centerX: 390,
@@ -245,7 +245,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     simulationStep: {
       order: 1,
       stepTitle: '1. Ingreso seguro',
-      actionDescription: 'La ciudadanía inicia sesión una sola vez en el Portal para realizar trámites y servicios Distritales.'
+      actionDescription: 'El ciudadano inicia sesión una sola vez en el Portal para realizar trámites y servicios Distritales.'
     }
   },
   {
@@ -259,7 +259,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     borderColor: '#0F766E',
     bgLight: '#F0FDFA',
     iconName: 'CreditCard',
-    description: 'Permite que cualquier Entidad Distrital lo use para habilitar pagos virtuales en sus plataformas de manera segura, validando las obligaciones pendientes de la ciudadanía, el pago y verificación de la transacción.',
+    description: 'Permite que cualquier Entidad Distrital lo use para habilitar pagos virtuales en sus plataformas de manera segura, validando las obligaciones pendientes del ciudadano, el pago y verificación de la transacción.',
     example: 'Pagar los impuestos distritales o el permiso para usar el estadio Nemesio Camacho El Campín.',
     shape: {
       pathD: 'M 505,625 L 675,625 L 675,820 L 505,820 Z',
@@ -290,7 +290,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     bgLight: '#FFFBEB',
     iconName: 'BarChart3',
     description: 'Sincroniza y centraliza la información transaccional de múltiples secretarías en un repositorio analítico unificado del Distrito.',
-    example: 'Habilitación de tableros analíticos para cruzar datos de sectores Educación, Social y Movilidad, permitiendo identificar con precisión qué zonas de la ciudad necesitan con urgencia nuevos colegios o centros médicos para la ciudadanía.',
+    example: 'Habilitación de tableros analíticos para cruzar datos de sectores Educación, Social y Movilidad, permitiendo identificar con precisión qué zonas de la ciudad necesitan con urgencia nuevos colegios o centros médicos.',
     shape: {
       pathD: 'M 105,820 L 247.5,820 L 247.5,960 L 125,960 Q 105,960 105,940 Z',
       centerX: 176,
@@ -301,7 +301,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     simulationStep: {
       order: 2,
       stepTitle: '2. Consulta de Huella Ciudadana',
-      actionDescription: 'El sistema consulta el historial de interacciones de la ciudadanía.'
+      actionDescription: 'El sistema consulta el historial de interacciones del ciudadano.'
     }
   },
   {
@@ -315,8 +315,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     borderColor: '#B45309',
     bgLight: '#FFFBEB',
     iconName: 'Layers',
-    description: 'Es la “caja negra” del Portal Bogotá. Registra de forma segura e inmutable cada evento o transacción que genera la ciudadanía.',
-    example: 'Cuando una persona de la ciudadanía solicita un subsidio, el sistema guarda en orden cronológico exacto cada etapa del trámite para que nunca se pierda la trazabilidad.',
+    description: 'Es la “caja negra” del Portal Bogotá. Registra de forma segura e inmutable cada evento o transacción que genera el ciudadano.',
+    example: 'Cuando el ciudadano solicita un subsidio, el sistema guarda en orden cronológico exacto cada etapa del trámite para que nunca se pierda la trazabilidad.',
     shape: {
       pathD: 'M 247.5,820 L 390,820 L 390,960 L 247.5,960 Z',
       centerX: 318,
@@ -342,7 +342,7 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     bgLight: '#F5F3FF',
     iconName: 'Database',
     description: 'Mantiene registros únicos de personas, organizaciones y servicios para asegurar la consistencia de datos maestros.',
-    example: 'Si la ciudadanía actualiza su dirección en la Secretaría de Planeación, el cambio se refleja en la base maestra para que la Secretaría de Salud y la Secretaría de Hacienda consulten el dato actualizado sin pedirlo de nuevo.',
+    example: 'Si el ciudadano actualiza su dirección en la Secretaría de Planeación, el cambio se refleja en la base maestra para que la Secretaría de Salud y la Secretaría de Hacienda consulten el dato actualizado sin pedirlo de nuevo.',
     shape: {
       pathD: 'M 390,820 L 532.5,820 L 532.5,960 L 390,960 Z',
       centerX: 461,
@@ -388,14 +388,14 @@ export const SIMULATION_STEPS: SimulationStepData[] = [
     order: 1,
     blockId: 'identidad',
     title: '1. Ingreso seguro',
-    description: 'La ciudadanía inicia sesión una sola vez en el Portal para realizar trámites y servicios Distritales.',
+    description: 'El ciudadano inicia sesión una sola vez en el Portal para realizar trámites y servicios Distritales.',
     entity: 'Portal Bogotá / Acceso Seguro'
   },
   {
     order: 2,
     blockId: 'dwh',
     title: '2. Consulta de Huella Ciudadana',
-    description: 'El sistema consulta el historial de interacciones de la ciudadanía.',
+    description: 'El sistema consulta el historial de interacciones del ciudadano.',
     entity: 'Analítica / Huella Ciudadana'
   },
   {
@@ -431,14 +431,14 @@ export const SIMULATION_STEPS: SimulationStepData[] = [
     order: 7,
     blockId: 'mensajeria',
     title: '7. Notificación de pago habilitado',
-    description: 'La ciudadanía recibe un mensaje de texto/correo indicando que la solicitud fue aprobada y está lista para pagar en línea.',
+    description: 'El ciudadano recibe un mensaje de texto/correo indicando que la solicitud fue aprobada y está lista para pagar en línea.',
     entity: 'Canal Multicanal Distrital'
   },
   {
     order: 8,
     blockId: 'consentimiento',
     title: '8. Autorización de datos',
-    description: 'La ciudadanía ingresa información complementaria y autoriza el uso transparente de sus datos personales.',
+    description: 'El ciudadano ingresa información complementaria y autoriza el uso transparente de sus datos personales.',
     entity: 'Soberanía y Gestión de Datos'
   },
   {
@@ -452,7 +452,7 @@ export const SIMULATION_STEPS: SimulationStepData[] = [
     order: 10,
     blockId: 'satisfaccion',
     title: '10. Recibo y calificación',
-    description: 'La ciudadanía descarga su comprobante y califica su experiencia con el servicio en una breve encuesta.',
+    description: 'El ciudadano descarga su comprobante y califica su experiencia con el servicio en una breve encuesta.',
     entity: 'Medición de Percepción Ciudadana'
   }
 ];
