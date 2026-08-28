@@ -57,16 +57,13 @@ const BlockIcon: React.FC<{ name: string; className?: string }> = ({ name, class
 export default function App() {
   // Game State
   const [placedBlockIds, setPlacedBlockIds] = useState<string[]>([]);
-  const [activeBlockId, setActiveBlockId] = useState<string>('eventstore');
+  const [activeBlockId, setActiveBlockId] = useState<string>('identidad');
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isSimulationMode, setIsSimulationMode] = useState<boolean>(false);
   const [currentSimStep, setCurrentSimStep] = useState<number>(0);
   const [isSimPlaying, setIsSimPlaying] = useState<boolean>(false);
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
 
-  // Kiosk scale container
-  const [scale, setScale] = useState<number>(1);
-  const kioskRef = useRef<HTMLDivElement>(null);
   const svgHouseRef = useRef<SVGSVGElement>(null);
 
   // Drag and Drop pointer state
@@ -79,25 +76,6 @@ export default function App() {
     offsetY: 0,
   });
 
-  // Calculate Responsive Scale for 1080x1920
-  const updateScale = useCallback(() => {
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-    const targetWidth = 1080;
-    const targetHeight = 1920;
-
-    const scaleX = windowWidth / targetWidth;
-    const scaleY = windowHeight / targetHeight;
-    const newScale = Math.min(scaleX, scaleY);
-    setScale(newScale);
-  }, []);
-
-  useEffect(() => {
-    updateScale();
-    window.addEventListener('resize', updateScale);
-    return () => window.removeEventListener('resize', updateScale);
-  }, [updateScale]);
-
   // Derived state
   const progressCount = placedBlockIds.length;
   const score = progressCount * 100;
@@ -107,7 +85,7 @@ export default function App() {
     return BUILDING_BLOCKS.find(b => b.id === activeBlockId) || BUILDING_BLOCKS[0];
   }, [activeBlockId]);
 
-  // Handle victory fanfare & confetti
+  // Victory fanfare & confetti
   useEffect(() => {
     if (isCompleted && !isSimulationMode) {
       soundFx.playFanfare();
@@ -116,14 +94,14 @@ export default function App() {
 
       const frame = () => {
         confetti({
-          particleCount: 6,
+          particleCount: 5,
           angle: 60,
           spread: 60,
           origin: { x: 0.1, y: 0.65 },
           colors: ['#D31424', '#FFD100', '#FFFFFF', '#B3001B']
         });
         confetti({
-          particleCount: 6,
+          particleCount: 5,
           angle: 120,
           spread: 60,
           origin: { x: 0.9, y: 0.65 },
@@ -174,7 +152,7 @@ export default function App() {
     setCurrentSimStep(0);
   };
 
-  // Auto-complete (Demo feature for quick exhibit presentations)
+  // Auto-complete (Demo presentation feature)
   const handleAutoComplete = () => {
     soundFx.playSnap();
     setPlacedBlockIds(BUILDING_BLOCKS.map(b => b.id));
@@ -191,29 +169,20 @@ export default function App() {
 
     // Micro confetti puff on snap
     confetti({
-      particleCount: 18,
+      particleCount: 16,
       spread: 55,
       origin: { x: 0.5, y: 0.45 },
       colors: ['#FFD100', '#D31424', '#FFFFFF']
     });
 
-    // Auto select next unplaced block for a fluid kiosk experience
+    // Auto select next unplaced block
     const remaining = BUILDING_BLOCKS.filter(b => b.id !== blockId && !placedBlockIds.includes(b.id));
     if (remaining.length > 0) {
       setTimeout(() => {
         setActiveBlockId(remaining[0].id);
-      }, 850);
+      }, 800);
     }
   }, [placedBlockIds]);
-
-  // Pointer coordinate converter to 1080x1920 space
-  const getKioskCoords = useCallback((clientX: number, clientY: number) => {
-    if (!kioskRef.current) return { x: clientX, y: clientY };
-    const rect = kioskRef.current.getBoundingClientRect();
-    const x = (clientX - rect.left) / scale;
-    const y = (clientY - rect.top) / scale;
-    return { x, y };
-  }, [scale]);
 
   // Pointer Down on Dock Piece (Start Drag / Tap)
   const handlePointerDownPiece = (e: React.PointerEvent, blockId: string) => {
@@ -223,12 +192,11 @@ export default function App() {
     soundFx.playSelect();
     setActiveBlockId(blockId);
 
-    const coords = getKioskCoords(e.clientX, e.clientY);
     setDragState({
       isDragging: true,
       blockId,
-      pointerX: coords.x,
-      pointerY: coords.y,
+      pointerX: e.clientX,
+      pointerY: e.clientY,
       offsetX: 0,
       offsetY: 0,
     });
@@ -238,11 +206,10 @@ export default function App() {
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!dragState.isDragging || !dragState.blockId) return;
 
-    const coords = getKioskCoords(e.clientX, e.clientY);
     setDragState(prev => ({
       ...prev,
-      pointerX: coords.x,
-      pointerY: coords.y,
+      pointerX: e.clientX,
+      pointerY: e.clientY,
     }));
   };
 
@@ -255,13 +222,15 @@ export default function App() {
 
     if (block && svgHouseRef.current) {
       const svgRect = svgHouseRef.current.getBoundingClientRect();
-      const relativeX = (e.clientX - svgRect.left) / (svgRect.width / 800);
-      const relativeY = (e.clientY - svgRect.top) / (svgRect.height / 1000);
+      const scaleX = svgRect.width / 800;
+      const scaleY = svgRect.height / 1000;
+      const relativeX = (e.clientX - svgRect.left) / scaleX;
+      const relativeY = (e.clientY - svgRect.top) / scaleY;
 
-      // Distance threshold in SVG coordinate space
+      // Distance threshold in SVG coordinates
       const distance = Math.hypot(relativeX - block.shape.centerX, relativeY - block.shape.centerY);
 
-      if (distance < 190) {
+      if (distance < 200) {
         handlePlaceBlock(blockId);
       }
     }
@@ -296,150 +265,178 @@ export default function App() {
   const currentSimData = SIMULATION_STEPS[currentSimStep] || SIMULATION_STEPS[0];
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-[#070B14] overflow-hidden select-none touch-none">
-      {/* 1080x1920 Kiosk Canvas with Dynamic Viewport Scaling */}
-      <div
-        ref={kioskRef}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        style={{
-          width: '1080px',
-          height: '1920px',
-          transform: `scale(${scale})`,
-          transformOrigin: 'center center',
-          flexShrink: 0,
-        }}
-        className="relative bg-gradient-to-b from-[#FFFDFD] via-[#F8FAFC] to-[#F1F5F9] text-slate-900 overflow-hidden shadow-2xl flex flex-col justify-between"
-      >
-        {/* ========================================================================= */}
-        {/* NIVEL 1: HEADER INSTITUCIONAL Y TARJETA PEDAGÓGICA (Top: 0 a 480px)       */}
-        {/* ========================================================================= */}
-        <header className="w-full px-8 pt-6 pb-4 bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm z-20 flex flex-col gap-3">
-          {/* Top Bar: Official Logos & Quick Actions */}
-          <div className="flex items-center justify-between gap-4">
-            {/* Official Alcaldía Mayor de Bogotá Logo */}
-            <div className="flex items-center gap-3">
+    <div
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      className="min-h-screen w-full bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-slate-100 flex flex-col font-sans select-none overflow-x-hidden antialiased"
+    >
+      {/* ========================================================================= */}
+      {/* 1. HEADER INSTITUCIONAL RESPONSIVE                                        */}
+      {/* ========================================================================= */}
+      <header className="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 text-slate-900 shadow-sm sticky top-0 z-30 px-3 sm:px-6 lg:px-8 py-3">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          {/* Left: Official Logos and App Title */}
+          <div className="flex items-center justify-between md:justify-start gap-3 sm:gap-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
               <img
                 src="/assets/logo-bogota.png"
                 alt="Alcaldía Mayor de Bogotá"
-                className="h-14 w-auto object-contain drop-shadow-xs"
+                className="h-9 sm:h-12 w-auto object-contain drop-shadow-xs"
               />
-              <div className="h-10 w-px bg-slate-200 mx-1"></div>
+              <div className="h-7 sm:h-9 w-px bg-slate-300"></div>
               <div className="flex flex-col">
-                <span className="text-sm font-black text-bogota-red uppercase tracking-wider leading-none">
+                <span className="text-xs sm:text-sm font-black text-bogota-red uppercase tracking-wider leading-none">
                   Portal Transaccional
                 </span>
-                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight mt-0.5">
+                <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-tight mt-0.5">
                   Alcaldía Mayor de Bogotá
                 </span>
               </div>
             </div>
 
-            {/* Official Campaign Slogan Logo + Quick Controls */}
-            <div className="flex items-center gap-4">
+            {/* Campaign Logo for Mobile Right */}
+            <div className="flex md:hidden items-center gap-2">
+              <img
+                src="/assets/logo-campana.png"
+                alt="Aquí Sí Pasa"
+                className="h-10 w-auto object-contain"
+              />
+            </div>
+          </div>
+
+          {/* Slogan Banner (Center) */}
+          <div className="hidden lg:flex flex-col text-center">
+            <h1 className="text-sm xl:text-base font-black text-slate-900 tracking-tight leading-tight">
+              Entre todos construimos la Bogotá
+            </h1>
+            <p className="text-xs font-medium text-slate-600">
+              Soluciones compartidas (Building Blocks) que transforman los servicios para <span className="font-black text-bogota-red">la ciudadanía</span>
+            </p>
+          </div>
+
+          {/* Right: Campaign Logo + Game Controls & Gamification */}
+          <div className="flex items-center justify-between md:justify-end gap-2.5 sm:gap-3">
+            {/* Desktop Campaign Logo */}
+            <div className="hidden md:flex items-center">
               <img
                 src="/assets/logo-campana.png"
                 alt="Aquí Sí Pasa - Bogotá Mi Ciudad, Mi Casa"
-                className="h-14 w-auto object-contain drop-shadow-xs"
+                className="h-11 sm:h-13 w-auto object-contain"
               />
+            </div>
 
-              {/* Mute Button */}
+            {/* Score & Progress Badges */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 font-bold text-xs sm:text-sm text-slate-800">
+                <span className="hidden sm:inline text-slate-500 text-xs">Progreso:</span>
+                <span className="px-1.5 py-0.5 rounded-md bg-bogota-red text-white font-black text-xs">
+                  {progressCount}/15
+                </span>
+              </div>
+              <div className="flex items-center gap-1 bg-amber-100 text-amber-950 px-2.5 sm:px-3 py-1.5 rounded-xl border border-amber-200 font-black text-xs sm:text-sm shadow-xs">
+                <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
+                <span>{score} pts</span>
+              </div>
+            </div>
+
+            {/* Quick Action Buttons */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <button
                 onClick={handleToggleSound}
-                className="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 flex items-center justify-center transition-all shadow-xs"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 flex items-center justify-center transition-all shadow-xs"
                 title={isMuted ? 'Activar Sonido' : 'Silenciar'}
               >
-                {isMuted ? <VolumeX className="w-6 h-6 text-red-500" /> : <Volume2 className="w-6 h-6 text-slate-700" />}
+                {isMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700" />}
               </button>
 
-              {/* Reset Button */}
               <button
                 onClick={handleReset}
-                className="flex items-center gap-2 px-5 py-3 rounded-full bg-slate-100 hover:bg-red-50 active:scale-95 text-slate-700 hover:text-bogota-red border border-slate-200 hover:border-red-300 font-bold text-sm transition-all shadow-xs"
+                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-full bg-slate-100 hover:bg-red-50 active:scale-95 text-slate-700 hover:text-bogota-red border border-slate-200 hover:border-red-300 font-bold text-xs sm:text-sm transition-all shadow-xs"
               >
-                <RotateCcw className="w-4 h-4" />
-                <span>Reiniciar</span>
+                <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Reiniciar</span>
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Slogan Banner */}
-          <div className="flex items-baseline justify-between pt-0.5">
-            <div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                Entre todos construimos la Bogotá
-              </h2>
-              <p className="text-sm font-medium text-slate-600">
-                Soluciones compartidas (Building Blocks) que transforman los servicios para <span className="font-black text-bogota-red">la ciudadanía</span>
-              </p>
+        {/* Mobile/Tablet Slogan Bar */}
+        <div className="flex lg:hidden flex-col text-center pt-2 mt-1 border-t border-slate-100">
+          <h2 className="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight leading-tight">
+            Entre todos construimos la Bogotá
+          </h2>
+          <p className="text-[11px] sm:text-xs font-medium text-slate-600">
+            Soluciones compartidas para <span className="font-black text-bogota-red">la ciudadanía</span>
+          </p>
+        </div>
+      </header>
+
+      {/* ========================================================================= */}
+      {/* 2. MAIN LAYOUT: RESPONSIVE SPLIT SCREEN (GRID 12 COLS EN DESKTOP)        */}
+      {/* ========================================================================= */}
+      <main className="max-w-7xl mx-auto w-full flex-1 p-3 sm:p-5 lg:p-6 flex flex-col lg:grid lg:grid-cols-12 gap-5 lg:gap-8 items-stretch">
+        
+        {/* ========================================================================= */}
+        {/* COLUMNA IZQUIERDA (lg:col-span-5): TARJETA PEDAGÓGICA + DOCK INVENTARIO   */}
+        {/* ========================================================================= */}
+        <section className="lg:col-span-5 flex flex-col gap-4 w-full justify-between">
+          
+          {/* A. TARJETA PEDAGÓGICA DINÁMICA */}
+          <div className="w-full bg-white text-slate-900 border-2 border-bogota-red rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-lg relative overflow-hidden transition-all duration-300">
+            {/* Watermark icon */}
+            <div className="absolute -right-6 -bottom-6 text-red-50 pointer-events-none select-none opacity-40">
+              <BlockIcon name={activeBlock.iconName} className="w-36 h-36" />
             </div>
-            {/* Quick Demo Mode Complete trigger */}
-            {progressCount < 15 && (
-              <button
-                onClick={handleAutoComplete}
-                className="text-xs font-bold text-slate-400 hover:text-bogota-red transition-colors underline"
-              >
-                Modo Demostración (15/15)
-              </button>
-            )}
-          </div>
 
-          {/* Dynamic Pedagogical Card (Active Block Concept - Literal & Strict) */}
-          <div className="w-full bg-gradient-to-br from-white to-red-50/50 border-2 border-bogota-red rounded-3xl p-5 shadow-kiosk-card relative overflow-hidden transition-all duration-300">
-            {/* Background watermark badge */}
-            <div className="absolute -right-6 -bottom-6 text-red-100/50 pointer-events-none select-none">
-              <BlockIcon name={activeBlock.iconName} className="w-44 h-44" />
-            </div>
-
-            <div className="relative z-10 flex flex-col gap-3">
-              {/* Header row: Icon, Category & Title */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3.5">
+            <div className="relative z-10 flex flex-col gap-2.5 sm:gap-3">
+              {/* Header: Icon, Category & Title */}
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-3">
                   <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-md"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-sm shrink-0"
                     style={{ backgroundColor: activeBlock.color }}
                   >
-                    <BlockIcon name={activeBlock.iconName} className="w-7 h-7" />
+                    <BlockIcon name={activeBlock.iconName} className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                   <div>
-                    <span className="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 inline-block mb-1">
+                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 inline-block mb-0.5">
                       {activeBlock.categoryLabel} • Bloque #{activeBlock.number}
                     </span>
-                    <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none">
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-tight">
                       {activeBlock.name}
                     </h3>
                   </div>
                 </div>
 
-                {/* Status indicator badge */}
+                {/* Placed status badge */}
                 {placedBlockIds.includes(activeBlock.id) ? (
-                  <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs shadow-xs">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>Ensamblado en la Casa</span>
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px] shrink-0">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="hidden sm:inline">Ensamblado</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100 text-amber-900 font-bold text-xs shadow-xs animate-pulse">
-                    <Sparkles className="w-4 h-4 text-amber-600" />
-                    <span>Toca o arrastra hacia la casa</span>
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-[11px] shrink-0 animate-pulse">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Toca la casa</span>
                   </div>
                 )}
               </div>
 
-              {/* Description & Citizen Real World Example */}
-              <div className="grid grid-cols-12 gap-4 pt-0.5 text-slate-700">
-                <div className="col-span-7 bg-white/95 p-3.5 rounded-2xl border border-slate-100 shadow-xs">
-                  <p className="text-[11px] font-black text-bogota-red uppercase tracking-wider mb-0.5">
+              {/* Description & Citizen Example */}
+              <div className="flex flex-col gap-2 pt-1 text-slate-700">
+                <div className="bg-slate-50 p-2.5 sm:p-3 rounded-xl border border-slate-100">
+                  <p className="text-[10px] sm:text-[11px] font-black text-bogota-red uppercase tracking-wider mb-0.5">
                     ¿Qué es?
                   </p>
-                  <p className="text-sm leading-snug font-medium text-slate-800">
+                  <p className="text-xs sm:text-sm leading-snug font-medium text-slate-800">
                     {activeBlock.description}
                   </p>
                 </div>
-                <div className="col-span-5 bg-amber-50/90 p-3.5 rounded-2xl border border-amber-100 shadow-xs">
-                  <p className="text-[11px] font-black text-amber-800 uppercase tracking-wider mb-0.5">
+                <div className="bg-amber-50/90 p-2.5 sm:p-3 rounded-xl border border-amber-100">
+                  <p className="text-[10px] sm:text-[11px] font-black text-amber-800 uppercase tracking-wider mb-0.5">
                     Ejemplo tangible en la vida real:
                   </p>
-                  <p className="text-xs leading-snug font-semibold text-slate-800">
+                  <p className="text-xs sm:text-xs leading-snug font-semibold text-slate-800">
                     {activeBlock.example}
                   </p>
                 </div>
@@ -447,67 +444,179 @@ export default function App() {
             </div>
           </div>
 
-          {/* Gamification & Guidance Sub-bar */}
-          <div className="flex items-center justify-between px-2 pt-0.5">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-bogota-yellow text-slate-900 flex items-center justify-center font-black text-sm shadow-xs">
-                ★
+          {/* B. DOCK DE INVENTARIO TÁCTIL (GRID ADAPTATIVO) */}
+          <div className="w-full bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-xl flex flex-col gap-3">
+            {/* Header and filters */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-bogota-red text-white flex items-center justify-center font-bold text-xs">
+                  <Layers className="w-4 h-4" />
+                </div>
+                <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-tight">
+                  Inventario de Bloques ({15 - progressCount} pendientes)
+                </h4>
               </div>
-              <p className="text-sm font-semibold text-slate-700">
-                {isSimulationMode
-                  ? 'Simulación activa: observa en tiempo real cómo viaja la solicitud de la ciudadanía a través de cada bloque.'
-                  : isCompleted
-                  ? '¡Excelente trabajo! Has completado la Casa de Bogotá. Inicia la simulación interactiva.'
-                  : 'Toca un bloque en el inventario o arrástralo hacia la ranura iluminada en la casa.'}
-              </p>
+
+              {/* Filter tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
+                <button
+                  onClick={() => {
+                    soundFx.playTap();
+                    setCategoryFilter('all');
+                  }}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all whitespace-nowrap ${
+                    categoryFilter === 'all'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  Todos (15)
+                </button>
+                <button
+                  onClick={() => {
+                    soundFx.playTap();
+                    setCategoryFilter('unplaced');
+                  }}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all whitespace-nowrap ${
+                    categoryFilter === 'unplaced'
+                      ? 'bg-bogota-red text-white shadow-xs'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  Pendientes
+                </button>
+                <button
+                  onClick={() => {
+                    soundFx.playTap();
+                    setCategoryFilter('transaccional');
+                  }}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all whitespace-nowrap ${
+                    categoryFilter === 'transaccional'
+                      ? 'bg-bogota-red text-white shadow-xs'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  Transaccional
+                </button>
+                <button
+                  onClick={() => {
+                    soundFx.playTap();
+                    setCategoryFilter('seguridad');
+                  }}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all whitespace-nowrap ${
+                    categoryFilter === 'seguridad'
+                      ? 'bg-bogota-red text-white shadow-xs'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  Seguridad
+                </button>
+              </div>
             </div>
 
-            {/* Score & Progress */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200 font-bold text-sm">
-                <span className="text-slate-500">Progreso:</span>
-                <span className="px-2.5 py-0.5 rounded-lg bg-bogota-red text-white text-sm font-black">
-                  {progressCount} / 15
-                </span>
-              </div>
-              <div className="flex items-center gap-2 bg-amber-100 text-amber-900 px-4 py-2 rounded-2xl border border-amber-200 font-black text-sm shadow-xs">
-                <Trophy className="w-4 h-4 text-amber-600" />
-                <span>{score} pts</span>
-              </div>
+            {/* Grid of building block cards (2 cols mobile, 3 cols tablet, 3 cols desktop) */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5 max-h-[260px] sm:max-h-[320px] lg:max-h-[380px] overflow-y-auto no-scrollbar pr-1">
+              {filteredBlocks.map(block => {
+                const isPlaced = placedBlockIds.includes(block.id);
+                const isSelected = activeBlockId === block.id;
+
+                return (
+                  <div
+                    key={block.id}
+                    onPointerDown={e => handlePointerDownPiece(e, block.id)}
+                    className={`relative min-h-[72px] sm:min-h-[82px] rounded-xl sm:rounded-2xl p-2 sm:p-2.5 flex flex-col justify-between border-2 transition-all cursor-grab active:cursor-grabbing ${
+                      isSelected
+                        ? 'bg-amber-50 text-slate-900 border-bogota-yellow shadow-lg scale-[1.02] ring-2 ring-bogota-yellow'
+                        : isPlaced
+                        ? 'bg-slate-800/80 text-slate-400 border-emerald-500/50 opacity-80'
+                        : 'bg-slate-800 text-slate-200 border-slate-700 hover:border-slate-500 shadow-xs'
+                    }`}
+                  >
+                    {/* Header: Number & Status */}
+                    <div className="flex items-center justify-between">
+                      <span
+                        className="text-[9px] sm:text-[10px] font-black uppercase px-1.5 py-0.5 rounded text-white"
+                        style={{ backgroundColor: block.color }}
+                      >
+                        #{block.number}
+                      </span>
+                      {isPlaced ? (
+                        <span className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px]">
+                          <Check className="w-3 h-3 stroke-[3]" />
+                        </span>
+                      ) : (
+                        <span className="w-2 h-2 rounded-full bg-slate-600"></span>
+                      )}
+                    </div>
+
+                    {/* Icon & Literal Name */}
+                    <div className="flex items-center gap-1.5 my-auto">
+                      <div
+                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-white shrink-0 shadow-2xs"
+                        style={{ backgroundColor: block.color }}
+                      >
+                        <BlockIcon name={block.iconName} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      </div>
+                      <span className="text-[11px] sm:text-xs font-black leading-tight line-clamp-2">
+                        {block.name}
+                      </span>
+                    </div>
+
+                    {/* Footer Action Tag */}
+                    <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-bold text-slate-400">
+                      <span className="truncate">{block.categoryLabel}</span>
+                      <span className="text-bogota-red font-black shrink-0">
+                        {isPlaced ? 'Listo' : 'Encajar'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
+
+            {/* Quick Demo Mode trigger */}
+            {progressCount < 15 && (
+              <div className="flex items-center justify-between pt-1 border-t border-slate-700 text-xs text-slate-400">
+                <span>💡 Toca una ficha y luego su ranura en la casa</span>
+                <button
+                  onClick={handleAutoComplete}
+                  className="font-bold text-slate-400 hover:text-bogota-red transition-colors underline"
+                >
+                  Modo Demo (15/15)
+                </button>
+              </div>
+            )}
           </div>
-        </header>
+        </section>
 
         {/* ========================================================================= */}
-        {/* NIVEL 2: ESCENARIO CENTRAL - LA CASA TANGRAM (Centro: 480px a 1400px)     */}
+        {/* COLUMNA DERECHA (lg:col-span-7): LA CASA TANGRAM CENTRAL + SIMULACIÓN     */}
         {/* ========================================================================= */}
-        <main className="relative flex-1 w-full flex flex-col items-center justify-center px-6 overflow-hidden">
-          {/* Subtle architectural grid pattern background */}
-          <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#94a3b8_1px,transparent_1px)] [background-size:24px_24px]"></div>
-
-          {/* Bogotá Sky Stars (Top Right of the house) */}
-          <div className="absolute top-4 right-14 flex items-center gap-3 pointer-events-none z-10">
-            <div className="text-bogota-yellow drop-shadow-[0_0_12px_rgba(253,195,0,0.8)] text-5xl font-black animate-bounce-subtle">
+        <section className="lg:col-span-7 flex flex-col items-center justify-center w-full relative">
+          
+          {/* Bogotá Sky Stars (Top Right) */}
+          <div className="absolute top-2 right-4 sm:right-8 flex items-center gap-2 pointer-events-none z-10">
+            <div className="text-bogota-yellow drop-shadow-[0_0_8px_rgba(253,195,0,0.8)] text-2xl sm:text-4xl font-black animate-bounce-subtle">
               ★
             </div>
-            <div className="text-bogota-yellow drop-shadow-[0_0_16px_rgba(253,195,0,0.9)] text-6xl font-black animate-float">
+            <div className="text-bogota-yellow drop-shadow-[0_0_12px_rgba(253,195,0,0.9)] text-3xl sm:text-5xl font-black animate-float">
               ★
             </div>
-            <div className="text-bogota-yellow drop-shadow-[0_0_12px_rgba(253,195,0,0.8)] text-4xl font-black animate-bounce-subtle">
+            <div className="text-bogota-yellow drop-shadow-[0_0_8px_rgba(253,195,0,0.8)] text-xl sm:text-3xl font-black animate-bounce-subtle">
               ★
             </div>
           </div>
 
-          {/* Interactive Tangram House Container */}
-          <div className="relative w-full max-w-[840px] h-[870px] flex items-center justify-center">
-            {/* Main SVG House with Tangram Polygonal Slots */}
+          {/* Interactive SVG House Canvas (Fluid viewBox 0 0 800 1000) */}
+          <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl aspect-[800/1000] flex items-center justify-center my-auto">
             <svg
               ref={svgHouseRef}
               viewBox="0 0 800 1000"
+              preserveAspectRatio="xMidYMid meet"
               className="w-full h-full drop-shadow-2xl overflow-visible"
             >
               <defs>
-                {/* LEGO Stud Pattern for Empty Unplaced Slots */}
+                {/* LEGO Stud Pattern for Empty Slots */}
                 <pattern
                   id="legoStudsDark"
                   width="36"
@@ -523,7 +632,7 @@ export default function App() {
                   </text>
                 </pattern>
 
-                {/* LEGO Stud Pattern for House Border / Outer Red Wall */}
+                {/* LEGO Stud Pattern for Outer Wall */}
                 <pattern
                   id="legoStudsRed"
                   width="36"
@@ -595,21 +704,20 @@ export default function App() {
                       } ${isSimActive ? 'drop-shadow-[0_0_25px_rgba(255,209,0,0.9)]' : ''}`}
                     />
 
-                    {/* Studs texture highlight & bevel if placed */}
+                    {/* Placed slot header & title in house */}
                     {isPlaced && (
                       <g pointerEvents="none">
-                        {/* Tactile block header in house */}
                         <circle
                           cx={block.shape.centerX}
-                          cy={block.shape.centerY - 22}
-                          r="18"
+                          cy={block.shape.centerY - 20}
+                          r="17"
                           fill="rgba(255,255,255,0.22)"
                           stroke="rgba(255,255,255,0.4)"
                           strokeWidth="1.5"
                         />
                         <text
                           x={block.shape.centerX}
-                          y={block.shape.centerY - 16}
+                          y={block.shape.centerY - 14}
                           fontSize="13"
                           fontWeight="900"
                           fill="#FFFFFF"
@@ -619,7 +727,6 @@ export default function App() {
                           #{block.number}
                         </text>
 
-                        {/* Title text */}
                         <text
                           x={block.shape.centerX}
                           y={block.shape.centerY + 10}
@@ -636,20 +743,20 @@ export default function App() {
                       </g>
                     )}
 
-                    {/* Unplaced Slot Indicator: Pulsing Target Hint */}
+                    {/* Unplaced Slot Indicator: Guide Hint */}
                     {!isPlaced && (
                       <g pointerEvents="none">
                         <circle
                           cx={block.shape.centerX}
                           cy={block.shape.centerY}
-                          r={isActiveGuide ? 24 : 16}
+                          r={isActiveGuide ? 22 : 15}
                           fill={isActiveGuide ? 'rgba(255, 209, 0, 0.9)' : 'rgba(0,0,0,0.35)'}
                           className={isActiveGuide ? 'animate-ping' : ''}
                         />
                         <circle
                           cx={block.shape.centerX}
                           cy={block.shape.centerY}
-                          r={isActiveGuide ? 20 : 16}
+                          r={isActiveGuide ? 18 : 15}
                           fill={isActiveGuide ? '#FFD100' : 'rgba(0,0,0,0.5)'}
                           stroke="#FFFFFF"
                           strokeWidth={isActiveGuide ? 3 : 1}
@@ -657,7 +764,7 @@ export default function App() {
                         <text
                           x={block.shape.centerX}
                           y={block.shape.centerY + 1}
-                          fontSize={isActiveGuide ? '16' : '13'}
+                          fontSize={isActiveGuide ? '15' : '12'}
                           fontWeight="900"
                           fill={isActiveGuide ? '#1F2937' : '#FFFFFF'}
                           textAnchor="middle"
@@ -666,14 +773,14 @@ export default function App() {
                           {block.number}
                         </text>
 
-                        {/* Label beneath hint for guide */}
+                        {/* Label beneath hint for active guide */}
                         {isActiveGuide && (
                           <rect
-                            x={block.shape.centerX - 65}
-                            y={block.shape.centerY + 28}
-                            width="130"
-                            height="24"
-                            rx="12"
+                            x={block.shape.centerX - 60}
+                            y={block.shape.centerY + 26}
+                            width="120"
+                            height="22"
+                            rx="11"
                             fill="#FFD100"
                             stroke="#FFFFFF"
                             strokeWidth="1.5"
@@ -682,8 +789,8 @@ export default function App() {
                         {isActiveGuide && (
                           <text
                             x={block.shape.centerX}
-                            y={block.shape.centerY + 41}
-                            fontSize="11"
+                            y={block.shape.centerY + 38}
+                            fontSize="10.5"
                             fontWeight="900"
                             fill="#1F2937"
                             textAnchor="middle"
@@ -727,35 +834,35 @@ export default function App() {
               )}
             </svg>
 
-            {/* Completed House Celebration Banner Overlay */}
+            {/* Victory Celebration Modal Overlay */}
             {isCompleted && !isSimulationMode && (
-              <div className="absolute inset-x-6 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-xl border-4 border-bogota-yellow p-8 rounded-3xl shadow-2xl text-center flex flex-col items-center gap-4 z-30 animate-bounce-subtle">
-                <div className="w-20 h-20 rounded-full bg-bogota-red text-bogota-yellow flex items-center justify-center text-4xl font-black shadow-lg">
+              <div className="absolute inset-x-3 sm:inset-x-6 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-xl border-4 border-bogota-yellow p-6 sm:p-8 rounded-3xl shadow-2xl text-center flex flex-col items-center gap-3 sm:gap-4 z-30 animate-bounce-subtle text-slate-900">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-bogota-red text-bogota-yellow flex items-center justify-center text-3xl sm:text-4xl font-black shadow-lg">
                   ★
                 </div>
                 <div>
-                  <span className="text-xs font-black uppercase tracking-widest text-bogota-red bg-red-50 px-3 py-1 rounded-md">
+                  <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-bogota-red bg-red-50 px-3 py-1 rounded-md">
                     ¡CASA DE BOGOTÁ ENSAMBLADA!
                   </span>
-                  <h3 className="text-3xl font-black text-slate-900 mt-1">
+                  <h3 className="text-xl sm:text-3xl font-black text-slate-900 mt-1">
                     ¡Felicitaciones a la Ciudadanía!
                   </h3>
-                  <p className="text-sm font-semibold text-slate-600 max-w-md mt-1">
+                  <p className="text-xs sm:text-sm font-semibold text-slate-600 max-w-md mt-1">
                     Has completado las 15 soluciones compartidas (Building Blocks) que hacen posible un Distrito ágil y digital.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4 pt-2">
+                <div className="flex flex-col sm:flex-row items-center gap-3 pt-2 w-full justify-center">
                   <button
                     onClick={startSimulation}
-                    className="flex items-center gap-3 px-8 py-4 bg-bogota-red hover:bg-red-700 active:scale-95 text-white font-extrabold text-lg rounded-2xl shadow-xl transition-all"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-bogota-red hover:bg-red-700 active:scale-95 text-white font-extrabold text-sm sm:text-base rounded-2xl shadow-xl transition-all"
                   >
-                    <Play className="w-6 h-6 fill-white" />
+                    <Play className="w-5 h-5 fill-white" />
                     <span>Iniciar Simulación de Trámite</span>
                   </button>
                   <button
                     onClick={handleReset}
-                    className="px-6 py-4 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-bold text-sm rounded-2xl transition-all"
+                    className="w-full sm:w-auto px-5 py-3.5 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-bold text-sm rounded-2xl transition-all"
                   >
                     Volver a Jugar
                   </button>
@@ -764,28 +871,28 @@ export default function App() {
             )}
           </div>
 
-          {/* Simulation Step HUD Bar (when in simulation mode) */}
+          {/* Simulation Step HUD Bar */}
           {isSimulationMode && (
-            <div className="w-full max-w-4xl bg-slate-900/95 backdrop-blur-xl border-2 border-bogota-yellow text-white rounded-3xl p-5 shadow-2xl flex items-center justify-between z-20 mt-2">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-bogota-yellow text-slate-900 font-black flex items-center justify-center text-xl shadow-md">
+            <div className="w-full max-w-2xl bg-slate-900/95 backdrop-blur-xl border-2 border-bogota-yellow text-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-3 z-20 mt-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-bogota-yellow text-slate-900 font-black flex items-center justify-center text-lg shadow-md shrink-0">
                   {currentSimStep + 1}
                 </div>
                 <div>
-                  <span className="text-xs font-black uppercase text-amber-400 tracking-wider">
+                  <span className="text-[10px] sm:text-xs font-black uppercase text-amber-400 tracking-wider">
                     {currentSimData.entity}
                   </span>
-                  <h4 className="text-lg font-black tracking-tight">
+                  <h4 className="text-sm sm:text-base font-black tracking-tight leading-tight">
                     {currentSimData.title}
                   </h4>
-                  <p className="text-xs font-medium text-slate-300 max-w-xl">
+                  <p className="text-[11px] sm:text-xs font-medium text-slate-300 line-clamp-2">
                     {currentSimData.description}
                   </p>
                 </div>
               </div>
 
-              {/* Simulation Controls */}
-              <div className="flex items-center gap-3">
+              {/* Controls */}
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => {
                     soundFx.playTap();
@@ -793,9 +900,9 @@ export default function App() {
                     setActiveBlockId(SIMULATION_STEPS[Math.max(0, currentSimStep - 1)].blockId);
                   }}
                   disabled={currentSimStep === 0}
-                  className="w-11 h-11 rounded-2xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 flex items-center justify-center text-white"
+                  className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 flex items-center justify-center text-white"
                 >
-                  <SkipBack className="w-5 h-5" />
+                  <SkipBack className="w-4 h-4" />
                 </button>
 
                 <button
@@ -803,10 +910,10 @@ export default function App() {
                     soundFx.playTap();
                     setIsSimPlaying(!isSimPlaying);
                   }}
-                  className="px-5 py-2.5 rounded-2xl bg-bogota-yellow hover:bg-amber-400 text-slate-900 font-black flex items-center gap-2 shadow-md active:scale-95"
+                  className="px-3.5 py-2 rounded-xl bg-bogota-yellow hover:bg-amber-400 text-slate-900 font-black flex items-center gap-1.5 shadow-md active:scale-95 text-xs"
                 >
-                  {isSimPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 fill-slate-900" />}
-                  <span>{isSimPlaying ? 'Pausar' : 'Reproducir'}</span>
+                  {isSimPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-slate-900" />}
+                  <span>{isSimPlaying ? 'Pausar' : 'Play'}</span>
                 </button>
 
                 <button
@@ -818,211 +925,71 @@ export default function App() {
                     }
                   }}
                   disabled={currentSimStep === SIMULATION_STEPS.length - 1}
-                  className="w-11 h-11 rounded-2xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 flex items-center justify-center text-white"
+                  className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 flex items-center justify-center text-white"
                 >
-                  <SkipForward className="w-5 h-5" />
+                  <SkipForward className="w-4 h-4" />
                 </button>
 
                 <button
                   onClick={() => setIsSimulationMode(false)}
-                  className="px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-red-900/50 text-slate-300 hover:text-white font-bold text-xs"
+                  className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-red-900/50 text-slate-300 hover:text-white font-bold text-xs"
                 >
-                  Cerrar
+                  Salir
                 </button>
               </div>
             </div>
           )}
-        </main>
+        </section>
+      </main>
 
-        {/* ========================================================================= */}
-        {/* NIVEL 3: DOCK TÁCTIL DE INVENTARIO (Bottom: 1400px a 1920px)              */}
-        {/* ========================================================================= */}
-        <footer className="w-full bg-[#F3F4F6] border-t-2 border-slate-200 rounded-t-[40px] px-8 pt-6 pb-8 shadow-2xl z-20 flex flex-col gap-4">
-          {/* Dock Header & Filter Tabs */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-bogota-red text-white flex items-center justify-center font-black shadow-sm">
-                <Layers className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">
-                  Inventario de Soluciones Compartidas
-                </h3>
-                <p className="text-xs font-semibold text-slate-500">
-                  Selecciona o arrastra una ficha para armar la casa de Bogotá
-                </p>
-              </div>
-            </div>
-
-            {/* Filter Pills */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  soundFx.playTap();
-                  setCategoryFilter('all');
+      {/* ========================================================================= */}
+      {/* FLOATING DRAGGED PIECE AVATAR (Follows touch pointer)                     */}
+      {/* ========================================================================= */}
+      {dragState.isDragging && dragState.blockId && (
+        <div
+          className="fixed pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2"
+          style={{
+            left: `${dragState.pointerX}px`,
+            top: `${dragState.pointerY}px`,
+          }}
+        >
+          {(() => {
+            const block = BUILDING_BLOCKS.find(b => b.id === dragState.blockId);
+            if (!block) return null;
+            return (
+              <div
+                className="w-48 sm:w-56 h-20 sm:h-24 rounded-2xl p-2.5 bg-white/95 text-slate-900 border-3 border-bogota-yellow shadow-2xl flex flex-col justify-between scale-105 rotate-2 backdrop-blur-md"
+                style={{
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.4), 0 0 25px rgba(255, 209, 0, 0.8)',
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
-                  categoryFilter === 'all'
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'bg-white text-slate-600 hover:bg-slate-200'
-                }`}
               >
-                Todos (15)
-              </button>
-              <button
-                onClick={() => {
-                  soundFx.playTap();
-                  setCategoryFilter('unplaced');
-                }}
-                className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
-                  categoryFilter === 'unplaced'
-                    ? 'bg-bogota-red text-white shadow-xs'
-                    : 'bg-white text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                Pendientes ({15 - progressCount})
-              </button>
-              <button
-                onClick={() => {
-                  soundFx.playTap();
-                  setCategoryFilter('transaccional');
-                }}
-                className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
-                  categoryFilter === 'transaccional'
-                    ? 'bg-bogota-red text-white shadow-xs'
-                    : 'bg-white text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                Transaccional
-              </button>
-              <button
-                onClick={() => {
-                  soundFx.playTap();
-                  setCategoryFilter('seguridad');
-                }}
-                className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
-                  categoryFilter === 'seguridad'
-                    ? 'bg-bogota-red text-white shadow-xs'
-                    : 'bg-white text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                Seguridad
-              </button>
-            </div>
-          </div>
-
-          {/* Touch Pieces Grid (15 Tactile Building Block Cards with literal names and >=64px touch target) */}
-          <div className="grid grid-cols-5 gap-3.5 max-h-[360px] overflow-y-auto no-scrollbar py-1">
-            {filteredBlocks.map(block => {
-              const isPlaced = placedBlockIds.includes(block.id);
-              const isSelected = activeBlockId === block.id;
-
-              return (
-                <div
-                  key={block.id}
-                  onPointerDown={e => handlePointerDownPiece(e, block.id)}
-                  className={`relative min-h-[110px] rounded-2xl p-3 flex flex-col justify-between border-2 transition-all cursor-grab active:cursor-grabbing touch-active-card ${
-                    isSelected
-                      ? 'bg-amber-50/95 border-bogota-yellow shadow-kiosk-glow scale-[1.02] ring-2 ring-bogota-yellow'
-                      : isPlaced
-                      ? 'bg-white/80 border-emerald-300 opacity-90'
-                      : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'
-                  }`}
-                >
-                  {/* Card Header: Category & Number */}
-                  <div className="flex items-center justify-between">
-                    <span
-                      className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md text-white shadow-xs"
-                      style={{ backgroundColor: block.color }}
-                    >
-                      #{block.number}
-                    </span>
-
-                    {/* Placed Status Icon */}
-                    {isPlaced ? (
-                      <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center">
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
-                      </span>
-                    ) : (
-                      <span className="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
-                    )}
-                  </div>
-
-                  {/* Icon & Exact Literal Title */}
-                  <div className="flex items-center gap-2 my-auto">
-                    <div
-                      className="w-8 h-8 rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs"
-                      style={{ backgroundColor: block.color }}
-                    >
-                      <BlockIcon name={block.iconName} className="w-4 h-4" />
-                    </div>
-                    <span className="text-xs font-black text-slate-800 leading-tight line-clamp-2">
-                      {block.name}
-                    </span>
-                  </div>
-
-                  {/* Footer status hint */}
-                  <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
-                    <span>{block.categoryLabel}</span>
-                    <span className="text-bogota-red font-black">
-                      {isPlaced ? 'Listo' : 'Encajar'}
-                    </span>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded text-white"
+                    style={{ backgroundColor: block.color }}
+                  >
+                    #{block.number}
+                  </span>
+                  <span className="text-[9px] font-black text-bogota-red uppercase animate-pulse">
+                    ¡Arrastra a la casa!
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        </footer>
-
-        {/* ========================================================================= */}
-        {/* FLOATING DRAGGED PIECE AVATAR (Follows touch cursor with 0 latency)       */}
-        {/* ========================================================================= */}
-        {dragState.isDragging && dragState.blockId && (
-          <div
-            className="fixed pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2"
-            style={{
-              left: `${dragState.pointerX}px`,
-              top: `${dragState.pointerY}px`,
-            }}
-          >
-            {(() => {
-              const block = BUILDING_BLOCKS.find(b => b.id === dragState.blockId);
-              if (!block) return null;
-              return (
-                <div
-                  className="w-52 h-24 rounded-3xl p-3 bg-white/95 border-3 border-bogota-yellow shadow-2xl flex flex-col justify-between scale-110 rotate-2 backdrop-blur-md"
-                  style={{
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.3), 0 0 25px rgba(255, 209, 0, 0.8)',
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span
-                      className="text-xs font-black uppercase px-2 py-0.5 rounded-md text-white"
-                      style={{ backgroundColor: block.color }}
-                    >
-                      #{block.number}
-                    </span>
-                    <span className="text-[10px] font-black text-bogota-red uppercase animate-pulse">
-                      ¡Arrastra a la casa!
-                    </span>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-white"
+                    style={{ backgroundColor: block.color }}
+                  >
+                    <BlockIcon name={block.iconName} className="w-4 h-4" />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-9 h-9 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: block.color }}
-                    >
-                      <BlockIcon name={block.iconName} className="w-5 h-5" />
-                    </div>
-                    <span className="text-xs font-black text-slate-900 leading-tight">
-                      {block.name}
-                    </span>
-                  </div>
+                  <span className="text-xs font-black text-slate-900 leading-tight">
+                    {block.name}
+                  </span>
                 </div>
-              );
-            })()}
-          </div>
-        )}
-      </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
     </div>
   );
 }
