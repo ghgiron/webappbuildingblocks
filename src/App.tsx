@@ -32,9 +32,7 @@ import {
   ChevronRight,
   Hammer,
   ArrowLeft,
-  Eye,
-  Flag,
-  Sparkle
+  Eye
 } from 'lucide-react';
 import { BUILDING_BLOCKS, SIMULATION_STEPS } from './data/buildingBlocks';
 import { DragState } from './types';
