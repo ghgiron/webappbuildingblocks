@@ -5,27 +5,6 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
   // CAPA 1: TECHO Y ÁTICO (COBERTURA, CANALES Y MONITOREO - 5 BLOQUES)
   // =========================================================================
   {
-    id: 'observabilidad',
-    number: 6,
-    name: 'Observabilidad y analítica',
-    shortName: 'Observabilidad y analítica',
-    category: 'analitica',
-    categoryLabel: 'Monitoreo e IA',
-    color: '#65A30D',
-    borderColor: '#4D7C0F',
-    bgLight: '#F7FEE7',
-    iconName: 'Activity',
-    description: 'Monitorea en tiempo real el rendimiento del sistema, el registro de eventos y funcionamiento de los modelos de IA.',
-    example: 'Si miles de personas ingresan al tiempo el último día de pago de impuestos, el sistema detecta el alto tráfico y reasigna recursos para evitar que la página se ponga lenta o se caiga.',
-    shape: {
-      pathD: 'M 340,20 L 430,20 L 490,210 L 290,210 Z',
-      centerX: 388,
-      centerY: 115,
-      shapeClass: 'clip-trapezoid-top',
-      clipPathCss: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)',
-    }
-  },
-  {
     id: 'mensajeria',
     number: 8,
     name: 'Mensajería',
@@ -39,16 +18,37 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Canal automatizado para enviar notificaciones masivas o individuales por correo y SMS a la ciudadanía.',
     example: 'Enviar un mensaje de texto a una persona de la ciudadanía confirmando que su cupo escolar ha sido asignado.',
     shape: {
-      pathD: 'M 230,20 L 340,20 L 290,210 L 160,210 Z',
+      pathD: 'M 260,20 L 320,20 L 290,210 L 180,210 Z',
       centerX: 255,
       centerY: 115,
       shapeClass: 'clip-trapezoid-left-roof',
-      clipPathCss: 'polygon(45% 0%, 100% 0%, 80% 100%, 0% 100%)',
+      clipPathCss: 'polygon(40% 0%, 100% 0%, 80% 100%, 0% 100%)',
     },
     simulationStep: {
       order: 8,
       stepTitle: 'Paso 8: Notificación Inmediata',
       actionDescription: 'Se notifica formalmente el resultado del trámite a la ciudadanía.'
+    }
+  },
+  {
+    id: 'observabilidad',
+    number: 6,
+    name: 'Observabilidad y analítica',
+    shortName: 'Observabilidad y analítica',
+    category: 'analitica',
+    categoryLabel: 'Monitoreo e IA',
+    color: '#65A30D',
+    borderColor: '#4D7C0F',
+    bgLight: '#F7FEE7',
+    iconName: 'Activity',
+    description: 'Monitorea en tiempo real el rendimiento del sistema, el registro de eventos y funcionamiento de los modelos de IA.',
+    example: 'Si miles de personas ingresan al tiempo el último día de pago de impuestos, el sistema detecta el alto tráfico y reasigna recursos para evitar que la página se ponga lenta o se caiga.',
+    shape: {
+      pathD: 'M 320,20 L 400,20 L 450,210 L 290,210 Z',
+      centerX: 365,
+      centerY: 115,
+      shapeClass: 'clip-trapezoid-top',
+      clipPathCss: 'polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)',
     }
   },
   {
@@ -65,11 +65,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Ejecuta tareas recurrentes o en fechas y horas específicas de forma automática.',
     example: 'Programar la tarea de notificar a las personas de la ciudadanía que declararon renta en la vigencia anterior.',
     shape: {
-      pathD: 'M 430,20 L 590,210 L 490,210 Z',
-      centerX: 505,
-      centerY: 130,
+      pathD: 'M 400,20 L 460,20 L 580,210 L 450,210 Z',
+      centerX: 475,
+      centerY: 115,
       shapeClass: 'clip-slope-right-top',
-      clipPathCss: 'polygon(0% 0%, 100% 100%, 35% 100%)',
+      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 25% 100%)',
     }
   },
   {
@@ -86,11 +86,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Permite integrar rápidamente datos geoespaciales, mapas y puntos de interés relacionados con la oferta de servicios del Distrito.',
     example: 'Consultar en un mapa la ubicación de las comisarías de familia más cercanas y los servicios a los que puede acceder la ciudadanía.',
     shape: {
-      pathD: 'M 160,210 L 410,210 L 280,430 L 90,430 Z',
-      centerX: 235,
+      pathD: 'M 180,210 L 380,210 L 380,430 L 90,430 Z',
+      centerX: 255,
       centerY: 320,
       shapeClass: 'clip-slope-left',
-      clipPathCss: 'polygon(25% 0%, 100% 0%, 65% 100%, 0% 100%)',
+      clipPathCss: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
     }
   },
   {
@@ -107,11 +107,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Permite medir la percepción de la ciudadanía tras realizar un trámite o acceder a un servicio digital.',
     example: 'Al terminar la generación del Certificado de Industria y Comercio, aparece una breve encuesta de 3 preguntas para calificar la experiencia.',
     shape: {
-      pathD: 'M 410,210 L 590,210 L 730,530 L 540,430 Z',
-      centerX: 565,
-      centerY: 345,
+      pathD: 'M 380,210 L 580,210 L 710,430 L 380,430 Z',
+      centerX: 515,
+      centerY: 320,
       shapeClass: 'clip-slope-right',
-      clipPathCss: 'polygon(0% 0%, 60% 0%, 100% 100%, 40% 70%)',
+      clipPathCss: 'polygon(0% 0%, 75% 0%, 100% 100%, 0% 100%)',
     }
   },
 
@@ -158,8 +158,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Motor que modela, automatiza y orquesta los procesos y aprobaciones internas entre entidades frente a un trámite o servicio.',
     example: 'Enviar automáticamente una solicitud de licencia de construcción para que la revise primero un área técnica, luego la jurídica y finalmente se emita la respuesta a la ciudadanía.',
     shape: {
-      pathD: 'M 280,430 L 540,430 L 540,625 L 280,625 Z',
-      centerX: 410,
+      pathD: 'M 280,430 L 520,430 L 520,625 L 280,625 Z',
+      centerX: 400,
       centerY: 528,
       shapeClass: 'clip-rect-room',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -184,11 +184,11 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'La ciudadanía autoriza, administra y controla de manera transparente cómo las entidades del Distrito pueden utilizar y compartir sus datos personales para fines misionales.',
     example: 'Al inscribirse en un programa de la Secretaría de Integración Social, la persona de la ciudadanía autoriza consultar sus datos también por la Secretaría de Educación o Secretaría de Salud para ser focalizada en otros beneficios o servicios distritales.',
     shape: {
-      pathD: 'M 540,430 L 730,530 L 730,625 L 540,625 Z',
-      centerX: 635,
-      centerY: 540,
+      pathD: 'M 520,430 L 710,430 L 710,625 L 520,625 Z',
+      centerX: 615,
+      centerY: 528,
       shapeClass: 'clip-rect-room',
-      clipPathCss: 'polygon(0% 0%, 100% 45%, 100% 100%, 0% 100%)',
+      clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
     }
   },
   {
@@ -231,8 +231,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Permite a la ciudadanía acceder a los servicios digitales de Bogotá, usando credenciales verificables emitidas por el Portal Bogotá y entidades distritales, así mismo mediante el uso de autenticación federada. Se utilizan estándares como Keycloak, OIDC y OAuth2.',
     example: 'Iniciar sesión una sola vez en el Portal y para consultar desde citas médicas en la Secretaría de Salud hasta obligaciones tributarias con la Secretaría de Hacienda.',
     shape: {
-      pathD: 'M 280,625 L 540,625 L 540,820 L 280,820 Z',
-      centerX: 410,
+      pathD: 'M 280,625 L 520,625 L 520,820 L 280,820 Z',
+      centerX: 400,
       centerY: 722,
       shapeClass: 'clip-rect-door',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -257,8 +257,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Permite que cualquier Entidad Distrital lo use para habilitar pagos virtuales en sus plataformas de manera segura, validando las obligaciones pendientes de la ciudadanía, el pago y verificación de la transacción.',
     example: 'Pagar los impuestos distritales o el permiso para usar el estadio Nemesio Camacho El Campín.',
     shape: {
-      pathD: 'M 540,625 L 730,625 L 730,820 L 540,820 Z',
-      centerX: 635,
+      pathD: 'M 520,625 L 710,625 L 710,820 L 520,820 Z',
+      centerX: 615,
       centerY: 722,
       shapeClass: 'clip-rect-room',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -287,8 +287,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Sincroniza y centraliza la información transaccional de múltiples secretarías en un repositorio analítico unificado del Distrito.',
     example: 'Habilitación de tableros analíticos para cruzar datos de sectores Educación, Social y Movilidad, permitiendo identificar con precisión qué zonas de la ciudad necesitan con urgencia nuevos colegios o centros médicos para la ciudadanía.',
     shape: {
-      pathD: 'M 90,820 L 250,820 L 250,975 L 115,975 Q 90,975 90,950 Z',
-      centerX: 170,
+      pathD: 'M 90,820 L 245,820 L 245,975 L 115,975 Q 90,975 90,950 Z',
+      centerX: 167,
       centerY: 898,
       shapeClass: 'clip-foundation-left',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -308,8 +308,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Es la “caja negra” del Portal Bogotá. Registra de forma segura e inmutable cada evento o transacción que genera la ciudadanía.',
     example: 'Cuando una persona de la ciudadanía solicita un subsidio, el sistema guarda en orden cronológico exacto cada etapa del trámite para que nunca se pierda la trazabilidad.',
     shape: {
-      pathD: 'M 250,820 L 410,820 L 410,975 L 250,975 Z',
-      centerX: 330,
+      pathD: 'M 245,820 L 400,820 L 400,975 L 245,975 Z',
+      centerX: 322,
       centerY: 898,
       shapeClass: 'clip-foundation-mid-left',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -334,8 +334,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'Mantiene registros únicos de personas, organizaciones y servicios para asegurar la consistencia de datos maestros.',
     example: 'Si la ciudadanía actualiza su dirección en la Secretaría de Planeación, el cambio se refleja en la base maestra para que la Secretaría de Salud y la Secretaría de Hacienda consulten el dato actualizado sin pedirlo de nuevo.',
     shape: {
-      pathD: 'M 410,820 L 570,820 L 570,975 L 410,975 Z',
-      centerX: 490,
+      pathD: 'M 400,820 L 555,820 L 555,975 L 400,975 Z',
+      centerX: 478,
       centerY: 898,
       shapeClass: 'clip-foundation-mid-right',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -355,8 +355,8 @@ export const BUILDING_BLOCKS: BuildingBlock[] = [
     description: 'El habilitante que permite a entidades del Distrito compartir información entre sí de forma segura.',
     example: 'Si la Secretaría de Educación necesita verificar un dato sobre la residencia de un estudiante y su nivel socioeconómico para el proceso de matrícula, este bloque permite conectarse con la Secretaría de Planeación para validarlo.',
     shape: {
-      pathD: 'M 570,820 L 730,820 L 730,950 Q 730,975 705,975 L 570,975 Z',
-      centerX: 650,
+      pathD: 'M 555,820 L 710,820 L 710,950 Q 710,975 685,975 L 555,975 Z',
+      centerX: 633,
       centerY: 898,
       shapeClass: 'clip-foundation-right',
       clipPathCss: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',

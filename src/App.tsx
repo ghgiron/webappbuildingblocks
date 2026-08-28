@@ -313,7 +313,7 @@ export default function App() {
       className="h-dvh w-full bg-[#F8F9FA] text-[#333333] flex flex-col font-sans select-none overflow-hidden antialiased touch-none"
     >
       {/* ========================================================================= */}
-      {/* 1. HEADER INSTITUCIONAL CON BOTÓN REGRESAR Y NAVEGACIÓN LIMPIA           */}
+      {/* 1. HEADER INSTITUCIONAL (NAVEGACIÓN EN LA MISMA VENTANA)                  */}
       {/* ========================================================================= */}
       <header className="shrink-0 w-full bg-white border-b border-gray-100 text-[#333333] shadow-xs z-30 px-3 sm:px-6 py-2 sm:py-2.5">
         <div className="max-w-[1920px] mx-auto flex items-center justify-between gap-2 sm:gap-4">
@@ -354,13 +354,12 @@ export default function App() {
             </p>
           </div>
 
-          {/* Right: Tactile Actions (Regresar, Sonido, Reiniciar) */}
+          {/* Right: Tactile Actions (Regresar en misma ventana, Sonido, Reiniciar) */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Return Button */}
+            {/* Return Button: Navegación en la misma ventana (target="_self") */}
             <a
               href="https://dinamicas-portal-transaccional.lovable.app/"
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_self"
               className="flex items-center gap-1 px-2.5 sm:px-3.5 py-1.5 rounded-[15px] bg-white hover:bg-red-50 text-[#CC0E35] border border-[#CC0E35] font-title font-bold text-[10px] sm:text-xs transition-all shadow-2xs active:scale-95"
               title="Regresar a dinámicas del Portal Transaccional"
             >
@@ -499,7 +498,7 @@ export default function App() {
                   >
                     <div className="flex items-center justify-between">
                       <span
-                        className="font-title text-[9px] font-bold uppercase px-1.5 py-0.5 rounded text-white"
+                        className="font-title text-[8.5px] font-extrabold uppercase px-1 py-0.2 rounded text-white"
                         style={{ backgroundColor: block.color }}
                       >
                         #{block.number}
@@ -553,15 +552,15 @@ export default function App() {
           {/* Col 2 (Center, 6 cols): La Casa de Bogotá en gran formato */}
           <section className="col-span-6 h-full flex flex-col items-center justify-center relative p-2 overflow-hidden">
             
-            {/* Floating Gamification Badges (Progreso y Puntaje) */}
+            {/* Floating Gamification Badges (Progreso y Puntaje en Desktop) */}
             <div className="absolute top-3 left-3 z-20 flex flex-col gap-2 pointer-events-none">
-              <div className="flex items-center gap-1.5 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-[15px] border-2 border-[#CC0E35] shadow-md">
+              <div className="flex items-center gap-1.5 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-[15px] border border-[#CC0E35] shadow-md">
                 <span className="font-title text-[10px] font-extrabold text-slate-500 uppercase">Progreso:</span>
                 <span className="font-title px-1.5 py-0.2 rounded bg-[#CC0E35] text-white font-black text-xs">
                   {progressCount}/15
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 bg-[#FEF7E6]/95 backdrop-blur-xs px-3 py-1.5 rounded-[15px] border-2 border-[#FAB62D] shadow-md">
+              <div className="flex items-center gap-1.5 bg-[#FEF7E6]/95 backdrop-blur-xs px-3 py-1.5 rounded-[15px] border border-[#FAB62D] shadow-md">
                 <Trophy className="w-3.5 h-3.5 text-amber-600" />
                 <span className="font-title text-xs font-black text-[#333333]">{score} pts</span>
               </div>
@@ -633,9 +632,9 @@ export default function App() {
                   />
                 </g>
 
-                {/* Outer Red Silhouette of the House of Bogotá */}
+                {/* Outer Red Silhouette of the House of Bogotá (Perímetro Calibrado) */}
                 <path
-                  d="M 340,15 L 430,15 L 750,530 L 760,540 L 780,555 L 740,555 L 740,960 Q 740,985 715,985 L 85,985 Q 60,985 60,960 L 60,430 L 40,430 L 230,20 Z"
+                  d="M 260,15 L 460,15 L 730,510 L 755,530 L 710,530 L 710,970 Q 710,985 690,985 L 110,985 Q 90,985 90,970 L 90,430 L 65,430 L 260,15 Z"
                   fill="url(#legoStudsRed)"
                   stroke="#99001B"
                   strokeWidth="12"
@@ -703,7 +702,7 @@ export default function App() {
                             x={block.shape.centerX}
                             y={block.shape.centerY + 10}
                             fontFamily="Montserrat"
-                            fontSize="13.5"
+                            fontSize="13"
                             fontWeight="800"
                             fill="#FFFFFF"
                             textAnchor="middle"
@@ -999,39 +998,43 @@ export default function App() {
         /* B. VERTICAL VIEWPORT (1080x1920 KIOSK 55" PORTRAIT / TABLET / MOBILE)     */
         /* 1 Sola Columna en 3 Filas Generosas                                     */
         /* ======================================================================= */
-        <div className="flex-1 min-h-0 w-full max-w-4xl mx-auto p-2.5 sm:p-4 flex flex-col justify-between overflow-hidden gap-2 sm:gap-3.5">
+        <div className="flex-1 min-h-0 w-full max-w-4xl mx-auto p-2 sm:p-3.5 flex flex-col justify-between overflow-hidden gap-1.5 sm:gap-3">
           
           {/* ===================================================================== */}
-          {/* FILA 1: TARJETA DE CONCEPTO ACTIVA (TOP ~20% DEL ALTO)               */}
+          {/* FILA 1: ACTIVE BAR CON BADGES COMPACTOS (TOP)                         */}
           {/* ===================================================================== */}
           <section className="shrink-0 w-full">
             {/* Desktop / Tablet / Kiosk Portrait (> 768px): Tarjeta completa con tipografía grande */}
-            <div className="hidden sm:flex w-full bg-white border-2 border-[#CC0E35] rounded-[15px] p-4 sm:p-5 shadow-xs items-center justify-between gap-4">
-              <div className="flex items-center gap-3.5">
+            <div className="hidden sm:flex w-full bg-white border-2 border-[#CC0E35] rounded-[15px] p-3.5 sm:p-4 shadow-xs items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
                 <div
-                  className="w-14 h-14 rounded-[15px] flex items-center justify-center text-white shadow-xs shrink-0"
+                  className="w-12 h-12 rounded-[15px] flex items-center justify-center text-white shadow-xs shrink-0"
                   style={{ backgroundColor: activeBlock.color }}
                 >
-                  <BlockIcon name={activeBlock.iconName} className="w-8 h-8" />
+                  <BlockIcon name={activeBlock.iconName} className="w-7 h-7" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-title text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <span className="font-title text-[11px] font-bold uppercase tracking-wider text-slate-500">
                     {activeBlock.categoryLabel} • Bloque #{activeBlock.number}
                   </span>
-                  <h3 className="font-title text-xl sm:text-2xl font-extrabold text-[#333333] leading-tight">
+                  <h3 className="font-title text-lg sm:text-xl font-extrabold text-[#333333] leading-tight">
                     {activeBlock.name}
                   </h3>
                 </div>
               </div>
 
-              {/* Description & Example Preview */}
-              <div className="hidden md:flex flex-col gap-1 max-w-xl text-left">
-                <p className="font-body text-xs sm:text-sm font-normal text-slate-800 line-clamp-2">
-                  <strong className="font-title text-[#CC0E35] font-extrabold">¿QUÉ ES?</strong> {activeBlock.description}
-                </p>
-                <p className="font-body text-xs sm:text-sm font-medium text-amber-900 line-clamp-2">
-                  <strong className="font-title text-amber-900 font-extrabold">EJEMPLO:</strong> {activeBlock.example}
-                </p>
+              {/* Progress & Score in tablet/kiosk row */}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-[15px] border border-slate-200">
+                  <span className="font-title text-[10px] font-bold text-slate-500">Progreso:</span>
+                  <span className="font-title px-1.5 py-0.2 rounded bg-[#CC0E35] text-white font-black text-xs">
+                    {progressCount}/15
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 bg-[#FEF7E6] px-2.5 py-1 rounded-[15px] border border-[#FAB62D]">
+                  <Trophy className="w-3.5 h-3.5 text-[#FAB62D]" />
+                  <span className="font-title text-xs font-black text-[#333333]">{score} pts</span>
+                </div>
               </div>
 
               {/* Detail button for modal inspection */}
@@ -1040,64 +1043,67 @@ export default function App() {
                   soundFx.playTap();
                   setShowConceptModal(true);
                 }}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-[15px] bg-[#FEF7E6] hover:bg-[#FAB62D] text-[#333333] font-title font-bold text-xs shrink-0 border border-[#FAB62D] transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[15px] bg-[#FEF7E6] hover:bg-[#FAB62D] text-[#333333] font-title font-bold text-xs shrink-0 border border-[#FAB62D] transition-all"
               >
                 <Info className="w-4 h-4 text-[#CC0E35]" />
                 <span>Ver completo</span>
               </button>
             </div>
 
-            {/* Mobile (< 768px): Barra compacta con botón 'Ver concepto' */}
-            <div
-              onClick={() => {
-                soundFx.playTap();
-                setShowConceptModal(true);
-              }}
-              className="sm:hidden w-full flex items-center justify-between bg-white border border-slate-200 rounded-[15px] px-3 py-2 shadow-2xs cursor-pointer active:scale-98 transition-all"
-            >
-              <div className="flex items-center gap-2.5 truncate">
+            {/* Mobile (< 768px): Barra compacta integrada con métricas sin solapamiento */}
+            <div className="sm:hidden w-full flex items-center justify-between bg-white border border-slate-200 rounded-[15px] px-2.5 py-1.5 shadow-2xs gap-1.5">
+              {/* Selected Block Info */}
+              <div
+                onClick={() => {
+                  soundFx.playTap();
+                  setShowConceptModal(true);
+                }}
+                className="flex items-center gap-1.5 truncate cursor-pointer"
+              >
                 <div
-                  className="w-7 h-7 rounded-[15px] flex items-center justify-center text-white shrink-0 shadow-2xs"
+                  className="w-6 h-6 rounded-[10px] flex items-center justify-center text-white shrink-0 shadow-2xs"
                   style={{ backgroundColor: activeBlock.color }}
                 >
-                  <BlockIcon name={activeBlock.iconName} className="w-4 h-4" />
+                  <BlockIcon name={activeBlock.iconName} className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex flex-col truncate">
-                  <span className="font-title text-[9px] font-bold text-slate-500 leading-none">
-                    Bloque #{activeBlock.number}
+                  <span className="font-title text-[8.5px] font-bold text-slate-500 leading-none">
+                    #{activeBlock.number}
                   </span>
-                  <span className="font-title text-xs font-bold text-[#333333] truncate leading-tight">
+                  <span className="font-title text-[11px] font-extrabold text-[#333333] truncate leading-tight">
                     {activeBlock.name}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 px-2.5 py-1 rounded-[15px] bg-[#FEF7E6] text-[#333333] font-title font-bold text-[11px] shrink-0 border border-[#FAB62D]">
-                <Info className="w-3.5 h-3.5 text-[#CC0E35]" />
-                <span>Ver concepto</span>
+              {/* Mobile Progress & Score Badges (Slim & Compact) */}
+              <div className="flex items-center gap-1 shrink-0">
+                <span className="font-title px-1.5 py-0.5 rounded-[10px] bg-[#CC0E35] text-white font-black text-[10px]">
+                  {progressCount}/15
+                </span>
+                <span className="font-title px-1.5 py-0.5 rounded-[10px] bg-[#FEF7E6] border border-[#FAB62D] text-[#333333] font-extrabold text-[10px]">
+                  {score} pts
+                </span>
+                
+                {/* Ver concepto button */}
+                <button
+                  onClick={() => {
+                    soundFx.playTap();
+                    setShowConceptModal(true);
+                  }}
+                  className="flex items-center gap-0.5 px-2 py-1 rounded-[12px] bg-[#FEF7E6] text-[#333333] font-title font-bold text-[10px] shrink-0 border border-[#FAB62D]"
+                >
+                  <Info className="w-3 h-3 text-[#CC0E35]" />
+                  <span>Concepto</span>
+                </button>
               </div>
             </div>
           </section>
 
           {/* ===================================================================== */}
-          {/* FILA 2: LA CASA DE BOGOTÁ (CENTRO ~52% DEL ALTO CON BADGES FLOTANTES) */}
+          {/* FILA 2: LA CASA DE BOGOTÁ (CENTRO ~55% DEL ALTO - 100% VISIBLE)       */}
           {/* ===================================================================== */}
-          <section className="flex-1 min-h-0 w-full flex items-center justify-center relative p-1 overflow-hidden">
-            
-            {/* Floating Gamification Badges (Progreso y Puntaje) */}
-            <div className="absolute top-2 left-2 z-20 flex flex-col gap-1.5 pointer-events-none">
-              <div className="flex items-center gap-1.5 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-[15px] border border-[#CC0E35] shadow-xs">
-                <span className="font-title text-[9px] font-bold text-slate-500 uppercase">Progreso:</span>
-                <span className="font-title px-1.5 py-0.2 rounded bg-[#CC0E35] text-white font-black text-[10px] sm:text-xs">
-                  {progressCount}/15
-                </span>
-              </div>
-              <div className="flex items-center gap-1 bg-[#FEF7E6]/95 backdrop-blur-xs px-2.5 py-1 rounded-[15px] border border-[#FAB62D] shadow-xs">
-                <Trophy className="w-3 h-3 text-[#FAB62D]" />
-                <span className="font-title text-[10px] sm:text-xs font-black text-[#333333]">{score} pts</span>
-              </div>
-            </div>
-
+          <section className="flex-1 min-h-0 w-full flex items-center justify-center relative p-0.5 overflow-hidden">
             <div className="flex-1 min-h-0 w-full flex items-center justify-center relative max-h-[100%] aspect-[800/1000]">
               <svg
                 ref={svgHouseRef}
@@ -1145,7 +1151,7 @@ export default function App() {
                   </filter>
                 </defs>
 
-                {/* 3 Estrellas de Bogotá DENTRO del SVG */}
+                {/* 3 Estrellas de Bogotá DENTRO del SVG (En el cielo derecho) */}
                 <g pointerEvents="none" className="drop-shadow-[0_0_12px_rgba(250,182,45,0.85)]">
                   <path
                     d="M 680,85 L 693,115 L 725,118 L 700,139 L 708,170 L 680,152 L 652,170 L 660,139 L 635,118 L 667,115 Z"
@@ -1164,9 +1170,9 @@ export default function App() {
                   />
                 </g>
 
-                {/* Outer Red Silhouette of the House of Bogotá */}
+                {/* Outer Red Silhouette of the House of Bogotá (Perímetro Calibrado) */}
                 <path
-                  d="M 340,15 L 430,15 L 750,530 L 760,540 L 780,555 L 740,555 L 740,960 Q 740,985 715,985 L 85,985 Q 60,985 60,960 L 60,430 L 40,430 L 230,20 Z"
+                  d="M 260,15 L 460,15 L 730,510 L 755,530 L 710,530 L 710,970 Q 710,985 690,985 L 110,985 Q 90,985 90,970 L 90,430 L 65,430 L 260,15 Z"
                   fill="url(#legoStudsRedPortrait)"
                   stroke="#99001B"
                   strokeWidth="12"
@@ -1234,7 +1240,7 @@ export default function App() {
                             x={block.shape.centerX}
                             y={block.shape.centerY + 10}
                             fontFamily="Montserrat"
-                            fontSize="13.5"
+                            fontSize="13"
                             fontWeight="800"
                             fill="#FFFFFF"
                             textAnchor="middle"
@@ -1380,9 +1386,9 @@ export default function App() {
           </section>
 
           {/* ===================================================================== */}
-          {/* FILA 3: DOCK DE INVENTARIO TÁCTIL (BOTTOM ~28% DEL ALTO)              */}
+          {/* FILA 3: DOCK DE INVENTARIO TÁCTIL (BOTTOM - CON PADDING Y SCROLL FLUIDO) */}
           {/* ===================================================================== */}
-          <section className="shrink-0 w-full bg-white border border-slate-200 rounded-[15px] p-2 sm:p-3 shadow-xs">
+          <section className="shrink-0 w-full bg-white border border-slate-200 rounded-[15px] p-2 sm:p-3 pb-3 sm:pb-3.5 shadow-xs">
             <div className="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-100 gap-1">
               <span className="font-title text-[11px] sm:text-xs font-extrabold text-[#333333] uppercase truncate">
                 Inventario ({15 - progressCount} pendientes)
@@ -1448,8 +1454,8 @@ export default function App() {
               </div>
             </div>
 
-            {/* Grid táctil de 2 filas con scroll horizontal suave y pan-y */}
-            <div className="grid grid-flow-col auto-cols-[140px] sm:auto-cols-[180px] grid-rows-2 gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5 touch-pan-x select-none">
+            {/* Grid táctil de 2 filas con scroll horizontal suave, margen derecho y pan-x */}
+            <div className="grid grid-flow-col auto-cols-[145px] sm:auto-cols-[175px] grid-rows-2 gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5 pr-4 touch-pan-x select-none">
               {filteredBlocks.map(block => {
                 const isPlaced = placedBlockIds.includes(block.id);
                 const isSelected = activeBlockId === block.id;
@@ -1459,7 +1465,7 @@ export default function App() {
                     key={block.id}
                     onPointerDown={e => handlePointerDownPiece(e, block.id)}
                     onClick={() => handleSelectPiece(block.id)}
-                    className={`relative min-h-[56px] sm:min-h-[68px] rounded-[15px] p-2 flex flex-col justify-between border-2 transition-all cursor-pointer touch-none select-none ${
+                    className={`relative min-h-[56px] sm:min-h-[66px] rounded-[15px] p-2 flex flex-col justify-between border-2 transition-all cursor-pointer touch-none select-none ${
                       isSelected
                         ? 'bg-[#FEF7E6] border-[#FAB62D] shadow-xs ring-2 ring-[#FAB62D] scale-[1.02]'
                         : isPlaced
@@ -1469,14 +1475,14 @@ export default function App() {
                   >
                     <div className="flex items-center justify-between">
                       <span
-                        className="font-title text-[8px] sm:text-[9px] font-bold uppercase px-1.5 py-0.5 rounded text-white"
+                        className="font-title text-[8px] sm:text-[8.5px] font-extrabold uppercase px-1 py-0.2 rounded text-white"
                         style={{ backgroundColor: block.color }}
                       >
                         #{block.number}
                       </span>
                       {isPlaced ? (
-                        <span className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[8px]">
-                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        <span className="w-3.5 h-3.5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[8px]">
+                          <Check className="w-2 h-2 stroke-[3]" />
                         </span>
                       ) : (
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
@@ -1485,17 +1491,17 @@ export default function App() {
 
                     <div className="flex items-center gap-1.5 my-auto">
                       <div
-                        className="w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center text-white shrink-0"
+                        className="w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-md flex items-center justify-center text-white shrink-0"
                         style={{ backgroundColor: block.color }}
                       >
                         <BlockIcon name={block.iconName} className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                       </div>
-                      <span className="font-title text-[10px] sm:text-xs font-bold text-[#333333] leading-tight line-clamp-1">
+                      <span className="font-title text-[10.5px] sm:text-xs font-bold text-[#333333] leading-tight line-clamp-1">
                         {block.name}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-[8px] sm:text-[9px] font-medium text-slate-400">
+                    <div className="flex items-center justify-between text-[8px] sm:text-[8.5px] font-medium text-slate-400">
                       <span className="truncate">{block.categoryLabel}</span>
                       <span className="font-title text-[#CC0E35] font-bold shrink-0">
                         {isPlaced ? 'Listo' : 'Colocar'}
